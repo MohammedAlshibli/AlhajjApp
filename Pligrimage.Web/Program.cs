@@ -61,6 +61,9 @@ builder.Services.AddControllersWithViews()
             Newtonsoft.Json.ReferenceLoopHandling.Ignore;
     });
 
+// Kendo UI MVC server-side helpers (Html.Kendo().Grid() etc.)
+builder.Services.AddKendo();
+
 // ── Localization (used by CultureLocalizer) ───────────────────────────────────
 builder.Services.AddLocalization(opts => opts.ResourcesPath = "Resources");
 builder.Services.Configure<CookiePolicyOptions>(options =>

@@ -94,54 +94,18 @@
 </script>
 
 
-@* <script id="TypeTemplate" type="text/x-kendo-template">
-    <br />
-    <div class="toolbar">
-        <label class="type-label" for="FlightNo"> تصفيه حسب الرحلات الجوية </label>
-
-        @(Html.Kendo().DropDownList()
-                .Name("FlightNo")
-                .Filter("contains")
-                .OptionLabel("كل الرحلات")
-                .DataTextField("FlightType")
-                .DataValueField("FlightType")
-                .AutoBind(false)
-                .Events(e => e.Change("TypeChange"))
-                .HtmlAttributes(new { style = "width:350px;" })
-                .DataSource(ds =>
-                {
-                    ds.Read("FlightCategory", "Passengers");
-
-                }).ToClientTemplate()
-        )
-
-    </div>
-    <br />
-
-</script>
+@* 
  *@
 <script type="text/javascript">
 
-    function TypeChange() {
-
-        var typeName = this.value(),
-
-            grid = $.fn.DataTable.isDataTable("#SwapAlhajjaj") ? $("#SwapAlhajjaj").DataTable() : null;
-        if (typeName) {
-            grid.dataSource.filter({ field: "Flight.FlightNo", operator: "eq", value: typeName });
-        }
-        else {
-            grid.dataSource.filter({});
-        }
+    function TypeChange(typeName) {
+        if (!$.fn.DataTable.isDataTable('#SwapAlhajjaj')) return;
+        $('#SwapAlhajjaj').DataTable().search(typeName || '').draw();
     }
 
 </script>
 
-<script id="TypeTemplate" type="text/x-kendo-template">
-    <div class="refreshbtnContainer">
-        <a href="\\#" class="k-pager-refresh k-link button k-button-icon" title="Refresh"><span class="k-button-icon k-i-reload"></span></a>
-    </div>
-</script>
+
 
 
 

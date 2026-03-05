@@ -9,8 +9,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="jQuery" Version="1.9.1" />
-    <PackageReference Include="KendoUICore" Version="2019.1.220" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.32" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.32" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.32">
@@ -23,10 +21,5 @@
     <ProjectReference Include="..\Pligrimage.Entities\Pligrimage.Entities.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Reference Include="Microsoft.EntityFrameworkCore.SqlServer">
-      <HintPath>..\..\..\net.core.packages\net.core.packages\Microsoft.EntityFrameworkCore.SqlServer.2.0.0\lib\netstandard2.0\Microsoft.EntityFrameworkCore.SqlServer.dll</HintPath>
-    </Reference>
-  </ItemGroup>
 
 </Project>

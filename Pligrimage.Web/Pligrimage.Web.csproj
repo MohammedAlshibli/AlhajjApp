@@ -1680,7 +1680,6 @@
 
 
   <ItemGroup>
-    <PackageReference Include="jQuery" Version="1.9.1" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.0" />
@@ -1713,17 +1712,9 @@
 
 
   <ItemGroup>
-    <Reference Include="AutoMapper.Extensions.Microsoft.DependencyInjection">
-      <HintPath>..\..\..\packages1\automapper.extensions.microsoft.dependencyinjection\5.0.1\lib\netstandard2.0\AutoMapper.Extensions.Microsoft.DependencyInjection.dll</HintPath>
-    </Reference>
-    <Reference Include="NPOI">
-      <HintPath>D:\uploadExcelNetCore\NPOI.dll</HintPath>
-    </Reference>
-    <Reference Include="NPOI.OOXML">
-      <HintPath>D:\uploadExcelNetCore\NPOI.OOXML.dll</HintPath>
-    </Reference>
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
+    <PackageReference Include="NPOI" Version="2.7.1" />
   </ItemGroup>
-
 
   <ItemGroup>
     <Folder Include="wwwroot\lib\mdbootsrap\" />

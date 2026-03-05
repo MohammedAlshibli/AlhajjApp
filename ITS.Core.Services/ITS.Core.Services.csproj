@@ -16,8 +16,6 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="7.0.1" />
-    <PackageReference Include="jQuery" Version="1.9.1" />
-    <PackageReference Include="KendoUICore" Version="2019.1.220" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,0 +1,291 @@
+{
+  "format": 1,
+  "restore": {
+    "D:\\Alhajj\\ITS.Pligrimage\\ITS.Core.Abstractions.Services\\ITS.Core.Abstractions.Services.csproj": {}
+  },
+  "projects": {
+    "D:\\Alhajj\\ITS.Pligrimage\\ITS.Core.Abstractions.Services\\ITS.Core.Abstractions.Services.csproj": {
+      "version": "1.1.0",
+      "restore": {
+        "projectUniqueName": "D:\\Alhajj\\ITS.Pligrimage\\ITS.Core.Abstractions.Services\\ITS.Core.Abstractions.Services.csproj",
+        "projectName": "ITS.Core.Abstractions.Services",
+        "projectPath": "D:\\Alhajj\\ITS.Pligrimage\\ITS.Core.Abstractions.Services\\ITS.Core.Abstractions.Services.csproj",
+        "packagesPath": "C:\\Users\\its\\.nuget\\packages\\",
+        "outputPath": "D:\\Alhajj\\ITS.Pligrimage\\ITS.Core.Abstractions.Services\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\its\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "netstandard2.1"
+        ],
+        "sources": {
+          "C:\\Program Files\\dotnet\\library-packs": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netstandard2.1": {
+            "targetAlias": "netstandard2.1",
+            "projectReferences": {
+              "D:\\Alhajj\\ITS.Pligrimage\\ITS.Core.Abstractions.Trackable\\ITS.Core.Abstractions.Trackable.csproj": {
+                "projectPath": "D:\\Alhajj\\ITS.Pligrimage\\ITS.Core.Abstractions.Trackable\\ITS.Core.Abstractions.Trackable.csproj"
+              },
+              "D:\\Alhajj\\ITS.Pligrimage\\ITS.Core.Abstractions\\ITS.Core.Abstractions.csproj": {
+                "projectPath": "D:\\Alhajj\\ITS.Pligrimage\\ITS.Core.Abstractions\\ITS.Core.Abstractions.csproj"
+              },
+              "D:\\Alhajj\\ITS.Pligrimage\\ITS.TrackableEntities.Common.Core\\ITS.TrackableEntities.Common.Core.csproj": {
+                "projectPath": "D:\\Alhajj\\ITS.Pligrimage\\ITS.TrackableEntities.Common.Core\\ITS.TrackableEntities.Common.Core.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.100"
+      },
+      "frameworks": {
+        "netstandard2.1": {
+          "targetAlias": "netstandard2.1",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "NETStandard.Library": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.102\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "D:\\Alhajj\\ITS.Pligrimage\\ITS.Core.Abstractions.Trackable\\ITS.Core.Abstractions.Trackable.csproj": {
+      "version": "1.1.0",
+      "restore": {
+        "projectUniqueName": "D:\\Alhajj\\ITS.Pligrimage\\ITS.Core.Abstractions.Trackable\\ITS.Core.Abstractions.Trackable.csproj",
+        "projectName": "ITS.Core.Abstractions.Trackable",
+        "projectPath": "D:\\Alhajj\\ITS.Pligrimage\\ITS.Core.Abstractions.Trackable\\ITS.Core.Abstractions.Trackable.csproj",
+        "packagesPath": "C:\\Users\\its\\.nuget\\packages\\",
+        "outputPath": "D:\\Alhajj\\ITS.Pligrimage\\ITS.Core.Abstractions.Trackable\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\its\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "netstandard2.1"
+        ],
+        "sources": {
+          "C:\\Program Files\\dotnet\\library-packs": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netstandard2.1": {
+            "targetAlias": "netstandard2.1",
+            "projectReferences": {
+              "D:\\Alhajj\\ITS.Pligrimage\\ITS.Core.Abstractions\\ITS.Core.Abstractions.csproj": {
+                "projectPath": "D:\\Alhajj\\ITS.Pligrimage\\ITS.Core.Abstractions\\ITS.Core.Abstractions.csproj"
+              },
+              "D:\\Alhajj\\ITS.Pligrimage\\ITS.TrackableEntities.Common.Core\\ITS.TrackableEntities.Common.Core.csproj": {
+                "projectPath": "D:\\Alhajj\\ITS.Pligrimage\\ITS.TrackableEntities.Common.Core\\ITS.TrackableEntities.Common.Core.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.100"
+      },
+      "frameworks": {
+        "netstandard2.1": {
+          "targetAlias": "netstandard2.1",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "NETStandard.Library": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.102\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "D:\\Alhajj\\ITS.Pligrimage\\ITS.Core.Abstractions\\ITS.Core.Abstractions.csproj": {
+      "version": "1.1.0",
+      "restore": {
+        "projectUniqueName": "D:\\Alhajj\\ITS.Pligrimage\\ITS.Core.Abstractions\\ITS.Core.Abstractions.csproj",
+        "projectName": "ITS.Core.Abstractions",
+        "projectPath": "D:\\Alhajj\\ITS.Pligrimage\\ITS.Core.Abstractions\\ITS.Core.Abstractions.csproj",
+        "packagesPath": "C:\\Users\\its\\.nuget\\packages\\",
+        "outputPath": "D:\\Alhajj\\ITS.Pligrimage\\ITS.Core.Abstractions\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\its\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "netstandard2.1"
+        ],
+        "sources": {
+          "C:\\Program Files\\dotnet\\library-packs": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netstandard2.1": {
+            "targetAlias": "netstandard2.1",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.100"
+      },
+      "frameworks": {
+        "netstandard2.1": {
+          "targetAlias": "netstandard2.1",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "NETStandard.Library": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.102\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "D:\\Alhajj\\ITS.Pligrimage\\ITS.TrackableEntities.Common.Core\\ITS.TrackableEntities.Common.Core.csproj": {
+      "version": "1.2.0",
+      "restore": {
+        "projectUniqueName": "D:\\Alhajj\\ITS.Pligrimage\\ITS.TrackableEntities.Common.Core\\ITS.TrackableEntities.Common.Core.csproj",
+        "projectName": "TrackableEntities.Common.Core",
+        "projectPath": "D:\\Alhajj\\ITS.Pligrimage\\ITS.TrackableEntities.Common.Core\\ITS.TrackableEntities.Common.Core.csproj",
+        "packagesPath": "C:\\Users\\its\\.nuget\\packages\\",
+        "outputPath": "D:\\Alhajj\\ITS.Pligrimage\\ITS.TrackableEntities.Common.Core\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\its\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "netstandard2.1"
+        ],
+        "sources": {
+          "C:\\Program Files\\dotnet\\library-packs": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netstandard2.1": {
+            "targetAlias": "netstandard2.1",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.100"
+      },
+      "frameworks": {
+        "netstandard2.1": {
+          "targetAlias": "netstandard2.1",
+          "dependencies": {
+            "AutoMapper": {
+              "target": "Package",
+              "version": "[7.0.1, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "NETStandard.Library": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.102\\RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}

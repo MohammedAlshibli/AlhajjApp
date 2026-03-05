@@ -1,0 +1,137 @@
+﻿
+<div class="card card-cascade wider">
+    <div class="view view-cascade gradient-card-header blue-gradient-rgba">
+        <h2 class="card-header-title mb-3">لائق طبيا  </h2>
+    </div>
+    <div class="card-body card-body-cascade" style="background-color:gainsboro">
+        <div class="k-rtl">
+
+         @*    @(Html.Kendo().Grid<Pligrimage.Entities.AlhajjMaster>
+                                                ()
+                                                .Name("AlhajjMasterGrid")
+                                                .ToolBar(tools => tools.Excel().Text("تحميل الملف"))
+                                                .Columns(column =>
+                                                {
+
+                                                    column.Bound(c => c.FullName).Title("الاسم").Filterable(true).Width(150);
+                                                    column.Bound(c => c.ServcieNumber).Title(" الرقم العسكري").Width(90);
+                                                    column.Bound(c => c.NIC).Title(" الرقم المدني").Width(95);
+                                                    column.Bound(c => c.Region).Title("المحافظة").Width(100);
+                                                    column.Bound(c => c.ReletiveName1).Title("أقرب الاقربين أ").Hidden();
+                                                    column.Bound(c => c.RelativeGsm1).Title("رقم الهاتف أ").Hidden();
+                                                    column.Bound(c => c.ReletiveName2).Title("أقرب الاقربين ب").Hidden();
+                                                    column.Bound(c => c.RelativeGsm2).Title("رقم الهاتف ب").Hidden();
+                                                    column.Bound(c => c.EmployeeStatus).Title("حالة الموظف").Width(100);
+                                                    column.Bound(c => c.Parameter.DescArabic).Title("تصنيف الحاج").Width(70);
+                                                    column.ForeignKey(c => c.CategoryId, (System.Collections.IEnumerable)
+                                                    ViewData["CategoryList"], "CategoryId", "DescArabic").Title(" التصنيف الاداري").Width(120);
+                                                    column.Bound(c => c.Unit.UnitNameAr).Title("السلاح").Width(150);
+                                                })
+
+                    .HtmlAttributes(new { style = "height:500px" })
+
+                    .Editable(editable => editable.Mode(GridEditMode.PopUp).TemplateName("Edit").Window(c => c.Resizable().Title("تعديل")))
+                    .Scrollable()
+                    .ClientDetailTemplateId("template")
+                    .Sortable()
+                    .Selectable()
+                    .Filterable(f => f.Extra(false)
+                                .Operators(opertor => opertor
+                                .ForString(str => str.Clear()
+                                .Contains("يحتوي على"))))
+                    .Pageable
+                    (p => p
+                    .ButtonCount(5)
+                    .Refresh(true)
+                    )
+                    .DataSource
+                    (dataSourec => dataSourec
+                    .Ajax()
+                    .Events(events =>
+                    {
+                        events.Error("error_handler");
+                        events.RequestEnd("request_end");
+                    })
+                    .Model(m =>
+                    {
+                        m.Id(i => i.PligrimageId);
+                        m.Field(c => c.CategoryId).DefaultValue(1);
+                    })
+
+                    .Read(read => read.Action("AlhajjRead", "ListPage"))
+                    )
+                    .Events(events => events.DataBound("dataBound"))
+            ) *@
+        </div>
+    </div>
+
+
+<script>
+
+
+    function error_handler(e) {
+        console.log(e);
+        if (e.errors) {
+            var message = "Errors: \n";
+            $.each(e.errors, function (key, value) {
+                if ('errors' in value) {
+                    $.each(value.errors, function () {
+                        message += this + "\n";
+                    });
+                }
+            });
+            alert(message);
+        }
+    };
+
+    function request_end(e) {
+
+        if (e.type == "update") {
+            alert("تم تحديث البيانات بنجاح");
+        }
+        if (e.type == "create") {
+            alert("تم حفظ البيانات بنجاح");
+
+        }
+        if (e.type == "delete") {
+            alert("تم حذف البيانات بنجاح");
+
+        }
+    }
+
+    //function showName(data) {
+    //    var x = "لايوجد"
+    //    var xx = data.DescArabic;
+    //    if (xx == null) {
+    //        console.log(data.DescArabic)
+    //        return x;
+            
+
+    //    }
+    //    else {
+    //        return xx
+    //    }
+
+    //}
+
+</script>
+
+
+
+
+<script>
+    function dataBound() {
+        //this.expandRow(this.tbody.find("tr.k-master-row").first());
+    }
+</script>
+
+
+
+<style>
+    .k-grid .k-grid-header {
+        border-color: #dde2e7;
+        color: #212529;
+        background-color: #f8f9fa;
+        font-weight: bold;
+    }
+</style>

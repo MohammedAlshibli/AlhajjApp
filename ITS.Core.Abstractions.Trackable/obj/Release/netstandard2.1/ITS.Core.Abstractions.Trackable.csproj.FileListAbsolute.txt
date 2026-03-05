@@ -1,0 +1,15 @@
+D:\Project_SourceCode\Alhajj\ITS.Pligrimage\ITS.Core.Abstractions.Trackable\bin\Release\netstandard2.1\ITS.Core.Abstractions.Trackable.deps.json
+D:\Project_SourceCode\Alhajj\ITS.Pligrimage\ITS.Core.Abstractions.Trackable\bin\Release\netstandard2.1\ITS.Core.Abstractions.Trackable.dll
+D:\Project_SourceCode\Alhajj\ITS.Pligrimage\ITS.Core.Abstractions.Trackable\bin\Release\netstandard2.1\ITS.Core.Abstractions.Trackable.pdb
+D:\Project_SourceCode\Alhajj\ITS.Pligrimage\ITS.Core.Abstractions.Trackable\bin\Release\netstandard2.1\ITS.Core.Abstractions.dll
+D:\Project_SourceCode\Alhajj\ITS.Pligrimage\ITS.Core.Abstractions.Trackable\bin\Release\netstandard2.1\ITS.TrackableEntities.Common.Core.dll
+D:\Project_SourceCode\Alhajj\ITS.Pligrimage\ITS.Core.Abstractions.Trackable\bin\Release\netstandard2.1\ITS.Core.Abstractions.pdb
+D:\Project_SourceCode\Alhajj\ITS.Pligrimage\ITS.Core.Abstractions.Trackable\bin\Release\netstandard2.1\ITS.TrackableEntities.Common.Core.pdb
+D:\Project_SourceCode\Alhajj\ITS.Pligrimage\ITS.Core.Abstractions.Trackable\obj\Release\netstandard2.1\ITS.Core.Abstractions.Trackable.csproj.AssemblyReference.cache
+D:\Project_SourceCode\Alhajj\ITS.Pligrimage\ITS.Core.Abstractions.Trackable\obj\Release\netstandard2.1\ITS.Core.Abstractions.Trackable.GeneratedMSBuildEditorConfig.editorconfig
+D:\Project_SourceCode\Alhajj\ITS.Pligrimage\ITS.Core.Abstractions.Trackable\obj\Release\netstandard2.1\ITS.Core.Abstractions.Trackable.AssemblyInfoInputs.cache
+D:\Project_SourceCode\Alhajj\ITS.Pligrimage\ITS.Core.Abstractions.Trackable\obj\Release\netstandard2.1\ITS.Core.Abstractions.Trackable.AssemblyInfo.cs
+D:\Project_SourceCode\Alhajj\ITS.Pligrimage\ITS.Core.Abstractions.Trackable\obj\Release\netstandard2.1\ITS.Core.Abstractions.Trackable.csproj.CoreCompileInputs.cache
+D:\Project_SourceCode\Alhajj\ITS.Pligrimage\ITS.Core.Abstractions.Trackable\obj\Release\netstandard2.1\ITS.Core.7512CCFB.Up2Date
+D:\Project_SourceCode\Alhajj\ITS.Pligrimage\ITS.Core.Abstractions.Trackable\obj\Release\netstandard2.1\ITS.Core.Abstractions.Trackable.dll
+D:\Project_SourceCode\Alhajj\ITS.Pligrimage\ITS.Core.Abstractions.Trackable\obj\Release\netstandard2.1\ITS.Core.Abstractions.Trackable.pdb

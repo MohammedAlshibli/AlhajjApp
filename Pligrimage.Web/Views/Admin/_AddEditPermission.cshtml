@@ -1,0 +1,46 @@
+﻿
+@model Pligrimage.Web.Common.ViewModel.PermissionsCreateEditViewModel
+@using  Pligrimage.Web.Common;
+
+@{
+    Layout = null;
+}
+
+
+<form asp-controller="Admin" asp-action="AddEditPermission" role="form" method="post">
+    @Html.AntiForgeryToken()
+
+    @await Html.PartialAsync("_ModalHeader", new ModalHeader { Heading = $"{(Model.PermissionId >= 0 ? "إضافة" : "Edit")}" })
+    <input type="hidden" asp-for="PermissionId" />
+
+    <div class="modal-body form">
+     
+
+
+        <label asp-for="ControllerName"></label>
+        <input asp-for="ControllerName" class="form-control" />
+
+
+        <label asp-for="ActionName"></label>
+        <input asp-for="ActionName" class="form-control" />
+
+        <label asp-for="ScreenNameEn"></label>
+        <input asp-for="ScreenNameEn" class="form-control" />
+
+        <label asp-for="ScreenNameAr"></label>
+        <input asp-for="ScreenNameAr" class="form-control" />
+
+
+        <label asp-for="Icone"></label>
+        <input asp-for="Icone" class="form-control" />
+
+        <label asp-for="Comment">الوصف </label>
+        <textarea asp-for="Comment" class="form-control"></textarea>
+
+    </div>
+
+
+    @await Html.PartialAsync("_ModalFooter", new ModalFooter { CancelButtonText = "Cancel", SubmitButtonText = "Submit" })
+</form>
+
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js" asp-append-version="true"></script>

@@ -1,0 +1,159 @@
+﻿@model Pligrimage.Entities.AlhajjMaster
+
+
+
+<div class="panel-body">
+    <form asp-action="CreateAlhajjFromHrms" asp-controller="Pensioner" method="POST" id="AlhajjMasterForm">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="PligrimageId" />
+        <input type="hidden" asp-for="UnitId" />
+        <input asp-for="RankCode" hidden />
+        <input asp-for="WilayaCode" hidden />
+        <input asp-for="VillageCode" hidden />
+        <input type="hidden" asp-for="DateOfBirth" hidden />
+        <input type="hidden" asp-for="DateOfEnlistment" />
+
+
+
+
+
+        <div class="row">
+
+            <div class=" col-md-6">
+                <table class="table table-user-information text-center table-bordered">
+                    <tbody>
+                        <tr>
+                            <th><p style="font-weight:500">@Html.DisplayName("الاسم")</p></th>
+                            <th>@Html.DisplayName("العمر")</th>
+                            <th>@Html.DisplayName("حالة الموظف")</th>
+                        </tr>
+                        <tr>
+                            <td><input class="form-control" readonly asp-for="FullName" /></td>
+                            <td><input class="form-control align-items-center" readonly asp-for="Age" style="text-align:center" /></td>
+                            @*<td><input asp-for="EmployeeStatus" class="form-control align-items-center" readonly /></td>*@
+                            <td>
+                                @Html.DisplayFor(c => c.EmployeeStatus)
+                                <input type="hidden" asp-for="EmployeeStatus" />
+                            </td>
+
+                        </tr>
+
+
+                        <tr>
+                            <th>@Html.DisplayName("الرقم العسكري")</th>
+                            <th>@Html.DisplayName("الرتبة")</th>
+                            <th>@Html.DisplayName("فصيلة الدم")</th>
+                        </tr>
+
+                        <tr>
+                            <td><input class="form-control" readonly asp-for="ServcieNumber" /></td>
+                            <td><input class="form-control" readonly asp-for="RankDesc" /></td>
+                            <td><input class="form-control" readonly asp-for="BloodGroup" /></td>
+
+                        </tr>
+
+
+                        <tr>
+                            <th>@Html.DisplayName("السلاح")</th>
+                            <th>@Html.DisplayName("الوحدة")</th>
+                            <th>@Html.DisplayName("ارقام الهواتف")</th>
+                        </tr>
+
+                        <tr>
+                            <td><input class="form-control" readonly asp-for="Unit.UnitNameAr" maxlength="50" size="10" /></td>
+                            <td><input class="form-control" readonly asp-for="HrmsUnitDesc" /></td>
+                            <td><input class="form-control" readonly asp-for="GSM" /></td>
+                        </tr>
+
+
+                        <tr>
+                            <th>@Html.DisplayName("البطاقة الشخصية")</th>
+                            <th>@Html.DisplayName("تاريخ الانتهاء")</th>
+                            <th>@Html.DisplayName("السكن الدائم")</th>
+                        </tr>
+
+                        <tr>
+                            @*asp-format="{0:dd/MM/yyyy}"*@
+                            <td><input class="form-control" type="text" asp-for="NIC" /></td>
+                            <td><input class="form-control" type="datetime" asp-for="NICExpire" style="text-align:right" /></td>
+                            <td>
+                                <input class="form-control" readonly asp-for="Region" />
+                                <input class="form-control" asp-for="WilayaDesc" readonly />
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <th>@Html.DisplayName("جواز السفر")</th>
+                            <th>@Html.DisplayName("تاريخ الانتهاء")</th>
+                            <th>@Html.DisplayName("تصنيف الحاج")</th>
+
+                        </tr>
+
+                        <tr>
+
+                            <td><input class="form-control" type="text" asp-for="Passport" /></td>
+                            <td><input class="form-control" type="datetime" asp-for="PassportExpire" style="text-align:right" /></td>
+@*                             <td> @Html.Kendo().DropDownListFor(model => model.ParameterId).DataTextField("DescArabic").DataValueField("ParameterId").BindTo((System.Collections.IEnumerable)ViewData["ClassTypeList"])</td>
+ *@
+                        </tr>
+                        <tr>
+
+                            <th>الاسم اقرب الاقربين 1 </th>
+                            <th>رقم الهاتف</th>
+                            <th>صلة القرابة</th>
+                        </tr>
+
+                        <tr style="background-color:burlywood">
+                            <td><input type="text" class="form-control" asp-for="ReletiveName1" placeholder="الاسم" required /></td>
+                            <td><input type="text" class="form-control" asp-for="RelativeGsm1" placeholder="رقم الهاتف" required /></td>
+                            <td><input type="text" class="form-control" asp-for="ReletiveRelation1" placeholder="صلة القرابة" required /></td>
+                        </tr>
+
+                        <tr>
+
+                            <th>الاسم اقرب الاقربين 2 </th>
+                            <th>رقم الهاتف</th>
+                            <th>صلة القرابة</th>
+                        </tr>
+                        <tr style="background-color:burlywood">
+                            <td border="0"><input type="text" class="form-control" asp-for="ReletiveName2" placeholder="الاسم" required /></td>
+                            <td><input type="text" class="form-control" asp-for="RelativeGsm2" placeholder="رقم الهاتف" required /></td>
+                            <td><input type="text" class="form-control" asp-for="ReletiveRelation2" placeholder="صلة القرابة" required /></td>
+                        </tr>
+                        <tr>
+                            <th> اسم الشيخ </th>
+                            <th>رقم الهاتف</th>
+                        </tr>
+                        <tr style="background-color:burlywood">
+                            <td><input type="text" class="form-control" asp-for="SheikhName" placeholder="اسم الشيخ" required /></td>
+                            <td><input type="text" class="form-control" asp-for="SheikhGsm" placeholder="رقم الهاتف" required /></td>
+                        </tr>
+
+                        <tr>
+                            <td colspan="3">
+                                <button type="submit" class="btn btn-primary"> حفظ</button>
+                                <input type="button" class="btn btn-info" value="القوائم" onclick="location.href='@Url.Action("Index","Pensioner")'" />
+
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+                </table>
+
+
+            </div>
+
+
+
+
+        </div>
+    </form>
+</div>
+
+
+
+
+
+
+

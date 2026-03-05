@@ -1,0 +1,147 @@
+﻿
+<div class="card card-cascade wider">
+    <div class="view view-cascade gradient-card-header blue-gradient-rgba">
+        <h2 class="card-header-title mb-3">توزيع الحجاج </h2>
+    </div>
+    <div class="card-body card-body-cascade">
+
+        <div class=" k-rtl">
+            @(Html.Kendo().Grid<Pligrimage.Entities.Passenger>
+    ()
+    .Name("AlhajjGrid")
+    .Columns(column =>
+    {
+        //column.Select().Width(50);
+        column.Bound(c => c.FlightId).Title("رقم الرحلة");
+        column.Bound(c => c.BusId).Title("رقم الباص");
+        column.Bound(c => c.PassengerId);
+        column.Bound(c => c.PligrimageId);
+
+        column.Command(com =>
+        {
+            com.Edit().UpdateText("حفظ").Text("تعديل").CancelText("إلغاء").HtmlAttributes(new { type = "button", @class = "btn-basic ", });
+        }).Width(200);
+
+    })
+    .PersistSelection(true)
+    .ToolBar(c => c.Custom().Name("Save").Text(" توزيع الحجاج على الرحلات").IconClass("save").HtmlAttributes(new { onclick = "CreateAlhajjNonMod()" })
+    )
+    .Editable(editable => editable.Mode(GridEditMode.PopUp).TemplateName("Edit"))
+    .DataSource
+    (dataSourec => dataSourec
+    .Ajax()
+    .Model(m =>
+    {
+        m.Id(i => i.PassengerId);
+    })
+    .Read(read => read.Action("PassengerRead", "Passengers"))
+    .Update(update => update.Action("UpdatePassenger", "Passengers"))
+
+    )
+
+    .Scrollable()
+    .Sortable()
+    .Selectable()
+    .Filterable(f => f.Extra(false)
+    .Operators(opertor => opertor
+    .ForString(str => str.Clear()
+    .Contains("يحتوي على"))))
+    .Pageable
+    (p => p
+    .ButtonCount(5)
+    .Refresh(true)
+    ))
+
+
+
+
+
+</div>
+
+    </div>
+    </div>
+
+
+
+
+
+
+
+    
+
+    <script>
+        function FilterFlights() {
+            return {
+                FlightId: $("#Flights").val()
+            };
+
+        }
+        function CreateAlhajjNonMod(e) {
+        var List = []
+        var griddata = $("#AlhajjGrid").data("kendoGrid");
+
+        var rows = griddata.select();
+        rows.each(function (e) {
+            var dataItem = griddata.dataItem(this);
+            console.log(dataItem);
+            List.push(dataItem);
+            });
+
+        
+        var alhajList = JSON.stringify({ EmployeeList: List });
+
+        //var FlightId= $("#Flights").data("kendoDropDownList").value();
+
+        //var busId = $("#Buses").data("kendoDropDownList").value();
+
+        //var SupervisorId = $("#Suppervisor").data("kendoDropDownList").value();
+
+        //var RoomId = $("#RoomList").data("kendoDropDownList").value();
+
+           
+            //var formData = new FormData();
+
+            //formData.append("AlhajjsList", JSON.stringify(List));
+            //formData.append("FlightId", FlightId);
+            //formData.append("BusId", busId);
+            //////formData.append("SupervisorID", SupervisorId);
+            //formData.append("ResidencesId", RoomId);
+
+            $.ajax({
+            type: "POST", //type of action in controller(Request Type Post-Get)
+            url: "@Url.Action("AlhajjFlightAsync", "Passengers")",
+            dataType:"Json", // the type of data which return from controller
+        
+            //data: formData, //parameters data send it to the controller
+            contentType: false, //type of parameter data which will send it to controller
+            processData: false,
+            success: function (response) { // resopnse is data which come from controller
+                alert("تم توزيع البيانات بنجاح");
+                $('#AlhajjGrid').data('kendoGrid').dataSourec.read(res);
+
+            },
+            error: function (e) {
+
+                alert(e.responseText);
+            }
+        });
+
+    };
+
+        //$('#AlhajjGrid').data('kendoGrid').dataSourec.read();
+
+        //$('#AlhajjGrid').data('kendoGrid').refresh();
+
+
+        //function Kendorefresh() {
+
+        //}
+
+    </script>
+
+
+
+
+
+
+

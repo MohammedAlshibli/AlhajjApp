@@ -1,0 +1,115 @@
+﻿
+@model IEnumerable<Pligrimage.Web.Common.ViewModel.PermissionsViewModel>
+@* @using Kendo.Mvc.UI
+ *@@using Pligrimage.Web.Common
+
+@{
+    ViewData["Title"] = "Permissions";
+}
+
+<div class="card card-cascade wider">
+    <div class="view view-cascade gradient-card-header blue-gradient-rgba">
+        <h2 class="card-header-title mb-3"><span class="fa fa-pencil"></span>الشاشات</h2>
+    </div>
+    <div class="card-body card-body-cascade">
+
+      @*   <div class="k-rtl">
+            @(Html.Kendo().Grid(Model)
+                                                .Name("PermissionsGrid")
+                                                    .ToolBar(toolbar =>
+                                                    {
+                                                        toolbar.ClientTemplate("<a id = 'addPermissionModal' href='" + Url.Action("AddEditPermission") + "' data-toggle='modal' asp-action='AddEditPermission' data-target='\\#modal-action-permission' class='btn btn-primary btn-md my-2'> <i class='fa fa-plus'></i> " + "إضافة" + "</a>");
+
+                                                    })
+                                                    .DataSource(dataSource => dataSource
+                                                        .Ajax()
+                                                        .PageSize(15)
+                                                        .Read(read => read.Action("GetAllPermissions", "Admin"))
+                                                        .Update(update => update.Action("UpdatePermission", "Admin"))
+                                                        .Destroy(delete => delete.Action("DeletePermission", "Admin"))
+                                                        )
+                                                    .Columns(columns =>
+                                                    {
+                                                        columns.Bound(c => c.ControllerName);
+                                                        columns.Bound(c => c.ActionName);
+                                                        columns.Bound(c => c.ScreenNameEn);
+                                                        columns.Bound(c => c.ScreenNameAr);
+                                                    //columns.Bound(c => c.Comment);
+                                                    //columns.Bound(c => c.CreatedOn);
+                                                    //columns.Bound(c => c.CreatedBy);
+                                                    ////columns.Bound(c => c.ModifiedBy);
+
+
+                                                    columns.Command(com =>
+                                                        {
+                                                            com.Edit().UpdateText("حفظ").Text("تعديل").CancelText("إلغاء");
+                                                            com.Destroy().Text("حذف");
+                                                        }).Width(200);
+                                                    })
+
+                                                    .Pageable(pageable =>
+                                                    {
+                                                        pageable.Refresh(true);
+                                                        pageable.ButtonCount(5);
+                                                    })
+                                                    .Sortable()
+                                                    .Editable(editable => editable.Mode(GridEditMode.PopUp).TemplateName("Edit").Window(c => c.Resizable().Title("تعديل")))
+                                                    .Groupable()
+                                                   .Selectable()
+                                                  .Filterable(f => f.Extra(false)
+                                        .Operators(opertor => opertor
+                                        .ForString(str => str.Clear()
+                                        .Contains("يحتوي على"))))
+                            .Pageable
+                            (p => p
+                            .ButtonCount(5)
+                            .Refresh(true)
+                            )
+                            .DataSource
+                            (dataSourec => dataSourec
+                            .Ajax()
+                            .Events(e => e.Error("Error_Handler"))
+                            .Model(m =>
+                            {
+                                m.Id(i => i.PermissionId);
+                            })
+        ))
+
+        </div> *@
+    </div>
+</div>
+
+@Html.Partial("_Modal", new BootstrapModel { ID = "modal-action-permission", AreaLabeledId = "modal-action-permission-label", Size = ModalSize.Medium })
+
+
+@section scripts{
+    <script src="~/js/modalAction.js"></script>
+
+    <script type="text/javascript">
+        modalAction("#modal-action-permission");
+    </script>
+
+
+}
+
+<script>
+
+    function Error_Handler(e) {
+        //alert("dfsdfsd");
+        console.log(e);
+        if (e.errors) {
+            var message = "Errors: \n";
+            $.each(e.errors, function (key, value) {
+                if ('errors' in value) {
+                    $.each(value.errors, function () {
+                        message += this + "\n";
+                    });
+                }
+            });
+            alert(message);
+        }
+
+
+    };
+
+</script>

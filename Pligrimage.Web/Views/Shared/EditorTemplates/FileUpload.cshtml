@@ -1,0 +1,24 @@
+﻿@*@model string  
+@(Html.Kendo().Upload()
+  .Name("FileUpload")
+  .Events(e =>
+  {
+      e.Select("OnSelectFileUpload");
+      e.Success("OnuploadSuccessFileUpload");
+  })
+  .Messages(m =>
+  {
+      m.Select("upload");
+  })
+  .Async(async =>
+  {
+      async.Save("SaveUploadFile", "NonModAdmin");
+      async.Remove("DeleteUploadFile", "NonModAdmin");
+      async.AutoUpload(true);
+  })
+  .Multiple(false))
+    )*@
+
+
+
+

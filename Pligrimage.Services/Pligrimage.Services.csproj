@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="7.0.1" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="1.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\HrmsHttpClient\HrmsHttpClient.csproj" />
+    <ProjectReference Include="..\ITS.Core.Services\ITS.Core.Services.csproj" />
+    <ProjectReference Include="..\Pligrimage.Data\Pligrimage.Data.csproj" />
+    <ProjectReference Include="..\Pligrimage.Entities\Pligrimage.Entities.csproj" />
+    <ProjectReference Include="..\Pligrimage.Web.Common\Pligrimage.Web.Common.csproj" />
+  </ItemGroup>
+
+</Project>

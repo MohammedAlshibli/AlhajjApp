@@ -1,0 +1,48 @@
+﻿@*<div>
+    @model Pligrimage.Web.Models.AdminNonModVM;
+        </div>
+    <div class="form-group">
+            <div class="col-md-2">
+                <label style="text-align:center">الاسم بالكامل</label>
+                </div>
+
+                <div class="col-md-10">@Html.EditorFor(m => m.FullName)</div>
+            </div>
+
+    <div class="form-group">
+        <div class="col-md-2">
+            <label style="text-align:center">الاسم بالكامل</label>
+        </div>
+
+        <div class="col-md-10">@Html.EditorFor(m => m.FullName)</div>
+    </div>
+
+
+    <div class="form-group">
+        <div class="col-md-2">
+            <label style="text-align:center">الاسم بالكامل</label>
+        </div>
+
+        <div class="col-md-10">@Html.EditorFor(m => m.FullName)</div>
+    </div>*@
+
+
+@model string
+@* @(Html.Kendo().Upload()
+    .Name("ResumeFileUrl")
+    .Events(events =>
+    {
+        events.Select("onSelectResumeFile");
+        events.Success("onUploadSuccessResumeFile");
+    })
+    .Messages(messages =>
+     {
+         messages.Select("Upload");
+     })
+    .Async(async =>
+     {
+         async.Save("SaveResumeFile", "Home");
+         async.Remove("DeleteResumeFile", "Home");
+         async.AutoUpload(true);
+     })
+    .Multiple(false))  *@

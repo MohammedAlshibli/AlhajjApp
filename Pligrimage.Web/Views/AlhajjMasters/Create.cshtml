@@ -1,0 +1,120 @@
+﻿@model Pligrimage.Entities.AlhajjMaster
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h4 style="text-align:center">حجاج وزارة الدفاع</h4>
+
+<hr />
+
+<div dir="rtl">
+    <br />
+
+    <div class="row">
+        <div class=" col-md-6">
+            <div class="row">
+
+                <div class=" col-md-4">
+                    <input type="text" class="form-control" name="getServiceNumber" value="" id="getServiceNumber" placeholder="أدخل الرقم العسكري" />
+
+                </div>
+                <div class=" col-md-3">
+                    <button id="searchBtnDet" onclick="GetEmployee()" type="submit" class="btn btn-primary" style="padding-top:unset">بحث</button>
+                </div>
+                <div class=" col-md-3">
+                    <div id="spinner" class="form-group" style="display:none">
+                        <div>
+                            <img style="width:40px; height:40px;" src="~/Image/loading.gif" />
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+
+
+        <div class=" col-md-5">
+
+            <div class="static" id="static">
+            </div>
+         
+        </div>
+    </div>
+    </div>
+
+
+
+
+
+<div dir="rtl" id="EmployeeDetailsView">
+
+</div>
+
+
+
+<script src="~/lib/jquery/dist/jquery.js"></script>
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script>
+
+    $(document).ready(function () {
+        GetServiceCount();
+    
+    });
+    function GetEmployee() {
+        var popUpNotification = $("#WSNotification").data("kendoNotification");
+
+         $.ajax({
+            url: '@Url.Action("GetAlhajjDataFormWebService", "AlhajjMasters")',
+            type: 'Get',
+            dataType: 'html',
+            data: {
+                ServiceNumber: $('#getServiceNumber').val(),
+
+            },
+            beforeSend: function () {
+                $("#spinner").show();
+            },
+            success: function (data) {
+
+                $("#spinner").hide();
+                $("#EmployeeDetailsView").html(data);
+
+                popUpNotification.show(kendo.toString("تم جلب البيانات بنجاح"), "info");
+                $("#getServiceNumber").val("");
+             },
+             error: function (xhr, status, error) {
+
+                 popUpNotification.show(kendo.toString(xhr.responseText), "error");
+
+             },
+
+            complete: function (data) {
+                $("#spinner").hide();
+
+            }
+        });
+
+
+
+    }
+
+    function GetServiceCount() {
+
+        $.ajax({
+            url: '@Url.Action("StaticService", "AlhajjMasters")',
+            type: 'Get',
+            dataType: 'html',
+            success: function (data) {             
+                $("#static").html(data); 
+            },
+             
+
+
+        });
+
+    }
+
+</script>

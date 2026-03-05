@@ -1,0 +1,50 @@
+﻿@model IEnumerable<Pligrimage.Web.Models.MedicalViewModel>
+
+<p style="text-align:center">
+
+    الحجاج  لأئق طبيا
+</p>
+<table class="table tab-content table-bordered table-hover">
+    <thead style="background-color:burlywood">
+        <tr>
+            <th>
+                الرقم العسكري
+            </th>
+            <th>
+                الرقم المدني
+            </th>
+            <th>
+                الاسم
+            </th>
+            <th>
+                ملاحظات الطبيب
+            </th>
+            <th>
+                السلاح
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ServcieNumber)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.NationalID)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DoctorNote)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UnitNameAr)
+                </td>
+
+            </tr>
+        }
+    </tbody>
+</table>

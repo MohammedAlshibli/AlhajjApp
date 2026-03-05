@@ -1,0 +1,172 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>ITS.TrackableEntities.EF.Core</name>
+    </assembly>
+    <members>
+        <member name="T:ITS.TrackableEntities.EF.Core.Constants">
+            <summary>
+            File containing constants.
+            </summary>
+        </member>
+        <member name="T:ITS.TrackableEntities.EF.Core.Constants.ExceptionMessages">
+            <summary>
+            Exception messages.
+            </summary>
+        </member>
+        <member name="F:ITS.TrackableEntities.EF.Core.Constants.ExceptionMessages.DeletedWithAddedChildren">
+            <summary>
+            Exception message for deleted with children.
+            </summary>
+        </member>
+        <member name="F:ITS.TrackableEntities.EF.Core.Constants.ExceptionMessages.RelationshipNotDetermined">
+            <summary>
+            Exception message for relationship not determined.
+            </summary>
+        </member>
+        <member name="T:ITS.TrackableEntities.EF.Core.DbContextExtensions">
+            <summary>
+            Extension methods for DbContext to persist trackable entities.
+            </summary>
+        </member>
+        <member name="M:ITS.TrackableEntities.EF.Core.DbContextExtensions.ApplyChanges(Microsoft.EntityFrameworkCore.DbContext,ITS.TrackableEntities.Common.Core.ITrackable)">
+            <summary>
+            Update entity state on DbContext for an object graph.
+            </summary>
+            <param name="context">Used to query and save changes to a database</param>
+            <param name="item">Object that implements ITrackable</param>
+        </member>
+        <member name="M:ITS.TrackableEntities.EF.Core.DbContextExtensions.ApplyChanges(Microsoft.EntityFrameworkCore.DbContext,System.Collections.Generic.IEnumerable{ITS.TrackableEntities.Common.Core.ITrackable})">
+            <summary>
+            Update entity state on DbContext for more than one object graph.
+            </summary>
+            <param name="context">Used to query and save changes to a database</param>
+            <param name="items">Objects that implement ITrackable</param>
+        </member>
+        <member name="M:ITS.TrackableEntities.EF.Core.DbContextExtensions.DetachEntities(Microsoft.EntityFrameworkCore.DbContext,System.Collections.Generic.IEnumerable{ITS.TrackableEntities.Common.Core.ITrackable})">
+            <summary>
+            Set entity state to Detached for entities in more than one object graph.
+            </summary>
+            <param name="context">Used to query and save changes to a database</param>
+            <param name="items">Objects that implement ITrackable</param>
+        </member>
+        <member name="M:ITS.TrackableEntities.EF.Core.DbContextExtensions.DetachEntities(Microsoft.EntityFrameworkCore.DbContext,ITS.TrackableEntities.Common.Core.ITrackable)">
+            <summary>
+            Set entity state to Detached for entities in an object graph.
+            </summary>
+            <param name="context">Used to query and save changes to a database</param>
+            <param name="item">Object that implements ITrackable</param>
+        </member>
+        <member name="M:ITS.TrackableEntities.EF.Core.DbContextExtensions.LoadRelatedEntities(Microsoft.EntityFrameworkCore.DbContext,ITS.TrackableEntities.Common.Core.ITrackable)">
+            <summary>
+            Traverse an object graph to populate null reference properties.
+            </summary>
+            <param name="context">Used to query and save changes to a database</param>
+            <param name="item">Object that implements ITrackable</param>
+        </member>
+        <member name="M:ITS.TrackableEntities.EF.Core.DbContextExtensions.LoadRelatedEntities(Microsoft.EntityFrameworkCore.DbContext,System.Collections.Generic.IEnumerable{ITS.TrackableEntities.Common.Core.ITrackable})">
+            <summary>
+            Traverse more than one object graph to populate null reference properties.
+            </summary>
+            <param name="context">Used to query and save changes to a database</param>
+            <param name="items">Objects that implement ITrackable</param>
+        </member>
+        <member name="M:ITS.TrackableEntities.EF.Core.DbContextExtensions.LoadRelatedEntitiesAsync(Microsoft.EntityFrameworkCore.DbContext,ITS.TrackableEntities.Common.Core.ITrackable)">
+            <summary>
+            Traverse an object graph asynchronously to populate null reference properties.
+            </summary>
+            <param name="context">Used to query and save changes to a database</param>
+            <param name="item">Object that implements ITrackable</param>
+        </member>
+        <member name="M:ITS.TrackableEntities.EF.Core.DbContextExtensions.LoadRelatedEntitiesAsync(Microsoft.EntityFrameworkCore.DbContext,System.Collections.Generic.IEnumerable{ITS.TrackableEntities.Common.Core.ITrackable})">
+            <summary>
+            Traverse more than one object graph asynchronously to populate null reference properties.
+            </summary>
+            <param name="context">Used to query and save changes to a database</param>
+            <param name="items">Objects that implement ITrackable</param>
+        </member>
+        <member name="M:ITS.TrackableEntities.EF.Core.DbContextExtensions.AcceptChanges(Microsoft.EntityFrameworkCore.DbContext,ITS.TrackableEntities.Common.Core.ITrackable)">
+            <summary>
+            Traverse an object graph to set TrackingState to Unchanged.
+            </summary>
+            <param name="context">Used to query and save changes to a database</param>
+            <param name="item">Object that implements ITrackable</param>
+        </member>
+        <member name="M:ITS.TrackableEntities.EF.Core.DbContextExtensions.AcceptChanges(Microsoft.EntityFrameworkCore.DbContext,System.Collections.Generic.IEnumerable{ITS.TrackableEntities.Common.Core.ITrackable})">
+            <summary>
+            Traverse more than one object graph to set TrackingState to Unchanged.
+            </summary>
+            <param name="context">Used to query and save changes to a database</param>
+            <param name="items">Objects that implement ITrackable</param>
+        </member>
+        <member name="T:ITS.TrackableEntities.EF.Core.DbContextExtensionsInternal">
+            <summary>
+            Internal extension methods for trackable entities.
+            </summary>
+        </member>
+        <member name="M:ITS.TrackableEntities.EF.Core.DbContextExtensionsInternal.TraverseGraph(Microsoft.EntityFrameworkCore.DbContext,System.Object,System.Action{Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntryGraphNode})">
+            <summary>
+            Traverse an object graph executing a callback on each node.
+            </summary>
+            <param name="context">Used to query and save changes to a database</param>
+            <param name="item">Object that implements ITrackable</param>
+            <param name="callback">Callback executed on each node in the object graph</param>
+        </member>
+        <member name="M:ITS.TrackableEntities.EF.Core.DbContextExtensionsInternal.TraverseGraphAsync(Microsoft.EntityFrameworkCore.DbContext,System.Object,System.Func{Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntryGraphNode,System.Threading.Tasks.Task})">
+            <summary>
+            Traverse an object graph asynchronously executing a callback on each node.
+            </summary>
+            <param name="context">Used to query and save changes to a database</param>
+            <param name="item">Object that implements ITrackable</param>
+            <param name="callback">Async callback executed on each node in the object graph</param>
+        </member>
+        <member name="T:ITS.TrackableEntities.EF.Core.NavigationExtensions">
+            <summary>
+            Extension methods for INavigation.
+            </summary>
+        </member>
+        <member name="M:ITS.TrackableEntities.EF.Core.NavigationExtensions.GetRelationshipType(Microsoft.EntityFrameworkCore.Metadata.INavigation)">
+            <summary>
+            Infer relationship type from an INavigation.
+            </summary>
+            <param name="nav">Navigation property which can be used to navigate a relationship.</param>
+            <returns>Type of relationship between entities; null if INavigation is null.</returns>
+        </member>
+        <member name="T:ITS.TrackableEntities.EF.Core.RelationshipType">
+            <summary>
+            Type of relationship between entities.
+            </summary>
+        </member>
+        <member name="F:ITS.TrackableEntities.EF.Core.RelationshipType.ManyToOne">
+            <summary>Many to one relationship.</summary>
+        </member>
+        <member name="F:ITS.TrackableEntities.EF.Core.RelationshipType.OneToOne">
+            <summary>One to one relationship.</summary>
+        </member>
+        <member name="F:ITS.TrackableEntities.EF.Core.RelationshipType.ManyToMany">
+            <summary>Many to many relationship.</summary>
+        </member>
+        <member name="F:ITS.TrackableEntities.EF.Core.RelationshipType.OneToMany">
+            <summary>One to many relationship.</summary>
+        </member>
+        <member name="T:ITS.TrackableEntities.EF.Core.TrackableExtensions">
+            <summary>
+            Extension methods for classes implementing ITrackable.
+            </summary>
+        </member>
+        <member name="M:ITS.TrackableEntities.EF.Core.TrackableExtensions.ToEntityState(ITS.TrackableEntities.Common.Core.TrackingState)">
+            <summary>
+            Convert TrackingState to EntityState.
+            </summary>
+            <param name="state">Trackable entity state</param>
+            <returns>EF entity state</returns>
+        </member>
+        <member name="M:ITS.TrackableEntities.EF.Core.TrackableExtensions.ToTrackingState(Microsoft.EntityFrameworkCore.EntityState)">
+            <summary>
+            Convert EntityState to TrackingState.
+            </summary>
+            <param name="state">EF entity state</param>
+            <returns>Trackable entity state</returns>
+        </member>
+    </members>
+</doc>

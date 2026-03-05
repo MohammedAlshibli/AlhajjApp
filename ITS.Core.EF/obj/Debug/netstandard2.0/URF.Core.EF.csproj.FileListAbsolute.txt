@@ -1,0 +1,12 @@
+E:\URF\URF.Core\URF.Core.EF\bin\Debug\netstandard2.0\URF.Core.EF.deps.json
+E:\URF\URF.Core\URF.Core.EF\bin\Debug\netstandard2.0\URF.Core.EF.dll
+E:\URF\URF.Core\URF.Core.EF\bin\Debug\netstandard2.0\URF.Core.EF.pdb
+E:\URF\URF.Core\URF.Core.EF\bin\Debug\netstandard2.0\URF.Core.Abstractions.dll
+E:\URF\URF.Core\URF.Core.EF\bin\Debug\netstandard2.0\URF.Core.Abstractions.pdb
+E:\URF\URF.Core\URF.Core.EF\obj\Debug\netstandard2.0\URF.Core.EF.csprojAssemblyReference.cache
+E:\URF\URF.Core\URF.Core.EF\obj\Debug\netstandard2.0\URF.Core.EF.csproj.CoreCompileInputs.cache
+E:\URF\URF.Core\URF.Core.EF\obj\Debug\netstandard2.0\URF.Core.EF.AssemblyInfoInputs.cache
+E:\URF\URF.Core\URF.Core.EF\obj\Debug\netstandard2.0\URF.Core.EF.AssemblyInfo.cs
+E:\URF\URF.Core\URF.Core.EF\obj\Debug\netstandard2.0\URF.Core.EF.csproj.CopyComplete
+E:\URF\URF.Core\URF.Core.EF\obj\Debug\netstandard2.0\URF.Core.EF.dll
+E:\URF\URF.Core\URF.Core.EF\obj\Debug\netstandard2.0\URF.Core.EF.pdb

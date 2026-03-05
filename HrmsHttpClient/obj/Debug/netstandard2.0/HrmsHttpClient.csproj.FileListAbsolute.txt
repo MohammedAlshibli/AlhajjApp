@@ -1,0 +1,85 @@
+U:\Repos\ITS.CareerPeform - Copy (2)\HrmsHttpClient\bin\Debug\netstandard2.0\HrmsHttpClient.deps.json
+U:\Repos\ITS.CareerPeform - Copy (2)\HrmsHttpClient\bin\Debug\netstandard2.0\HrmsHttpClient.dll
+U:\Repos\ITS.CareerPeform - Copy (2)\HrmsHttpClient\bin\Debug\netstandard2.0\HrmsHttpClient.pdb
+U:\Repos\ITS.CareerPeform - Copy (2)\HrmsHttpClient\bin\Debug\netstandard2.0\ITS.CareerPeform.Core.dll
+U:\Repos\ITS.CareerPeform - Copy (2)\HrmsHttpClient\bin\Debug\netstandard2.0\Microsoft.Extensions.Options.dll
+U:\Repos\ITS.CareerPeform - Copy (2)\HrmsHttpClient\bin\Debug\netstandard2.0\System.ComponentModel.Annotations.dll
+U:\Repos\ITS.CareerPeform - Copy (2)\HrmsHttpClient\bin\Debug\netstandard2.0\System.Net.Http.Formatting.dll
+U:\Repos\ITS.CareerPeform - Copy (2)\HrmsHttpClient\bin\Debug\netstandard2.0\ITS.CareerPeform.Core.pdb
+U:\Repos\ITS.CareerPeform - Copy (2)\HrmsHttpClient\bin\Debug\netstandard2.0\Microsoft.Extensions.Options.xml
+U:\Repos\ITS.CareerPeform - Copy (2)\HrmsHttpClient\bin\Debug\netstandard2.0\System.ComponentModel.Annotations.xml
+U:\Repos\ITS.CareerPeform - Copy (2)\HrmsHttpClient\bin\Debug\netstandard2.0\System.Net.Http.Formatting.xml
+U:\Repos\ITS.CareerPeform - Copy (2)\HrmsHttpClient\obj\Debug\netstandard2.0\HrmsHttpClient.csprojAssemblyReference.cache
+U:\Repos\ITS.CareerPeform - Copy (2)\HrmsHttpClient\obj\Debug\netstandard2.0\HrmsHttpClient.csproj.CoreCompileInputs.cache
+U:\Repos\ITS.CareerPeform - Copy (2)\HrmsHttpClient\obj\Debug\netstandard2.0\HrmsHttpClient.AssemblyInfoInputs.cache
+U:\Repos\ITS.CareerPeform - Copy (2)\HrmsHttpClient\obj\Debug\netstandard2.0\HrmsHttpClient.AssemblyInfo.cs
+U:\Repos\ITS.CareerPeform - Copy (2)\HrmsHttpClient\obj\Debug\netstandard2.0\HrmsHttpClient.csproj.CopyComplete
+U:\Repos\ITS.CareerPeform - Copy (2)\HrmsHttpClient\obj\Debug\netstandard2.0\HrmsHttpClient.dll
+U:\Repos\ITS.CareerPeform - Copy (2)\HrmsHttpClient\obj\Debug\netstandard2.0\HrmsHttpClient.pdb
+U:\Repos\ITS.CareerPeform\HrmsHttpClient\bin\Debug\netstandard2.0\HrmsHttpClient.deps.json
+U:\Repos\ITS.CareerPeform\HrmsHttpClient\bin\Debug\netstandard2.0\HrmsHttpClient.dll
+U:\Repos\ITS.CareerPeform\HrmsHttpClient\bin\Debug\netstandard2.0\HrmsHttpClient.pdb
+U:\Repos\ITS.CareerPeform\HrmsHttpClient\bin\Debug\netstandard2.0\ITS.CareerPeform.Core.dll
+U:\Repos\ITS.CareerPeform\HrmsHttpClient\bin\Debug\netstandard2.0\Microsoft.Extensions.Options.dll
+U:\Repos\ITS.CareerPeform\HrmsHttpClient\bin\Debug\netstandard2.0\System.ComponentModel.Annotations.dll
+U:\Repos\ITS.CareerPeform\HrmsHttpClient\bin\Debug\netstandard2.0\System.Net.Http.Formatting.dll
+U:\Repos\ITS.CareerPeform\HrmsHttpClient\bin\Debug\netstandard2.0\ITS.CareerPeform.Core.pdb
+U:\Repos\ITS.CareerPeform\HrmsHttpClient\bin\Debug\netstandard2.0\Microsoft.Extensions.Options.xml
+U:\Repos\ITS.CareerPeform\HrmsHttpClient\bin\Debug\netstandard2.0\System.ComponentModel.Annotations.xml
+U:\Repos\ITS.CareerPeform\HrmsHttpClient\bin\Debug\netstandard2.0\System.Net.Http.Formatting.xml
+U:\Repos\ITS.CareerPeform\HrmsHttpClient\obj\Debug\netstandard2.0\HrmsHttpClient.csprojAssemblyReference.cache
+U:\Repos\ITS.CareerPeform\HrmsHttpClient\obj\Debug\netstandard2.0\HrmsHttpClient.csproj.CoreCompileInputs.cache
+U:\Repos\ITS.CareerPeform\HrmsHttpClient\obj\Debug\netstandard2.0\HrmsHttpClient.AssemblyInfoInputs.cache
+U:\Repos\ITS.CareerPeform\HrmsHttpClient\obj\Debug\netstandard2.0\HrmsHttpClient.AssemblyInfo.cs
+U:\Repos\ITS.CareerPeform\HrmsHttpClient\obj\Debug\netstandard2.0\HrmsHttpClient.csproj.CopyComplete
+U:\Repos\ITS.CareerPeform\HrmsHttpClient\obj\Debug\netstandard2.0\HrmsHttpClient.dll
+U:\Repos\ITS.CareerPeform\HrmsHttpClient\obj\Debug\netstandard2.0\HrmsHttpClient.pdb
+C:\Users\d4-8970\Desktop\Al-Haj\HrmsHttpClient\bin\Debug\netstandard2.0\HrmsHttpClient.deps.json
+C:\Users\d4-8970\Desktop\Al-Haj\HrmsHttpClient\bin\Debug\netstandard2.0\HrmsHttpClient.dll
+C:\Users\d4-8970\Desktop\Al-Haj\HrmsHttpClient\bin\Debug\netstandard2.0\HrmsHttpClient.pdb
+C:\Users\d4-8970\Desktop\Al-Haj\HrmsHttpClient\bin\Debug\netstandard2.0\Microsoft.Extensions.Options.dll
+C:\Users\d4-8970\Desktop\Al-Haj\HrmsHttpClient\bin\Debug\netstandard2.0\System.Net.Http.Formatting.dll
+C:\Users\d4-8970\Desktop\Al-Haj\HrmsHttpClient\bin\Debug\netstandard2.0\Microsoft.Extensions.Options.xml
+C:\Users\d4-8970\Desktop\Al-Haj\HrmsHttpClient\obj\Debug\netstandard2.0\HrmsHttpClient.csproj.CoreCompileInputs.cache
+C:\Users\d4-8970\Desktop\Al-Haj\HrmsHttpClient\obj\Debug\netstandard2.0\HrmsHttpClient.AssemblyInfoInputs.cache
+C:\Users\d4-8970\Desktop\Al-Haj\HrmsHttpClient\obj\Debug\netstandard2.0\HrmsHttpClient.AssemblyInfo.cs
+C:\Users\d4-8970\Desktop\Al-Haj\HrmsHttpClient\obj\Debug\netstandard2.0\HrmsHttpClient.csproj.CopyComplete
+C:\Users\d4-8970\Desktop\Al-Haj\HrmsHttpClient\obj\Debug\netstandard2.0\HrmsHttpClient.dll
+C:\Users\d4-8970\Desktop\Al-Haj\HrmsHttpClient\obj\Debug\netstandard2.0\HrmsHttpClient.pdb
+C:\Alhajj\ITS.Pligrimage\HrmsHttpClient\bin\Debug\netstandard2.0\HrmsHttpClient.deps.json
+C:\Alhajj\ITS.Pligrimage\HrmsHttpClient\bin\Debug\netstandard2.0\HrmsHttpClient.dll
+C:\Alhajj\ITS.Pligrimage\HrmsHttpClient\bin\Debug\netstandard2.0\HrmsHttpClient.pdb
+C:\Alhajj\ITS.Pligrimage\HrmsHttpClient\bin\Debug\netstandard2.0\Microsoft.Extensions.Options.dll
+C:\Alhajj\ITS.Pligrimage\HrmsHttpClient\bin\Debug\netstandard2.0\System.Net.Http.Formatting.dll
+C:\Alhajj\ITS.Pligrimage\HrmsHttpClient\bin\Debug\netstandard2.0\Microsoft.Extensions.Options.xml
+C:\Alhajj\ITS.Pligrimage\HrmsHttpClient\obj\Debug\netstandard2.0\HrmsHttpClient.csprojAssemblyReference.cache
+C:\Alhajj\ITS.Pligrimage\HrmsHttpClient\obj\Debug\netstandard2.0\HrmsHttpClient.csproj.CoreCompileInputs.cache
+C:\Alhajj\ITS.Pligrimage\HrmsHttpClient\obj\Debug\netstandard2.0\HrmsHttpClient.AssemblyInfoInputs.cache
+C:\Alhajj\ITS.Pligrimage\HrmsHttpClient\obj\Debug\netstandard2.0\HrmsHttpClient.AssemblyInfo.cs
+C:\Alhajj\ITS.Pligrimage\HrmsHttpClient\obj\Debug\netstandard2.0\HrmsHttpClient.csproj.CopyComplete
+C:\Alhajj\ITS.Pligrimage\HrmsHttpClient\obj\Debug\netstandard2.0\HrmsHttpClient.dll
+C:\Alhajj\ITS.Pligrimage\HrmsHttpClient\obj\Debug\netstandard2.0\HrmsHttpClient.pdb
+D:\Project_SourceCode\Alhajj\ITS.Pligrimage\HrmsHttpClient\bin\Debug\netstandard2.0\HrmsHttpClient.deps.json
+D:\Project_SourceCode\Alhajj\ITS.Pligrimage\HrmsHttpClient\bin\Debug\netstandard2.0\HrmsHttpClient.dll
+D:\Project_SourceCode\Alhajj\ITS.Pligrimage\HrmsHttpClient\bin\Debug\netstandard2.0\HrmsHttpClient.pdb
+D:\Project_SourceCode\Alhajj\ITS.Pligrimage\HrmsHttpClient\bin\Debug\netstandard2.0\System.Net.Http.Formatting.dll
+D:\Project_SourceCode\Alhajj\ITS.Pligrimage\HrmsHttpClient\obj\Debug\netstandard2.0\HrmsHttpClient.csproj.AssemblyReference.cache
+D:\Project_SourceCode\Alhajj\ITS.Pligrimage\HrmsHttpClient\obj\Debug\netstandard2.0\HrmsHttpClient.GeneratedMSBuildEditorConfig.editorconfig
+D:\Project_SourceCode\Alhajj\ITS.Pligrimage\HrmsHttpClient\obj\Debug\netstandard2.0\HrmsHttpClient.AssemblyInfoInputs.cache
+D:\Project_SourceCode\Alhajj\ITS.Pligrimage\HrmsHttpClient\obj\Debug\netstandard2.0\HrmsHttpClient.AssemblyInfo.cs
+D:\Project_SourceCode\Alhajj\ITS.Pligrimage\HrmsHttpClient\obj\Debug\netstandard2.0\HrmsHttpClient.csproj.CoreCompileInputs.cache
+D:\Project_SourceCode\Alhajj\ITS.Pligrimage\HrmsHttpClient\obj\Debug\netstandard2.0\HrmsHttp.97B795C7.Up2Date
+D:\Project_SourceCode\Alhajj\ITS.Pligrimage\HrmsHttpClient\obj\Debug\netstandard2.0\HrmsHttpClient.dll
+D:\Project_SourceCode\Alhajj\ITS.Pligrimage\HrmsHttpClient\obj\Debug\netstandard2.0\HrmsHttpClient.pdb
+D:\Alhajj\ITS.Pligrimage\HrmsHttpClient\bin\Debug\netstandard2.0\HrmsHttpClient.deps.json
+D:\Alhajj\ITS.Pligrimage\HrmsHttpClient\bin\Debug\netstandard2.0\HrmsHttpClient.dll
+D:\Alhajj\ITS.Pligrimage\HrmsHttpClient\bin\Debug\netstandard2.0\HrmsHttpClient.pdb
+D:\Alhajj\ITS.Pligrimage\HrmsHttpClient\bin\Debug\netstandard2.0\System.Net.Http.Formatting.dll
+D:\Alhajj\ITS.Pligrimage\HrmsHttpClient\obj\Debug\netstandard2.0\HrmsHttpClient.csproj.AssemblyReference.cache
+D:\Alhajj\ITS.Pligrimage\HrmsHttpClient\obj\Debug\netstandard2.0\HrmsHttpClient.GeneratedMSBuildEditorConfig.editorconfig
+D:\Alhajj\ITS.Pligrimage\HrmsHttpClient\obj\Debug\netstandard2.0\HrmsHttpClient.AssemblyInfoInputs.cache
+D:\Alhajj\ITS.Pligrimage\HrmsHttpClient\obj\Debug\netstandard2.0\HrmsHttpClient.AssemblyInfo.cs
+D:\Alhajj\ITS.Pligrimage\HrmsHttpClient\obj\Debug\netstandard2.0\HrmsHttpClient.csproj.CoreCompileInputs.cache
+D:\Alhajj\ITS.Pligrimage\HrmsHttpClient\obj\Debug\netstandard2.0\HrmsHttp.97B795C7.Up2Date
+D:\Alhajj\ITS.Pligrimage\HrmsHttpClient\obj\Debug\netstandard2.0\HrmsHttpClient.dll
+D:\Alhajj\ITS.Pligrimage\HrmsHttpClient\obj\Debug\netstandard2.0\HrmsHttpClient.pdb

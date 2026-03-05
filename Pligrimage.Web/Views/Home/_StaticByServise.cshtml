@@ -1,0 +1,24 @@
+﻿
+
+@* @(Html.Kendo().Chart<Pligrimage.Web.Models.ServiceStatisticsCountVm>()
+            .Name("ChartByServicesData")
+            .Title("ألاحصائيات")
+            .Legend(c => c.Position(ChartLegendPosition.Bottom))
+               .Series(s =>
+               {
+                   s.Pie(model => model.Count,
+                       model => model.Status
+                           )
+                   .Labels(l => l
+                           .Visible(true)
+                           .Template("#=category# - #=value #"));
+
+               })
+
+                            .DataSource(ds => ds.Read(r => r.Action("ChartByServicesData", "Home")))
+                            .Tooltip(t => t.Visible(true).Template("#=category#: #=value # من #=dataItem.Total#"))
+
+
+
+
+) *@

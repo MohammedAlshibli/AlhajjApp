@@ -1,0 +1,163 @@
+﻿
+
+<h1 style="text-align:right">المرفقات</h1>
+<div class="k-rtl">
+   @*  @(Html.Kendo().Grid<Pligrimage.Entities.Document>
+              ()
+              .Name("Document")
+              .Columns(column =>
+              {
+                  column.Bound(c => c.FileName).Title("File Name");
+                  column.Bound(c => c.ContentType).Title("Content Type");
+                  column.Bound(c => c.Path);
+                  column.Bound(c => c.DocumnetType).Title("Document Type");
+                  column.Bound(c => c.Year).Format("{0:dd/MM/yyyy}");
+                  column.Command(com =>
+                  {
+                      com.Edit().UpdateText("حفظ").Text("تعديل").CancelText("إلغاء").HtmlAttributes(new { type = "button", @class = "btn-basic ", });
+                      com.Destroy().Text("حذف").HtmlAttributes(new { type = "button", @class = "btn-basic ", });
+                  }).Width(200);
+              })
+
+              .HtmlAttributes(new { style = "height:500px" })
+                            .ToolBar(toolbar => toolbar.Create().Text("أضافة جديدة").HtmlAttributes(new { type = "button", @class = "btn-basic ", }))
+                            .Editable(editable => editable.Mode(GridEditMode.PopUp).TemplateName("Edit"))
+                            .Scrollable()
+                            .Sortable()
+                            .Selectable()
+                            .Filterable(f => f.Extra(false)
+                                 .Operators(opertor => opertor
+                                 .ForString(str => str.Clear()
+                                 .Contains("يحتوي على"))))
+                            .Pageable
+                            (p => p
+                            .ButtonCount(5)
+                            .Refresh(true)
+                            )
+                            .DataSource
+                            (dataSourec => dataSourec
+                            .Ajax()
+                            .Events(e => e.Error("Error_Handler"))
+                            .Model(m => m.Id(i => i.DocumentId))
+                            .Read(read => read.Action("DocumentRead", "Documents"))
+                            .Create(create => create.Action("CreateDocument", "Documents"))
+                            .Update(update => update.Action("UpdateDocument", "Documents"))
+                            .Destroy(delete => delete.Action("DeleteDocument", "Documents"))
+
+                            )
+    ) *@
+    </div>
+    <script>
+
+        function Error_Handler(e) {
+            console.log(e);
+            if (e.errors) {
+                var message = "Errors: \n";
+                $.each(e.errors, function (key, value) {
+                    if ('errors' in value) {
+                        $.each(value.errors, function () {
+                            message += this + "\n";
+                        });
+                    }
+                });
+                alert(message);
+            }
+
+
+        };
+
+    </script>
+
+
+    )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    @*<p>
+            <a asp-action="Create">Create New</a>
+        </p>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.FileName)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.ContentType)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Path)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.DocumnetType)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Year)
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+        @foreach (var item in Model) {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FileName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ContentType)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Path)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.DocumnetType)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Year)
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.DocumentId">Edit</a> |
+                        <a asp-action="Details" asp-route-id="@item.DocumentId">Details</a> |
+                        <a asp-action="Delete" asp-route-id="@item.DocumentId">Delete</a>
+                    </td>
+                </tr>
+        }
+            </tbody>
+        </table>*@

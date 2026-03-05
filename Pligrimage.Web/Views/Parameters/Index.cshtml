@@ -1,0 +1,101 @@
+﻿<div class="card card-cascade wider">
+    <div class="view view-cascade gradient-card-header blue-gradient-rgba">
+        <h2 class="card-header-title mb-3">الشروط</h2>
+
+    </div>
+    <div class="card-body card-body-cascade">
+
+        <div class="k-rtl">
+
+
+           @*  @(Html.Kendo().Grid<Pligrimage.Entities.Parameter>
+                                                ()
+                                                .Name("ParameterGrid")
+                                                .Columns(column =>
+                                                {
+                                                    column.Bound(c => c.Code).Title("Code");
+                                                    column.Bound(c => c.DescArabic).Title("Arabic Desc").Filterable(true);
+                                                    column.Bound(c => c.DescEnglish).Title("English Desc");
+                                                    column.Bound(c => c.MaxValue).Title("Max Value");
+                                                    column.Bound(c => c.MinValue).Title("Min Value");
+                                                    column.Bound(c => c.Value).Title("Value");
+                                                    column.Command(com =>
+                                                    {
+                                                        com.Edit().UpdateText("حفظ").Text("تعديل").CancelText("إلغاء").HtmlAttributes(new { type = "button", @class = "btn-basic ", });
+                                                        com.Destroy().Text("حذف").HtmlAttributes(new { type = "button", @class = "btn-basic ", });
+                                                    }).Width(200);
+
+
+
+
+                                                })
+                                                .HtmlAttributes(new { style = "height:500px" })
+                                                .ToolBar(toolbar => toolbar.Create().Text("إضافة جديدة").HtmlAttributes(new { type = "button", @class = "btn-basic ", }))
+                                                .Editable(editable => editable.Mode(GridEditMode.PopUp).TemplateName("Edit").Window(c => c.Title("تعديل").Resizable()))
+                                                .Events(e => e.Edit("NewRecord"))
+                                                .Scrollable()
+                                                .Sortable()
+                                                .Selectable()
+                                                .Filterable(f => f.Extra(false)
+                                                                 .Operators(opertor => opertor
+                                                                 .ForString(str => str.Clear()
+                                                                 .Contains("يحتوي على"))))
+                                                .Pageable
+                                                (p => p
+                                                .ButtonCount(10)
+                                                .Refresh(true)
+                                                )
+                                                .DataSource
+                                                (dataSourec => dataSourec
+                                                .Ajax()
+                                                .Events(e => e.Error("Error_Handler"))
+                                                .Model(m => m.Id(i => i.ParameterId))
+                                                .Read(read => read.Action("ParameterRead", "Parameters"))
+                                                .Create(create => create.Action("CreateParameter", "Parameters"))
+                                                .Update(update => update.Action("UpdateParameter", "Parameters"))
+                                                .Destroy(delete => delete.Action("DeleteParameter", "Parameters"))
+
+                                                )
+            ) *@
+        </div>
+    </div>
+</div>
+<script>
+
+    function Error_Handler(e) {
+        console.log(e);
+        if (e.errors) {
+            var message = "Errors: \n";
+            $.each(e.errors, function (key, value) {
+                if ('errors' in value) {
+                    $.each(value.errors, function () {
+                        message += this + "\n";
+                    });
+                }
+            });
+            alert(message);
+        }
+
+
+    };
+
+</script>
+
+
+<script>
+    function NewRecord(e) {
+        if (e.model.isNew()) {
+            $('.k-window-title').text("إضافة جديدة");
+        }
+
+    }
+</script>
+
+<style>
+    .k-grid .k-grid-header {
+        border-color: #dde2e7;
+        color: #212529;
+        background-color: #f8f9fa;
+        font-weight: bold;
+    }
+</style>

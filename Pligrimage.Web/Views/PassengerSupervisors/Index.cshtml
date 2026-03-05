@@ -1,0 +1,85 @@
+﻿
+
+<h1 style="text-align:right">المشرفين</h1>
+<div class="k-rtl">
+
+    @* @(Html.Kendo().Grid<Pligrimage.Entities.PassengerSupervisors>
+                                        ()
+                                        .Name("PassengerSupGrid")
+                                        .Columns(column =>
+                                        {
+                                            column.Bound(c => c.Year).Title(" السنة").Format("{0:dd/MM/yyyy}");
+                                            column.Bound(c => c.Count).Title("العدد");
+                                            column.ForeignKey(c => c.PligrimageId, (System.Collections.IEnumerable)ViewData["AlhajjList"], "PligrimageId", "ServcieNumber").Title("الرقم العسكري");
+
+
+                                            column.Command(com =>
+                                            {
+                                                com.Edit().UpdateText("حفظ").Text("تعديل").CancelText("إلغاء").HtmlAttributes(new { type = "button", @class = "btn-basic ", });
+                                                com.Destroy().Text("حذف").HtmlAttributes(new { type = "button", @class = "btn-basic ", });
+                                            }).Width(200);
+                                        })
+                                        .HtmlAttributes(new { style = "height:500px" })
+                                        .ToolBar(toolbar => toolbar.Create().Text("أضافة جديدة").HtmlAttributes(new { type = "button", @class = "btn-basic ", }))
+                                        .Editable(editable => editable.Mode(GridEditMode.PopUp).TemplateName("Edit"))
+                                        .Scrollable()
+                                        .Sortable()
+                                        .Selectable()
+                                            .Filterable(f => f.Extra(false)
+                                                 .Operators(opertor => opertor
+                                                 .ForString(str => str.Clear()
+                                                 .Contains("يحتوي على"))))
+                                        .Pageable
+                                        (p => p
+                                        .ButtonCount(5)
+                                        .Refresh(true)
+                                        )
+                                        .DataSource
+                                        (dataSourec => dataSourec
+                                        .Ajax()
+                                        .Events(e => e.Error("Error_Handler"))
+                                        .Model(m =>
+                                        {
+                                            m.Id(i => i.PassengerSuppId);
+                                        })
+                                        .Read(read => read.Action("PassSupRead", "PassengerSupervisors"))
+                                        .Create(create => create.Action("CreatePassSup", "PassengerSupervisors"))
+                                        .Update(update => update.Action("UpdatePassSup", "PassengerSupervisors"))
+                                        .Destroy(delete => delete.Action("DeletePassSup", "PassengerSupervisors"))
+
+                                        )
+    ) *@
+    </div>
+
+    <script>
+
+        function Error_Handler(e) {
+            console.log(e);
+            if (e.errors) {
+                var message = "Errors: \n";
+                $.each(e.errors, function (key, value) {
+                    if ('errors' in value) {
+                        $.each(value.errors, function () {
+                            message += this + "\n";
+                        });
+                    }
+                });
+                alert(message);
+            }
+
+
+        };
+
+    </script>
+
+
+
+
+
+
+
+
+
+
+
+    

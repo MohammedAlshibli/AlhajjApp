@@ -1,0 +1,14 @@
+﻿
+@model Boolean
+@*@(
+Html.Kendo().CheckBoxFor(c =>c)
+.BindTo((SelectList)ViewData[ViewData.TemplateInfo.GetFullHtmlFieldName("") + "_Data"])
+)*@
+<div class="editor-for">
+    @Html.CheckBox("", Model, new { @class="tickbox-single-line"})
+</div>
+
+
+
+
+

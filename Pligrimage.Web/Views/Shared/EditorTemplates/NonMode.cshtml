@@ -1,0 +1,130 @@
+﻿@*@model Pligrimage.Entities.AlhajjMaster
+        <div class="k-rtl">
+    <div class="card-body card-body-cascade">
+            <section class="content">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <div class="k-edit-lable">
+                                    @Html.LabelFor(c => c.ServcieNumber)
+                                </div>
+                                <div class="k-grid-field">
+                                    @Html.EditorFor(c => c.ServcieNumber)
+                                </div>
+
+                                <div class="k-edit-lable">
+                                    @Html.LabelFor(c => c.BloodGroup)
+                                </div>
+                                <div class="k-grid-field">
+                                    @Html.EditorFor(c => c.BloodGroup)
+                                </div>
+
+
+                                <div class="k-edit-lable">
+                                    @Html.LabelFor(c => c.InjectionDate)
+                                </div>
+                                <div class="k-grid-field">
+                                    @Html.EditorFor(c => c.InjectionDate)
+                                </div>
+
+                                <div class="k-edit-lable">
+                                    @Html.LabelFor(c => c.FitResult)
+                                </div>
+                                <div class="k-grid-field w-100">
+                                    @(Html.Kendo().DropDownListFor(c => c.FitResult).DataTextField("DescArabic").DataValueField("ParameterId").BindTo((System.Collections.IEnumerable)ViewData["FitResult"]).ValuePrimitive(true))
+                                </div>
+
+
+                                <div class="k-edit-lable">
+                                    @Html.LabelFor(c => c.DoctorNote, new { style = "width:500px;height:50px;" })
+                                </div>
+                                <div class="k-grid-field">
+                                    @Html.TextAreaFor(c => c.DoctorNote)
+                                </div>
+
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <script>
+        function DataTimeFilter(args) {
+            args.element.kendoDataTimePicker({
+                timeFormat: "HH:mm:ss",
+                interval: 0.5
+            })
+        }
+    </script>
+
+    <style>
+
+
+            .k-rtl .k-datetimepicker .k-picker-wrap {
+                padding-right: 0px;
+                padding-left: 0px;
+                width:600px
+            }
+    </style>*@
+@model Pligrimage.Entities.AlhajjMaster
+<div class="k-ltr">
+    <div class="row">
+
+        <div class="col-md-8">
+
+            <div class="form-group">
+                <h5><label asp-for="ServcieNumber" class="control-label"></label></h5>
+                <input asp-for="ServcieNumber" class="form-control" />
+                <span asp-validation-for="ServcieNumber" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <h5><label asp-for="BloodGroup" class="control-label"></label></h5>
+                <input asp-for="BloodGroup" class="form-control" />
+                <span asp-validation-for="BloodGroup" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <h5> <label asp-for="InjectionDate" class="control-label" style="font-family:'Bold Art'"></label></h5>
+                <input asp-for="InjectionDate" class="form-control" />
+                <span asp-validation-for="InjectionDate" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <h5> <label asp-for="FitResult" class="control-label"></label></h5>
+            @*     <div>
+                    @(Html.Kendo().DropDownListFor(c => c.FitResult).DataTextField("DescArabic").DataValueField("ParameterId").BindTo((System.Collections.IEnumerable)ViewData["FitResult"]).ValuePrimitive(true))
+
+                </div> *@
+            </div>
+
+
+
+            <div class="form-group">
+                <h5><label asp-for="DoctorNote" class="control-label"></label></h5>
+                <textarea asp-for="DoctorNote" class="form-control" rows="10" cols="100" maxlength="100" ></textarea>
+                <span asp-validation-for="DoctorNote" class="text-danger"></span>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<style>
+    .k-rtl .k-edit-form-container .k-edit-buttons {
+        text-align: center;
+    }
+
+ 
+    checkbox {
+        position: absolute !important;
+        opacity: 100 !important;
+        pointer-events: auto !important;
+
+
+</style>

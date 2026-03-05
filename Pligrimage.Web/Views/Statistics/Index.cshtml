@@ -1,0 +1,189 @@
+﻿
+
+
+<br />
+<br />
+<div class="container">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card-deck">
+                <div class="card bg-light">
+                    <div class="card-body text-center">
+                        <span class="fa fa-user-circle-o"></span>
+                        <p class="card-text">اجمالي عدد الحجاج المسجلين</p>
+                        <div style="flex:none">
+                            <span style="color:red">@Html.Partial("~/Views/Statistics/_AlhajjTotal.cshtml")</a></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card-deck">
+                <div class="card rgba-green-strong">
+                    <div class="card-body text-center">
+                        <span class="fa fa-user-circle-o"></span>
+                        <p class="card-text">اجمالي عدد الحجاج </p>
+                        <p class="card-text"></p>
+                        <a href="@Url.Action("Index","ListPage")">لائق طبيا</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card-deck">
+                <div class="card rgba-red-light">
+                    <div class="card-body text-center">
+                        <span class="fa fa-user-circle-o"></span>
+                        <p class="card-text">اجمالي عدد الحجاج </p>
+                        <p class="card-text"></p>
+                        <a href="@Url.Action("IndexAlhajjNonFit","Statistics")">غير لائق طبيا</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<br />
+<br />
+<div class="container">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card-deck">
+                <div class="card rgba-red-strong">
+                    <div class="card-body text-center">
+                        <span class="fa fa-user-circle-o"></span>
+                        <p class="card-text">قائمة الحجاج</p>
+                        <p class="card-text"></p>
+                        @*<a href="@Url.Action("CanceledStatus","Statistics")">@Html.Partial("~/Views/Statistics/_AlhajjTotal.cshtml")</a>*@
+
+                        <a href="@Url.Action("IndexCanceledStatus","Statistics")"> ملغي</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-md-3">
+            <div class="card-deck">
+                <div class="card rgba-blue-slight">
+                    <div class="card-body text-center">
+                        <span class="fa fa-user-circle-o"></span>
+                        <p class="card-text">قائمة الحجاج</p>
+                        <p class="card-text"></p>
+                        <a href="@Url.Action("IndexStandByStatus","Statistics")"> الاحتياط </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-md-3">
+            <div class="card-deck">
+                <div class="card rgba-green-light">
+                    <div class="card-body text-center">
+                        <span class="fa fa-user-circle-o"></span>
+                        <p class="card-text">عدد الحجاج الاداريين</p>
+                        <p class="card-text"></p>
+                        <a href="@Url.Action("IndexAdminList","Statistics")">قائمة الاداريين</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+
+    </div>
+</div>
+
+</br>
+     </br>
+       
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card-deck">
+                <div class="card rgba-green-light">
+                    <div class="card-body text-center">
+                        <span class="fa fa-user-circle-o"></span>
+                        <p class="card-text"> الحجاج </p>
+                        <p class="card-text"></p>
+                        <a href="@Url.Action("Index","AlhajjList")"> جميع المنتسبين</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card-deck">
+                <div class="card rgba-green-light">
+                    <div class="card-body text-center">
+                        <span class="fa fa-user-circle-o"></span>
+                        <p class="card-text">المتقاعدين</p>
+                        <p class="card-text"></p>
+                        <a href="@Url.Action("IndexPensions","Statistics")">قائمة المتقاعدين</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+        </br>
+        </br>
+        </br>
+
+<div class="row">
+    <div class="col-md-10" style="width:50px">
+        <a href="" @Html.Partial("~/Views/Statistics/_StaticByServise.cshtml")</a>
+    </div>
+
+</div>
+
+
+
+<div class="row">
+
+    <div class="col-md-3"></div>
+
+    <div class="col-md-6" id="static">
+    </div>
+    <div class="col-md-3"></div>
+
+</div>
+
+
+@*<script>
+
+        $(document).ready(function () {
+            GetListCount();
+
+        });
+
+
+    function GetListCount() {
+
+            $.ajax({
+                url: '@Url.Action("StaticService", "Statistics")',
+                type: 'Get',
+                dataType: 'html',
+                success: function (data) {
+                    $("#static").html(data);
+                },
+
+
+
+            });
+
+        }
+
+
+    </script>*@

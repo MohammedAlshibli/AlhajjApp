@@ -1,0 +1,64 @@
+﻿<!DOCTYPE html>
+
+@using System.Security.Claims;
+@using Pligrimage.Web;
+
+@{
+    var identity = (ClaimsIdentity)User.Identity;
+    IEnumerable<Claim> claims = identity.Claims;
+
+}
+
+@*<style>
+        #uname {
+            color: white;
+        }
+
+        .uname:hover span {
+            font-size: 14px !important;
+        }
+    </style>*@
+
+
+@if (User.Identity.IsAuthenticated)
+{
+
+
+
+    <form asp-controller="Account" asp-action="Logout" asp-route-userName="@identity.Name" method="post" id="logoutForm">
+
+
+        @*@{
+            if (@identity.FindFirst("HrmsPF").Value != "0")
+            {
+                try
+                {
+
+                    var imgsrc = string.Format("data:image/gif;base64,{0}", Convert.ToBase64String(Cryptography.Decrypt(System.IO.File.ReadAllBytes("//MAMITSPERFAPP01/OfficerImage$/" + DateTime.Now.Year.ToString() + "_" + @identity.FindFirst("HrmsPF").Value.ToString() + ".jpg"))));
+
+
+                    <img src="@imgsrc" style="border-radius:50%; max-width: 55px; max-height: 55px;" />
+                }
+                catch (Exception)
+                {
+
+                    <img src="~/images/avatar.jpeg" style="max-width: 60px; max-height: 60px;" />
+                }
+
+            }
+            else
+            {
+                <img src="~/images/avatar.jpeg" style="max-width: 60px; max-height: 60px;" />
+
+            }
+
+        }*@
+
+        <a asp-controller="Home" asp-action="Index" id="uname" style="color:#ffffff !important"> مرحبا:   @identity.FindFirst("FullName").Value   </a>
+
+       
+        <a href="javascript:document.getElementById('logoutForm').submit()" style="color:#ffffff !important">&nbsp;&nbsp; خروج  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;   </a>
+
+    </form>
+}
+

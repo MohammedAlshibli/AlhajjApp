@@ -1,0 +1,194 @@
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\bin\Release\netcoreapp2.2\Pligrimage.Web.deps.json
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\bin\Release\netcoreapp2.2\Pligrimage.Web.runtimeconfig.json
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\bin\Release\netcoreapp2.2\Pligrimage.Web.runtimeconfig.dev.json
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\bin\Release\netcoreapp2.2\Pligrimage.Web.dll
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\bin\Release\netcoreapp2.2\Pligrimage.Web.pdb
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\bin\Release\netcoreapp2.2\Pligrimage.Web.Views.dll
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\bin\Release\netcoreapp2.2\Pligrimage.Web.Views.pdb
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\bin\Release\netcoreapp2.2\AutoMapper.Extensions.Microsoft.DependencyInjection.dll
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\bin\Release\netcoreapp2.2\HrmsHttpClient.dll
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\bin\Release\netcoreapp2.2\ITS.Core.Abstractions.dll
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\bin\Release\netcoreapp2.2\ITS.Core.Abstractions.Services.dll
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\bin\Release\netcoreapp2.2\ITS.Core.Abstractions.Trackable.dll
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\bin\Release\netcoreapp2.2\ITS.Core.EF.dll
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\bin\Release\netcoreapp2.2\ITS.Core.EF.Trackable.dll
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\bin\Release\netcoreapp2.2\ITS.Core.Services.dll
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\bin\Release\netcoreapp2.2\ITS.TrackableEntities.Common.Core.dll
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\bin\Release\netcoreapp2.2\ITS.TrackableEntities.EF.Core.dll
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\bin\Release\netcoreapp2.2\Novell.Directory.Ldap.NETStandard.dll
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\bin\Release\netcoreapp2.2\Pligrimage.Data.dll
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\bin\Release\netcoreapp2.2\Pligrimage.Entities.dll
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\bin\Release\netcoreapp2.2\Pligrimage.Services.dll
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\bin\Release\netcoreapp2.2\Pligrimage.Web.Common.dll
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\bin\Release\netcoreapp2.2\Pligrimage.Data.pdb
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\bin\Release\netcoreapp2.2\Pligrimage.Entities.pdb
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\bin\Release\netcoreapp2.2\Pligrimage.Services.pdb
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\bin\Release\netcoreapp2.2\Pligrimage.Web.Common.pdb
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\bin\Release\netcoreapp2.2\HrmsHttpClient.pdb
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\bin\Release\netcoreapp2.2\ITS.Core.Abstractions.pdb
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\bin\Release\netcoreapp2.2\ITS.Core.Abstractions.Services.pdb
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\bin\Release\netcoreapp2.2\ITS.Core.Abstractions.Trackable.pdb
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\bin\Release\netcoreapp2.2\ITS.Core.EF.pdb
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\bin\Release\netcoreapp2.2\ITS.Core.EF.Trackable.pdb
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\bin\Release\netcoreapp2.2\ITS.Core.Services.pdb
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\bin\Release\netcoreapp2.2\ITS.TrackableEntities.EF.Core.pdb
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\bin\Release\netcoreapp2.2\ITS.TrackableEntities.Common.Core.pdb
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\bin\Release\netcoreapp2.2\AutoMapper.Extensions.Microsoft.DependencyInjection.pdb
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\bin\Release\netcoreapp2.2\Novell.Directory.Ldap.NETStandard.xml
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Pligrimage.Web.csprojAssemblyReference.cache
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Pligrimage.Web.csproj.CoreCompileInputs.cache
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Pligrimage.Web.RazorAssemblyInfo.cache
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Pligrimage.Web.RazorAssemblyInfo.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Pligrimage.Web.AssemblyInfoInputs.cache
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Pligrimage.Web.AssemblyInfo.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Pligrimage.Web.TagHelpers.input.cache
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Pligrimage.Web.TagHelpers.output.cache
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Pligrimage.Web.RazorCoreGenerate.cache
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\Account\Login.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\Admin\AddEditRole.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\Admin\CreateRole.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\Admin\CreateUser.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\Admin\Index.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\Admin\PermissionIndex.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\Admin\RoleIndex - Copy.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\Admin\RoleIndex.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\Admin\UserEditable.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\Admin\UserIndex - Copy.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\Admin\UserIndex.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\Admin\_AddEditPermission.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\Admin\_AddEditRole.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\Admin\_UserCreateation.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\AlhajjAdmin\Create.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\AlhajjAdmin\Index.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\AlhajjAdmin\_Create - Copy - Copy.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\AlhajjAdmin\_Create.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\AlhajjAdmin\_error.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\AlhajjList\Index - Copy.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\AlhajjList\Index.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\AlhajjList\Statistic.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\AlhajjList\_GridDetails.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\AlhajjMasters - Copy\Create.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\AlhajjMasters - Copy\Delete.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\AlhajjMasters - Copy\Details.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\AlhajjMasters - Copy\Index.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\AlhajjMasters - Copy\MODEmpCreate.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\AlhajjMasters - Copy\OutOfMOD.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\AlhajjMasters - Copy\_Create - Copy.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\AlhajjMasters - Copy\_Create.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\AlhajjMasters - Copy\_Detail.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\AlhajjMasters - Copy\_EmployeeSearchViewModel.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\AlhajjMasters - Copy\_Index.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\AlhajjMasters\Create.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\AlhajjMasters\Index - Copy.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\AlhajjMasters\Index.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\AlhajjMasters\OutOfMOD.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\AlhajjMasters\_Create.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\AlhajjMasters\_CreateCopy1.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\Buses\Index - Copy.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\Buses\Index.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\Categories\Index.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\Documents\Create.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\Documents\Delete.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\Documents\Details.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\Documents\Edit.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\Documents\Index.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\Flights\Index.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\Home\AlhajjAdminList.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\Home\AlhajjFitResult.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\Home\AlhajjNonFit.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\Home\AlhajjTotal.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\Home\ByService.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\Home\Index.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\Home\NotFoundPage.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\Home\_AlhajjTotal.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\Home\_StaticByServise.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\Medical\Index.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\NonModAdmin\Edit.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\NonModAdmin\Index - Copy.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\NonModAdmin\Index.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\NonModAdmin\MasterDetails.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\NonModAdmin\_GridDetails.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\Parameters\Create.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\Parameters\Delete.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\Parameters\Details.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\Parameters\Edit.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\Parameters\Index.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\PassengerSupervisors\Create.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\PassengerSupervisors\Delete.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\PassengerSupervisors\Details.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\PassengerSupervisors\Edit.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\PassengerSupervisors\Index.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\Passengers\Index.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\Passengers\SwapFlight - Copy.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\Passengers\SwapFlight.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\Pensioner\Create.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\Pensioner\Index.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\Pensioner\_Create.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\Residences\Create.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\Residences\Delete.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\Residences\Details.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\Residences\Edit.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\Residences\Index.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\Shared\EditorTemplates\bool.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\Shared\EditorTemplates\DateTime.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\Shared\EditorTemplates\Edit.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\Shared\EditorTemplates\FileUpload.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\Shared\EditorTemplates\GridForeignKey.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\Shared\EditorTemplates\NonMode.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\Shared\EditorTemplates\ResumeFileUrl.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\Shared\EditorTemplates\String.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\Shared\Error.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\Shared\Unauthorised\Error.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\Shared\Unauthorised\Index.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\Shared\_CookieConsentPartial.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\Shared\_EmployeeSearchViewModel.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\Shared\_Layout - Copy.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\Shared\_Layout.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\Shared\_LoginPartial.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\Shared\_Modal.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\Shared\_ModalFooter.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\Shared\_ModalHeader.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\Shared\_UnitSatistic.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\Shared\_ValidationScriptsPartial.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\Unauthorised\Error.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\Unauthorised\Index.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\Units\Create.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\Units\Delete.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\Units\Details.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\Units\Edit.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\Units\Index.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\Upload\ImportExport.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\_ViewImports.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\_ViewStart.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Pligrimage.Web.RazorTargetAssemblyInfo.cache
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Pligrimage.Web.RazorTargetAssemblyInfo.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Pligrimage.Web.Views.pdb
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Pligrimage.Web.csproj.CopyComplete
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Pligrimage.Web.dll
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Pligrimage.Web.pdb
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\AlhajjMasters\_staticService.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\ConfirmAlhajjMaster\Index.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\Passengers\Swap1.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\Passengers\SwapTransfer.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\Passengers\SwapTransfer2.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\Passengers\_SwapDetails.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\Shared\EditorTemplates\BusId.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\Shared\EditorTemplates\FlightId.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\Statistics\AlhajjTotal.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\Statistics\ByService.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\Statistics\Index.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\Statistics\NotFoundPage.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\Statistics\_AlhajjTotal.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\Statistics\_StaticByServise.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\Statistics\_staticService.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\Shared\EditorTemplates\ConfirmData.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\Injection\Index.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\ListPage\Index.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\ListPage\ok.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\ListPage\okman.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\Shared\EditorTemplates\TaskTextArea.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\Statistics\IndexAdminList.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\Statistics\IndexAlhajjFitResult.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\Statistics\IndexAlhajjNonFit.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\Statistics\IndexCanceledStatus.g.cshtml.cs
+C:\Alhajj\ITS.Pligrimage\Pligrimage.Web\obj\Release\netcoreapp2.2\Razor\Views\Statistics\IndexStandByStatus.g.cshtml.cs

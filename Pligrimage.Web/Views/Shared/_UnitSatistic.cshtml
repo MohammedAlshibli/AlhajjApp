@@ -1,0 +1,53 @@
+﻿@model IEnumerable<Pligrimage.Web.Models.StaticServiceViewModel>
+
+<table class="table table-bordered table-hover" style="width:40%">
+    <thead>
+        <tr>
+            <th>
+                اسم السلاح
+            </th>
+            <th>
+                العدد المسموح
+            </th>
+            <th>
+                المتبقي
+            </th>
+
+            <th>
+                عدد الاحتياط
+            </th>
+            <th>
+                المتبقي
+            </th>
+
+
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ServiceName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AllowNumber)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AllowNumberRemming)
+                </td>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.StandBy)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.StandByRemming)
+                </td>
+                @*<td>
+                        @Html.DisplayFor(modelItem => item.Count)
+                    </td>*@
+
+            </tr>
+        }
+    </tbody>
+</table>

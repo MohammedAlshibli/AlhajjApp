@@ -1,0 +1,33 @@
+﻿using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
+using Pligrimage.Entities;
+
+namespace Pligrimage.Data
+{
+    public static class AppDbContextSeed
+    {
+        //public static void SeedDataSql(this AppDbContext context,
+        //    IEnumerable<Category> categories, IEnumerable<Product> products)
+        //{
+        //    try
+        //    {
+        //        context.Database.OpenConnection();
+        //        context.Categories.AddRange(categories);
+        //        context.Database.ExecuteSqlCommand("DELETE Categories");
+        //        context.Database.ExecuteSqlCommand("SET IDENTITY_INSERT Categories ON");
+        //        context.SaveChanges();
+        //        context.Database.ExecuteSqlCommand("SET IDENTITY_INSERT Categories OFF");
+
+        //        context.Products.AddRange(products);
+        //        context.Database.ExecuteSqlCommand("DELETE Products");
+        //        context.Database.ExecuteSqlCommand("SET IDENTITY_INSERT Products ON");
+        //        context.SaveChanges();
+        //        context.Database.ExecuteSqlCommand("SET IDENTITY_INSERT Products OFF");
+        //    }
+        //    finally
+        //    {
+        //        context.Database.CloseConnection();
+        //    }
+        //}
+    }
+}

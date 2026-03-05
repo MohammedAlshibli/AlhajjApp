@@ -1,0 +1,100 @@
+﻿
+@{
+    ViewData["Title"] = "إضافة مستخدم";
+}
+
+
+
+
+
+<div asp-validation-summary="All"></div>
+<form asp-area="Admin" asp-controller="Admin" asp-action="CreateRole" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post">
+    @Html.AntiForgeryToken()
+    <div class="panel panel-default">
+
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-inline">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <input type="text" class="form-control" name="getUser" value="" id="getUser" autocomplete="off" placeholder="أكتب الرقم العسكري" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <button id="getEmployee-btn" type="button" class="btn btn-primary">بحث    <i id="spinner" class="fa fa-spinner fa-spin md-5" style="display:none"></i></button>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <input type="submit" id="btnsave" style="display:none" value="حفظ" class="btn btn-default btn-block" />
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <br /><br />
+    <div>
+
+        <div id="userCreation"></div>
+
+
+    </div>
+
+</form>
+
+
+
+
+
+
+<script>
+    $(document)
+        .ready(function () {
+
+            $("#getEmployee-btn").on("click", function (e) {
+                if ($("#getUser").val()=="") {
+                    toastr.error("يرجى إدخال الرقم العسكري  ", 'Error!', { positionClass: "toast-top-right", "timeOut": "2000" });
+                } else {
+                    GetEmployee();
+                }
+            });
+
+        });
+
+
+
+    function GetEmployee() {
+        $.ajax({
+            url: '@Url.Action("UserCreateation", "Admin")',
+            type: 'Get',
+            dataType: 'html',
+            data: {
+                username: $("#getUser").val(),
+            },
+            beforeSend: function () {
+                $("#spinner").show();
+            },
+            success: function (data) {
+
+                $("#userCreation").html(data);
+                $("#spinner").hide();
+                $("#btnsave").show();
+            },
+            error: function (error) {
+
+                $("#userCreation").html(error.responseText);
+                $("#spinner").hide();
+                $("#btnsave").hide();
+                toastr.error(error.responseText, ' خطأ!', { positionClass: "toast-top-right", "timeOut": "2000" });
+            }
+        });
+
+
+    }
+</script>

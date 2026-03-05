@@ -1,0 +1,212 @@
+﻿
+@* @(Html.Kendo().Grid<Kendo.Mvc.Examples.Models.DetailProductViewModel>()
+    .Name("grid")
+    .Columns(columns =>
+    {
+        columns.Select().Width(75).HtmlAttributes(new { @class = "checkbox-align" }).HeaderHtmlAttributes(new { @class = "checkbox-align" });
+        columns.Bound(p => p.ProductName)
+                .ClientTemplate(
+                    @"<div class='product-photo'
+                        style='background-image: url(" + @Url.Content("~/shared/web/foods/#:data.ProductID#.jpg") + ");'></div><div class='product-name'>#: ProductName #</div>").Width(300);
+        columns.Bound(p => p.UnitPrice).Title("Price").Width(105);
+        columns.Bound(p => p.Discontinued).Title("In Stock").Width(130)
+                            .ClientTemplate("<span id='badge_#=ProductID#' class='badgeTemplate'></span>");
+        columns.Bound(p => p.Category.CategoryName).Title("Category").EditorTemplateName("ClientCategoryEditor").ClientGroupHeaderTemplate("Category: #=data.value#, Total Sales: #=kendo.format('{0:c}', data.aggregates.TotalSales.sum)#").Width(125);
+        columns.Bound(p => p.CustomerRating).Title("Rating").Width(200).Editable("returnFalse").ClientTemplate(Html.Kendo().Template()
+                .AddComponent(rating => rating
+                    .Rating()
+                    .Name("rating_${data.ProductID}")
+                    .Min(1)
+                    .Max(5)
+                    .Label(false)
+                    .HtmlAttributes(new { data_bind = "value: CustomerRating" })
+                    .Selection("continuous")
+                )
+            );
+        columns.Bound(p => p.Country.CountryNameLong).Title("Country").EditorTemplateName("Country").ClientTemplate(
+            @"<div class='k-text-center'><img src='" + @Url.Content("~/shared/web/country-flags/#:data.Country.CountryNameShort#.png") + "' alt='#: data.Country.CountryNameLong#' title='#: data.Country.CountryNameLong#' width='30' /></div>").Width(120);
+        columns.Bound(p => p.UnitsInStock).Title("Units").Width(105);
+        columns.Bound(p => p.TotalSales).Title("Total Sales").Width(140).Format("{0:c}");
+        columns.Bound(p => p.TargetSales).Editable("returnFalse").Title("Target Sales")
+                      .ClientTemplate(Html.Kendo().Sparkline()
+                      .Name("chart_#=ProductID#")
+                      .Legend(legend => legend
+                          .Visible(false)
+                      )
+                      .Type(SparklineType.Bar)
+                      .HtmlAttributes(new { data_series = "[{data: [#=TargetSales#], labels:{visible:true, format:'{0}%', background:'none'}}]" })
+                          .ChartArea(chartArea => chartArea.Margin(0).Width(180))
+                          .CategoryAxis(axis => axis
+                              .MajorGridLines(lines => lines.Visible(false))
+                              .MajorTicks(lines => lines.Visible(false))
+                          )
+                          .ChartArea(c => c.Background("transparent"))
+                          .ValueAxis(axis => axis
+                              .Numeric()
+                              .Min(0)
+                              .Max(130)
+                              .Visible(false)
+                              .Labels(l => l.Visible(false))
+                              .MinorTicks(lines => lines.Visible(false))
+                              .MajorGridLines(lines => lines.Visible(false))
+                          )
+                          .Tooltip(tooltip => tooltip
+                              .Visible(false)
+                          ).ToClientTemplate().Value
+                     ).Width(220);
+        columns.Command(command => command.Destroy()).Width(120);
+    })
+    .ToolBar(toolbar =>
+    {
+        toolbar.Excel();
+        toolbar.Pdf();
+        toolbar.Search();
+    })
+    .Pdf(pdf => pdf.ProxyURL(Url.Action("Excel_Export_Save", "Grid")))
+    .Excel(excel => excel.ProxyURL(Url.Action("Excel_Export_Save", "Grid")))
+    .ColumnMenu(col => col.Filterable(false))
+    .Height(700)
+    .Editable(editable => editable.Mode(GridEditMode.InCell))
+    .Pageable()
+    .Sortable()
+    .Navigatable()
+    .Resizable(r => r.Columns(true))
+    .Reorderable(r => r.Columns(true))
+    .Groupable(g => g.ShowFooter(false))
+    .Filterable()
+    .Scrollable()
+    .Events(events => events.DataBound("onDataBound").PdfExport("onPdfExport"))
+    .DataSource(dataSource => dataSource
+        .Ajax()
+        .Batch(true)
+        .PageSize(20)
+        .AutoSync(true)
+        .ServerOperation(false)
+        .Events(events => events.Error("error_handler"))
+        .Model(model =>
+        {
+            model.Id(p => p.ProductID);
+            model.Field(p => p.ProductID).Editable(false);
+            model.Field(p => p.Discontinued).Editable(false);
+            model.Field(p => p.TotalSales).Editable(false);
+            model.Field(p => p.Category).DefaultValue(new CategoryViewModel() { CategoryID = 8, CategoryName = "Seafood" });
+            model.Field(p => p.Country).DefaultValue(new CountryViewModel() { CountryNameLong = "Bulgaria", CountryNameShort = "bg" });
+        })
+        .Group(group => group.Add("Category.CategoryName", typeof(string), ListSortDirection.Descending))
+        .Aggregates(agg => agg.Add(field => field.TotalSales).Sum())
+        .Create("DetailProducts_Create", "Grid")
+        .Read("DetailProducts_Read", "Grid")
+        .Update("DetailProducts_Update", "Grid")
+        .Destroy("DetailProducts_Destroy", "Grid")
+    )
+)
+
+<script src="https://unpkg.com/jszip/dist/jszip.min.js"></script>
+
+<script type="text/javascript">
+    function error_handler(e) { //The event will fire when there are ModelState errors.
+        if (e.errors) { //The "errors"" field of the event argument will contain the errors returned by the server.
+            var message = "Errors:\n";
+            $.each(e.errors, function (key, value) {
+                if ('errors' in value) {
+                    $.each(value.errors, function () {
+                        message += this + "\n";
+                    });
+                }
+            });
+            alert(message);
+        }
+    }
+
+    function onPdfExport(e) {
+        const width = e.sender.wrapper.width();
+        e.sender.wrapperClone.width(width);
+        e.sender.wrapperClone.addClass('k-clone');
+    }
+
+    function onDataBound(e) {
+        var grid = this;
+        grid.table.find("tr").each(function () {
+            var dataItem = grid.dataItem(this);
+            var themeColor = dataItem.Discontinued ? 'success' : 'error';
+            var text = dataItem.Discontinued ? 'available' : 'not available';
+
+            $(this).find('script').each(function () {
+                eval($(this).html());
+            });
+
+            $(this).find(".badgeTemplate").kendoBadge({
+                themeColor: themeColor,
+                text: text,
+            });
+
+
+            kendo.bind($(this), dataItem);
+        });
+    }
+
+    function returnFalse() {
+        return false;
+    } *@
+</script>
+
+<style>
+    .k-pdf-export .k-clone,
+    .k-pdf-export .k-loader-container {
+        display: none;
+    }
+
+    .k-grid tr .checkbox-align {
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    .product-photo {
+        display: inline-block;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background-size: 32px 35px;
+        background-position: center center;
+        vertical-align: middle;
+        line-height: 32px;
+        box-shadow: inset 0 0 1px #999, inset 0 0 10px rgba(0,0,0,.2);
+        margin-right: 5px;
+    }
+
+    .product-name {
+        display: inline-block;
+        vertical-align: middle;
+        line-height: 32px;
+        padding-left: 3px;
+    }
+
+    .k-rating-container .k-rating-item {
+        padding: 4px 0;
+    }
+
+        .k-rating-container .k-rating-item .k-icon {
+            font-size: 16px;
+        }
+
+    .dropdown-country-wrap {
+        display: flex;
+        flex-wrap: nowrap;
+        align-items: center;
+        white-space: nowrap;
+    }
+
+        .dropdown-country-wrap img {
+            margin-right: 10px;
+        }
+
+    #grid .k-grid-edit-row > td > .k-rating {
+        margin-left: 0;
+        width: 100%;
+    }
+
+    .k-grid .k-grid-search {
+        margin-left: auto;
+        margin-right: 0;
+    }
+</style>

@@ -1,0 +1,147 @@
+﻿<div class="card card-cascade wider">
+    <div class="view view-cascade gradient-card-header blue-gradient-rgba">
+        <h2 class="card-header-title mb-3">الرحلات الجوية<i class="fa fa-plane" aria-hidden="true"></i></h2>
+    </div>
+    <div class="card-body card-body-cascade">
+        <div class="k-rtl">
+            @* @(Html.Kendo().Grid<Pligrimage.Entities.Flight>
+                                        ()
+                                        .Name("FlightGrid")
+                                        .Columns(column =>
+                                        {
+                                            column.Bound(c => c.FlightNo).Title("رقم الرحلة");
+                                            column.Bound(c => c.FlightDate).Title("التاريخ").Format("{0:dd/MM/yyyy}");
+                                            column.Bound(c => c.FlightCapacity).Title("عدد الركاب");
+                                            column.Bound(c => c.ArriveDate).Title("تاريخ الوصول").Format("{0:dd/MM/yyyy}");
+                                            column.ForeignKey(c => c.ParameterId, (System.Collections.IEnumerable)ViewData["FlightType"], "ParameterId", "DescArabic").Title("نوع الرحلة").Width(200);
+                                            column.Bound(c => c.Direction).Title("الوجهة");
+
+                                        column.Command(com =>
+                                            {
+                                                com.Edit().UpdateText("حفظ").Text("تعديل")
+                                                .CancelText("إلغاء").HtmlAttributes(new { type = "button", @class = " glyphicon-pencil", });
+                                                com.Destroy().Text("حذف").HtmlAttributes(new { type = "button", @class = " glyphicon-trash", });
+                                            }).Width(200);
+
+
+
+
+
+                                        })
+                                        .HtmlAttributes(new { style = "height:500px" })
+                                        .ToolBar(toolbar => toolbar.Create().Text("إضافة جديدة").HtmlAttributes(new { type = "button", @class = " glyphicon-plus ", }))
+                                        .Editable(editable => editable.Mode(GridEditMode.PopUp).TemplateName("Edit").Window(c => c.Resizable().Title("تعديل")))
+                                        .Events(e => e.Edit("NewRecord"))
+                                        .Scrollable()
+                                        .Sortable()
+                                        .Selectable()
+                                        .Filterable(f => f.Extra(false)
+                                                    .Operators(opertor => opertor
+                                                    .ForString(str => str.Clear()
+                                                    .Contains("يحتوي على"))))
+                                        .Pageable
+                                        (p => p
+                                        .ButtonCount(5)
+                                        .Refresh(true)
+                                        )
+                                        .DataSource
+                                        (dataSourec => dataSourec
+                                        .Ajax()
+                                          .Events(events =>
+                                          {
+                                              events.Error("error_handler");
+                                              events.RequestEnd("request_end");
+                                          })
+                                           .Model(
+                                            m =>
+                                            {
+                                                m.Id(i => i.FlightId);
+
+                                                m.Field(c => c.FlightId).Editable(false);
+
+                                            }
+                                                )
+                                        .Read(read => read.Action("FlightRead", "Flights"))
+                                        .Create(create => create.Action("CreateFlight", "Flights"))
+                                        .Update(update => update.Action("UpdateFlight", "Flights"))
+                                        .Destroy(delete => delete.Action("DeleteFlight", "Flights"))
+                                        )
+            )
+ *@
+        </div>
+    </div>
+
+    <script>
+
+
+        function error_handler(e) {
+            console.log(e);
+            if (e.errors) {
+                var message = "Errors: \n";
+                $.each(e.errors, function (key, value) {
+                    if ('errors' in value) {
+                        $.each(value.errors, function () {
+                            message += this + "\n";
+                        });
+                    }
+                });
+                alert(message);
+            }
+        };
+
+        function request_end(e) {
+
+            if (e.type == "update") {
+                alert("تم تحديث البيانات بنجاح");
+            }
+            if (e.type == "create") {
+                alert("تم حفظ البيانات بنجاح");
+
+            }
+            if (e.type == "delete") {
+                alert("تم حذف البيانات بنجاح");
+
+            }
+        }
+ 
+    </script>
+
+    <script>
+        function NewRecord(e) {
+            if (e.model.isNew()) {
+                $('.k-window-title').text("إضافة جديدة");
+            }
+
+        }
+    </script>
+
+
+
+    <style>
+        .k-grid .k-grid-header {
+            border-color: #dde2e7;
+            color: #212529;
+            background-color: #f8f9fa;
+            font-weight: bold;
+        }
+
+    </style>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

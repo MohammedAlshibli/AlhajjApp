@@ -1,0 +1,222 @@
+﻿<!DOCTYPE html>
+
+@inject Pligrimage.Services.Interface.IAdminService _userService
+@using System.Security.Claims;
+
+<html dir="rtl">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Hajj.Web</title>
+
+    <environment include="Development">
+        <link href="~/css/site.css" rel="stylesheet" />
+        <link href="~/lib/bootstrap-rtl/css/bootstrap-rtl.css" rel="stylesheet" />
+        <link href="~/lib/hc-offcanvas/hc-offcanvas-nav.css" rel="stylesheet" />
+        @*<link href="~/lib/kendo-ui/styles/kendo.bootstrap-v4.min.css" rel="stylesheet" />
+        <link href="~/lib/kendo-ui/styles/kendo.rtl.min.css" rel="stylesheet" />*@
+        <link href="~/lib/bootstrap/dist/css/rtl/bootstrap.css" rel="stylesheet" />
+        <link href="~/lib/font-awesome-4.7.0/css/font-awesome.css" rel="stylesheet" />
+        <link href="~/lib/mdbootsrap/css/mdb.css" rel="stylesheet" />
+
+
+    </environment>
+    <environment exclude="Development">
+
+
+        <link href="~/css/site.css" rel="stylesheet" />
+        <link href="~/lib/bootstrap-rtl/css/bootstrap-rtl.css" rel="stylesheet" />
+        <link href="~/lib/hc-offcanvas/hc-offcanvas-nav.css" rel="stylesheet" />
+
+        <link href="~/lib/bootstrap/dist/css/rtl/bootstrap.css" rel="stylesheet" />
+        <link href="~/lib/font-awesome-4.7.0/css/font-awesome.css" rel="stylesheet" />
+        <link href="~/lib/mdbootsrap/css/mdb.css" rel="stylesheet" />
+
+
+    </environment>
+
+
+    <environment include="Development">
+
+        <script src="~/lib/jquery/dist/jquery.js"></script>
+        <script src="~/lib/bootstrap-rtl/js/bootstrap.bundle.js"></script>
+        <script src="~/lib/bootstrap-rtl/js/bootstrap.js"></script>
+        <script src="~/lib/kendo-ui/js/kendo.all.min.js"></script>
+        <script src="~/lib/kendo-ui/js/kendo.aspnetmvc.min.js"></script>
+        <script src="~/lib/hc-offcanvas/hc-offcanvas-nav.js"></script>
+        <script src="~/lib/JsZip/jszip.js"></script>
+
+
+    </environment>
+    <environment exclude="Development">
+        <script src="~/lib/jquery/dist/jquery.js"></script>
+        <script src="~/lib/bootstrap-rtl/js/bootstrap.bundle.js"></script>
+        <script src="~/lib/bootstrap-rtl/js/bootstrap.js"></script>
+        <script src="~/lib/kendo-ui/js/kendo.all.min.js"></script>
+        <script src="~/lib/kendo-ui/js/kendo.aspnetmvc.min.js"></script>
+        <script src="~/lib/hc-offcanvas/hc-offcanvas-nav.js"></script>
+        <script src="~/lib/JsZip/jszip.js"></script>
+
+    </environment>
+</head>
+
+<body>
+
+    @{
+        var identity = (ClaimsIdentity)User.Identity;
+        IEnumerable<Claim> claims = identity.Claims;
+        var permissionVm = await _userService.GetPermissionsByUser(identity.Name);
+        var roles = permissionVm.GroupBy(x => x.RoleName);
+
+
+
+    }
+
+    <header>
+
+
+        @*<nav class="navbar fixed-top navbar-expand-lg heavy-rain-gradient scrolling-navbar">*@
+            <nav class="navbar fixed-top navbar-expand-lg rgba-blue-grey-strong scrolling-navbar">
+
+                <div class="navbar-brand">
+                    <a>
+                        &nbsp;
+                    </a>
+                </div>
+
+
+                <div class="toggle"><span></span></div>
+
+
+                <ul class="navbar-nav ml-auto nav-flex-icons">
+                    <li class="nav-item dropdown ">
+                        <a id="navbarMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            @*<i class="fa fa-user fa-2x"></i>*@
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right dropdown-default" aria-labelledby="navbarMenuLink">
+                            <a class="dropdown-item">User1</a>
+                            <a class="dropdown-item">User2</a>
+                        </div>
+                    </li>
+                </ul>
+
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        @await Html.PartialAsync("_LoginPartial")
+                    </li>
+                </ul>
+
+
+
+                <div style="float:left">
+                    <a href="@Url.Action("Index","Home")"><img src="~/Image/logo.png" style="width:40px" /></a>
+                </div>
+            </nav>
+
+
+            <nav id="main-nav">
+                <ul>
+                    @foreach (var role in roles)
+                    {
+                        <li>
+                            <span> @role.Key</span>
+                            <ul>
+                                @foreach (var item in permissionVm.Where(x => x.RoleName == @role.Key))
+                                {
+                                    <li>
+                                        @{
+
+                                            <a asp-area="" asp-controller=@item.ControllerName asp-action=@item.ActionName>
+                                                @item.Description
+
+                                            </a>
+                                        }
+                                    </li>
+                                }
+
+                            </ul>
+                        </li>
+                    }
+
+
+                </ul>
+            </nav>
+
+
+</header>
+
+
+    <div class="container-fluid" id="slide" style="margin-top: 80px">
+
+        @*<partial name="_CookieConsentPartial" />*@
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer heavy-rain-gradient text-center">
+        <div class="container">
+            &copy; 2019 - نظام إدارة بعثة الحج العسكرية - <a asp-area="" asp-controller="Home" asp-action="Privacy"></a>
+        </div>
+    </footer>
+
+
+
+
+    <environment include="Development">
+        <link href="~/css/site.css" rel="stylesheet" />
+
+        <script src="~/lib/jquery/dist/jquery.js"></script>
+        @*<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.js"></script>*@
+        <script src="~/lib/bootstrap-rtl/js/bootstrap.bundle.js"></script>
+        <script src="~/lib/kendo-ui/js/kendo.all.min.js"></script>
+        <script src="~/lib/kendo-ui/js/kendo.aspnetmvc.min.js"></script>
+        <script src="~/lib/kendo-ui/js/messages/kendo.ar-JO.js"></script>
+        <script src="~/lib/hc-offcanvas/hc-offcanvas-nav.js"></script>
+        <script src="~/lib/mdbootsrap/js/mdb.js"></script>
+        <script src="~/lib/JsZip/jszip.js"></script>
+    </environment>
+
+
+    <environment exclude="Development">
+        <link href="~/css/site.css" rel="stylesheet" />
+
+        <script src="~/lib/jquery/dist/jquery.js"></script>
+        @*<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.js"></script>*@
+        <script src="~/lib/bootstrap-rtl/js/bootstrap.bundle.js"></script>
+        <script src="~/lib/kendo-ui/js/kendo.all.min.js"></script>
+        <script src="~/lib/kendo-ui/js/kendo.aspnetmvc.min.js"></script>
+        <script src="~/lib/kendo-ui/js/messages/kendo.ar-JO.js"></script>
+        <script src="~/lib/hc-offcanvas/hc-offcanvas-nav.js"></script>
+        <script src="~/lib/mdbootsrap/js/mdb.js"></script>
+        <script src="~/lib/JsZip/jszip.js"></script>
+    </environment>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    @RenderSection("Scripts", required: false)
+</body>
+
+</html>
+
+
+<script>
+
+    var mainNav = $('#main-nav');
+    var toggle = $('.toggle');
+
+    var defaultSetting = {
+        maxWidth: false,
+        navTitle: 'القائمة الرئيسية',
+        customToggle: toggle,
+        levelTitles: true,
+        pushContent: false,
+        side: 'right',
+        //insertClose: 1,
+        pushContent: '#slide',
+        labelClose: 'إغلاق',
+        labelBack: 'رجوع'
+    };
+
+    var nav = mainNav.hcOffcanvasNav(defaultSetting);
+
+</script>

@@ -1,0 +1,159 @@
+﻿@model Pligrimage.Entities.AlhajjMaster
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h4 style="text-align:center">الحجاج المتقاعدين</h4>
+
+<hr />
+
+<div dir="rtl">
+    <br />
+
+    <div class="row">
+        <div class=" col-md-4">
+            <div class="row">
+
+                <div class=" col-md-6">
+                    <input type="text" class="form-control" name="getServiceNumber" value="" id="getServiceNumber" placeholder="أدخل الرقم العسكري" />
+
+                </div>
+                <div class=" col-md-3">
+                    <button id="searchBtnDet" onclick="GetEmployee()" type="submit" class="btn btn-primary" style="padding-top:unset">بحث</button>
+                </div>
+                <div class=" col-md-3">
+                    <div id="spinner" class="form-group" style="display:none">
+                        <div>
+                            <img style="width:40px; height:40px;" src="~/Image/loading.gif" />
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+
+
+        @*<div class="col-md-1">
+            <div class="row"></div>
+        </div>*@
+
+
+        <div class=" col-md-2">
+            <table class="table table-fixed w-auto table-info table-bordered">
+                <thead>
+                    <tr>
+                        <th style="text-align:center">العدد المسموح</th>
+                        <td style="text-align:center">
+                            <div id="allowNumber"></div>
+                        </td>
+                        <th style="text-align:center">العدد الأحتياط</th>
+                        <td style="text-align:center">
+                            <div id="standBy"></div>
+                        </td>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+
+        
+
+    </div>
+
+
+
+
+
+<div dir="rtl" id="EmployeeDetailsView">
+
+</div>
+
+
+
+<script>
+
+    $(document).ready(function () {
+        GetServiceCount();
+    
+    });
+    function GetEmployee() {
+        var popUpNotification = $("#WSNotification").data("kendoNotification");
+
+         $.ajax({
+            url: '@Url.Action("GetAlhajjDataFormWebService", "Pensioner")',
+            type: 'Get',
+            dataType: 'html',
+            data: {
+                ServiceNumber: $('#getServiceNumber').val(),
+
+            },
+            beforeSend: function () {
+                $("#spinner").show();
+            },
+            success: function (data) {
+
+                $("#spinner").hide();
+                $("#EmployeeDetailsView").html(data);
+
+                popUpNotification.show(kendo.toString("تم جلب البيانات بنجاح"), "info");
+                $("#getServiceNumber").val("");
+             },
+             error: function (xhr, status, error) {
+
+                 popUpNotification.show(kendo.toString(xhr.responseText), "error");
+
+
+
+             },
+
+            complete: function (data) {
+                $("#spinner").hide();
+
+            }
+        });
+
+
+
+    }
+
+    function GetServiceCount() {
+
+        $.ajax({
+            url: '@Url.Action("StaticService", "Pensioner")',
+            type: 'Get',
+            dataType: 'json',
+            contentType: "application/json; charset=utf-8",
+
+
+
+            success: function (data, i) {
+
+
+                console.log(data[0]);
+
+                var allowNumber = data[0].Consumed + " من " + data[0].Total;
+                if (data[0].Consumed == data[0].Total) {
+                    $("#allowNumber").addClass("text-danger");
+                }
+                $("#allowNumber").html(allowNumber);
+
+
+                var SatndByNumber = data[1].Consumed + " من " + data[1].Total;
+                if (data[1].Consumed == data[1].Total) {
+                    $("standBy").addClass("text-danger");
+
+                }
+                $("#standBy").html(SatndByNumber);
+
+
+            }
+
+
+
+        });
+
+    }
+
+</script>

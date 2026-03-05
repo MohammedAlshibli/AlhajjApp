@@ -1,0 +1,8 @@
+E:\URF\URF.Core\URF.Core.Abstractions\bin\Debug\netstandard2.0\URF.Core.Abstractions.deps.json
+E:\URF\URF.Core\URF.Core.Abstractions\bin\Debug\netstandard2.0\URF.Core.Abstractions.dll
+E:\URF\URF.Core\URF.Core.Abstractions\bin\Debug\netstandard2.0\URF.Core.Abstractions.pdb
+E:\URF\URF.Core\URF.Core.Abstractions\obj\Debug\netstandard2.0\URF.Core.Abstractions.csproj.CoreCompileInputs.cache
+E:\URF\URF.Core\URF.Core.Abstractions\obj\Debug\netstandard2.0\URF.Core.Abstractions.AssemblyInfoInputs.cache
+E:\URF\URF.Core\URF.Core.Abstractions\obj\Debug\netstandard2.0\URF.Core.Abstractions.AssemblyInfo.cs
+E:\URF\URF.Core\URF.Core.Abstractions\obj\Debug\netstandard2.0\URF.Core.Abstractions.dll
+E:\URF\URF.Core\URF.Core.Abstractions\obj\Debug\netstandard2.0\URF.Core.Abstractions.pdb

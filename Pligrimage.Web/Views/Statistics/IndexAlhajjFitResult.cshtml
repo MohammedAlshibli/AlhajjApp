@@ -1,0 +1,82 @@
+﻿<div class="card card-cascade wider">
+    <div class="view view-cascade gradient-card-header blue-gradient-rgba">
+        <h2 class="card-header-title mb-3"> لائق طبيا</h2>
+    </div>
+    <div class="card-body card-body-cascade">
+        <div class="k-rtl">
+            <div>
+               @*  @(Html.Kendo().Grid<Pligrimage.Web.Models.MedicalViewModel>
+                                    ()
+                                    .Name("AlhajjCancel")
+                                    .ToolBar(c => c.Excel().Text("تحميل الملف"))
+                                    .Excel(excel => excel
+                                    .AllPages()
+                                    .FileName("FitResultFile")
+                                    .ProxyURL(Url.Action("Pdf_Export_Save", "AlhajjAdmin"))
+                                    )
+                                    .Columns(column =>
+                                    {
+                                        column.Bound(c => c.Name).Title("الاسم").Width(100).ClientTemplate("<strong>#: Name #</strong>");
+                                        column.Bound(c => c.ServcieNumber).Title(" الرقم العسكري").Width(70);
+                                        column.Bound(c => c.NationalID).Title("الرقم المدني").Width(70);
+                                        column.Bound(c => c.UnitNameAr).Title("الوحدة").Width(100);
+                                        column.Bound(c => c.EmployeePension).Title("حالة الموظف").Width(70);
+                                        column.Bound(C => C.AdminType).Title("التصنيف الاداري").Width(70)/*.ClientTemplateId("#AdminTyp #")*/;
+
+                                    })
+
+    .HtmlAttributes(new { style = "height:500px" })
+    .Editable(editable => editable.Mode(GridEditMode.PopUp).TemplateName("Edit").Window(c => c.Resizable().Title("تعديل")))
+    .Scrollable()
+    .Sortable()
+    .Selectable()
+    .Filterable(f => f.Extra(false)
+    .Operators(opertor => opertor
+    .ForString(str => str.Clear()
+    .Contains("يحتوي على"))))
+    .Pageable
+    (p => p
+    .ButtonCount(5)
+    .Refresh(true)
+    )
+    .Selectable(s => s.Mode(GridSelectionMode.Multiple))
+    .DataSource
+    (dataSourec => dataSourec
+    .Ajax()
+
+    .Events(events =>
+    {
+        events.Error("error_handler");
+
+    })
+
+    .Read(read => read.Action("AlhajjFitResult", "Statistics"))
+
+    )
+    ) *@
+</div>
+        </div>
+    </div>
+</div>
+<script>
+    function error_handler(e) {
+        console.log(e);
+        if (e.errors) {
+            var message = "Errors: \n";
+            $.each(e.errors, function (key, value) {
+                if ('errors' in value) {
+                    $.each(value.errors, function () {
+                        message += this + "\n";
+
+                    });
+                }
+            });
+            alert(message);
+        }
+
+
+    };
+
+   
+
+</script>

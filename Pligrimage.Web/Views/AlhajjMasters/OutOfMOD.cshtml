@@ -1,0 +1,110 @@
+﻿
+@{
+    ViewData["Title"] = "OutOfMOD";
+}
+
+<h1>OutOfMOD</h1>
+
+
+
+
+<div class=" table-bordered ">
+    <form method="post" enctype="multipart/form-data">
+        <div class="row">
+            <div class="col-md-4">
+
+                <input type="file" onchange="checkfile(this);" id="fUpload" name="files" class="form-control alert-warning" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" />
+                <i id="spinner" class="fa fa-spinner fa-spin md-5" style="display:none"></i>
+            </div>
+            <div class="col-md-8">
+            </div>
+        </div>
+
+        <br />
+        <div id="dvData"></div>
+
+    </form>
+
+</div>
+
+<script>
+    function checkfile(sender) {
+
+            var validExts = new Array(".xlsx", ".xls");
+            var fileExt = sender.value;
+            fileExt = fileExt.substring(fileExt.lastIndexOf('.'));
+        if (validExts.indexOf(fileExt) < 0) {
+            alert("Invalid file selected, valid files are of " +
+                validExts.toString() + " types.");
+            $('#fUpload').val(null);
+
+            return false;
+        }
+
+
+        else {
+
+            UploadFile();
+
+        }
+    }
+
+
+    function UploadFile() {
+
+
+
+            var fileExtension = ['xls', 'xlsx'];
+            var filename = $('#fUpload').val();
+            if (filename.length === 0) {
+
+
+                alert("Please select a file.");
+                return false;
+            }
+            else {
+                var extension = filename.replace(/^.*\./, '');
+                if ($.inArray(extension, fileExtension) == -1) {
+                    alert("Please select only excel files.");
+                    return false;
+                }
+
+        }
+
+            var fdata = new FormData();
+            var fileUpload = $("#fUpload").get(0);
+            var files = fileUpload.files;
+            fdata.append(files[0].name, files[0]);
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("UploadNonMODData", "AlhajjMasters")',
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("XSRF-TOKEN",
+                        $('input:hidden[name="__RequestVerificationToken"]').val());
+                    $("#spinner").show();
+                },
+                data: fdata,
+                contentType: false,
+                processData: false,
+                success: function (response) {
+                    if (response.length === 0)
+                        alert('Some error occured while uploading');
+                    else {
+
+                        $('#dvData').html(response);
+                    }
+                    $("#spinner").hide();
+                },
+                error: function (e) {
+                    console(e);
+                    $('#dvData').html(e.responseText);
+                }
+            });
+
+    }
+
+</script>
+
+
+
+

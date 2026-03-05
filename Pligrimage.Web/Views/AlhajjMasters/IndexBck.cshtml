@@ -1,0 +1,200 @@
+﻿
+
+
+
+<div class="card card-cascade wider">
+    <div class="view view-cascade gradient-card-header blue-gradient-rgba">
+        <h2 class="card-header-title mb-3">بيانات حجاج وزارة الدفاع </h2>
+    </div>
+    <div class="card-body card-body-cascade" style="background-color:gainsboro">
+        <div class="k-rtl">
+
+           @*  @(Html.Kendo().Grid<Pligrimage.Entities.AlhajjMaster>
+        ()
+        .Name("AlhajjMasterGrid")
+        .ToolBar(tools => tools.Excel())
+        .Columns(column =>
+        {
+
+            column.Bound(c => c.FullName).Title("الاسم").Filterable(true).Width(150);
+            column.Bound(c => c.ServcieNumber).Title(" الرقم العسكري").Width(90);
+            column.Bound(c => c.NIC).Title(" الرقم المدني").Width(95);
+            column.Bound(c => c.Region).Title("المحافظة").Width(100);
+            //column.Bound(c => c.DateOfEnlistment).Title("تاريخ الالتحاق ").Width(100).Format("{0:dd/MM/yyyy}");
+            column.Bound(c => c.ReletiveName1).Title("أقرب الاقربين أ").Hidden();
+            column.Bound(c => c.RelativeGsm1).Title("رقم الهاتف أ").Hidden();
+            column.Bound(c => c.ReletiveName2).Title("أقرب الاقربين ب").Hidden();
+            column.Bound(c => c.RelativeGsm2).Title("رقم الهاتف ب").Hidden();
+            column.ForeignKey(c => c.ParameterId, (System.Collections.IEnumerable)ViewData["ClassTypeList"], "ParameterId", "DescArabic").Title("نوع التصنيف").Width(100);
+            column.Bound(c => c.EmployeeStatus).Title("حالة الموظف").Width(100);
+            column.Bound(c => c.Unit.UnitNameAr).Title("السلاح").Width(150);
+
+            column.Command(com =>
+            {
+                //com.Edit().UpdateText("حفظ").Text("تعديل").CancelText("إلغاء");
+                //com.Destroy().Text("حذف");
+            }).Width(100);
+        })
+
+                                    .HtmlAttributes(new { style = "height:500px" })
+                                    .ToolBar(toolbar =>
+                                    {
+
+                                        toolbar.ClientTemplate("<a class='k-button k-button-icontext ' href='"
+                                            + Url.Action("Create", "AlhajjMasters") + "'>تسجيل الحجاج" +
+                                            "</a>");
+
+                                        //"<a class='k-button k-button-icontext ' href='"
+                                        //+ Url.Action("ImportExport", "Upload") + "'>إضافة(خارج وزارة الدفاع)</a>");
+                                    })
+                                    .Editable(editable => editable.Mode(GridEditMode.PopUp).TemplateName("Edit").Window(c => c.Resizable().Title("تعديل")))
+                                    .Scrollable()
+                                    .ClientDetailTemplateId("template")
+                                    .Sortable()
+                                    .Selectable()
+                                    .Filterable(f => f.Extra(false)
+                                                .Operators(opertor => opertor
+                                                .ForString(str => str.Clear()
+                                                .Contains("يحتوي على"))))
+                                    .Pageable
+                                    (p => p
+                                    .ButtonCount(5)
+                                    .Refresh(true)
+                                    )
+                                    .DataSource
+                                    (dataSourec => dataSourec
+                                    .Ajax()
+                                    //.Events(e => e.Error("Error_Handler"))
+                                    .Events(events =>
+                                    {
+                                        events.Error("error_handler");
+                                        events.RequestEnd("request_end");
+                                    })
+                                    .Model(m =>
+                                    {
+                                        m.Id(i => i.PligrimageId);
+                                        m.Field(c => c.CategoryId).DefaultValue(1);
+                                    })
+
+                                    .Read(read => read.Action("AlhajjRead", "AlhajjMasters"))
+                                    .Create(create => create.Action("CreateAlhajj", "AlhajjMasters"))
+                                    .Update(update => update.Action("UpdateAlhajj", "AlhajjMasters"))
+                                    .Destroy(delete => delete.Action("DeleteAlhajjMaster", "AlhajjMasters"))
+                                    )
+                                    .Events(events => events.DataBound("dataBound"))
+)
+        </div>
+    </div>
+</div> *@
+@*<script>
+
+        function Error_Handler(e) {
+            //alert("dfsdfsd");
+            console.log(e);
+            if (e.errors) {
+                var message = "Errors: \n";
+                $.each(e.errors, function (key, value) {
+                    if ('errors' in value) {
+                        $.each(value.errors, function () {
+                            message += this + "\n";
+                        });
+                    }
+                });
+                alert(message);
+            }
+
+
+        };
+
+    </script>*@
+
+<script>
+
+
+    function error_handler(e) {
+        console.log(e);
+        if (e.errors) {
+            var message = "Errors: \n";
+            $.each(e.errors, function (key, value) {
+                if ('errors' in value) {
+                    $.each(value.errors, function () {
+                        message += this + "\n";
+                    });
+                }
+            });
+            alert(message);
+        }
+    };
+
+    function request_end(e) {
+
+        if (e.type == "update") {
+            alert("تم تحديث البيانات بنجاح");
+        }
+        if (e.type == "create") {
+            alert("تم حفظ البيانات بنجاح");
+
+        }
+        if (e.type == "delete") {
+            alert("تم حذف البيانات بنجاح");
+
+        }
+    }
+
+</script>
+
+
+
+@* <script id="template" type="text/kendo-tmpl">
+    @(Html.Kendo().TabStrip()
+                .Name("tabStrip_#=PligrimageId#")
+                .SelectedIndex(0)
+                .Animation(animation => animation.Open(open => open.Fade(FadeDirection.Out)))
+                //.Animation(animation => animation.Close(open => open.Fade(FadeDirection.In)))
+                .Items(items =>
+                {
+                    items.Add().Text("تفاصيل اضافية").Content(@<text>
+                        @(Html.Kendo().Grid<Pligrimage.Entities.AlhajjMaster>()
+                                                    .Name("grid_#=PligrimageId#") // template expression, to be evaluated in the master context
+                                                    .Columns(column =>
+                                                    {
+                                                            column.Bound(c => c.ReletiveName1).Title("أقرب الاقربين أ");
+                                                            column.Bound(c => c.RelativeGsm1).Title("رقم الهاتف أ");
+                                                            column.Bound(c => c.ReletiveName2).Title("أقرب الاقربين ب");
+                                                            column.Bound(c => c.RelativeGsm2).Title("رقم الهاتف ب");
+
+
+                                                        })
+                                                    .DataSource(dataSource => dataSource
+                                                        .Ajax()
+                                                        .PageSize(5)
+                                                        .Read(read => read.Action("MasterDetails", "AlhajjMasters", new { pligrimageId = "#=PligrimageId#" }))
+                                                    )
+                                                        .Editable(editable => editable.Mode(GridEditMode.PopUp).TemplateName("Edit").Window(c => c.Scrollable(true).Title("تعديل").Width(425).Height(900)))
+
+                                                    .Pageable()
+                                                    .Sortable()
+                                                    .ToClientTemplate())
+                    </text>
+                                      );
+                                })
+                                            .ToClientTemplate())
+
+</script> *@
+
+<script>
+    function dataBound() {
+        //this.expandRow(this.tbody.find("tr.k-master-row").first());
+    }
+</script>
+
+
+
+<style>
+    .k-grid .k-grid-header {
+        border-color: #dde2e7;
+        color: #212529;
+        background-color: #f8f9fa;
+        font-weight: bold;
+    }
+</style>

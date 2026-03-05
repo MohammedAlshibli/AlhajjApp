@@ -1,0 +1,11 @@
+D:\Project_SourceCode\Alhajj\ITS.Pligrimage\ITS.Core.Abstractions\bin\Release\netstandard2.1\ITS.Core.Abstractions.deps.json
+D:\Project_SourceCode\Alhajj\ITS.Pligrimage\ITS.Core.Abstractions\bin\Release\netstandard2.1\ITS.Core.Abstractions.dll
+D:\Project_SourceCode\Alhajj\ITS.Pligrimage\ITS.Core.Abstractions\bin\Release\netstandard2.1\ITS.Core.Abstractions.pdb
+D:\Project_SourceCode\Alhajj\ITS.Pligrimage\ITS.Core.Abstractions\obj\Release\netstandard2.1\ITS.Core.Abstractions.Properties.Resources.resources
+D:\Project_SourceCode\Alhajj\ITS.Pligrimage\ITS.Core.Abstractions\obj\Release\netstandard2.1\ITS.Core.Abstractions.csproj.GenerateResource.cache
+D:\Project_SourceCode\Alhajj\ITS.Pligrimage\ITS.Core.Abstractions\obj\Release\netstandard2.1\ITS.Core.Abstractions.GeneratedMSBuildEditorConfig.editorconfig
+D:\Project_SourceCode\Alhajj\ITS.Pligrimage\ITS.Core.Abstractions\obj\Release\netstandard2.1\ITS.Core.Abstractions.AssemblyInfoInputs.cache
+D:\Project_SourceCode\Alhajj\ITS.Pligrimage\ITS.Core.Abstractions\obj\Release\netstandard2.1\ITS.Core.Abstractions.AssemblyInfo.cs
+D:\Project_SourceCode\Alhajj\ITS.Pligrimage\ITS.Core.Abstractions\obj\Release\netstandard2.1\ITS.Core.Abstractions.csproj.CoreCompileInputs.cache
+D:\Project_SourceCode\Alhajj\ITS.Pligrimage\ITS.Core.Abstractions\obj\Release\netstandard2.1\ITS.Core.Abstractions.dll
+D:\Project_SourceCode\Alhajj\ITS.Pligrimage\ITS.Core.Abstractions\obj\Release\netstandard2.1\ITS.Core.Abstractions.pdb

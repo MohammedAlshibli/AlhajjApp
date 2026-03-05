@@ -1,0 +1,76 @@
+﻿
+
+    <h1 style="text-align:right">السكن</h1>
+
+    <div class="k-rtl">
+        @* @(Html.Kendo().Grid<Pligrimage.Entities.Residences>
+                                                            ()
+                                                            .Name("ResidencesGrid")
+                                                            .Columns(column =>
+                                                            {
+                                                                column.Bound(c => c.Building).Title(" المبنى");
+                                                                column.Bound(c => c.Floor).Title("الطابق");
+                                                                column.Bound(c => c.Room).Title("الغرف");
+                                                                column.Bound(c => c.RoomCapacity).Title("العدد المسموح");
+                                                                column.Bound(c => c.Year).Title("السنة").Format("{0:dd/MM/yyyy}");
+
+
+                                                                column.Command(com =>
+                                                                {
+                                                                    com.Edit().UpdateText("حفظ").Text("تعديل").CancelText("إلغاء").HtmlAttributes(new { type = "button", @class = "btn-basic ", });
+                                                                    com.Destroy().Text("حذف").HtmlAttributes(new { type = "button", @class = "btn-basic ", });
+                                                                }).Width(200);
+                                                            })
+                                                            .HtmlAttributes(new { style = "height:500px" })
+                                                            .ToolBar(toolbar => toolbar.Create().Text("أضافة جديدة").HtmlAttributes(new { type = "button", @class = "btn-basic ", }))
+                                                            .Editable(editable => editable.Mode(GridEditMode.PopUp).TemplateName("Edit"))
+                                                            .Scrollable()
+                                                            .Sortable()
+                                                            .Selectable()
+                                                            .Filterable(f => f.Extra(false)
+                                                                     .Operators(opertor => opertor
+                                                                     .ForString(str => str.Clear()
+                                                                     .Contains("يحتوي على"))))
+                                                            .Pageable
+                                                            (p => p
+                                                            .ButtonCount(5)
+                                                            .Refresh(true)
+                                                            )
+                                                            .DataSource
+                                                            (dataSourec => dataSourec
+                                                            .Ajax()
+                                                            .Events(e => e.Error("Error_Handler"))
+                                                            .Model(m =>
+                                                            {
+                                                                m.Id(i => i.ResidencesId);
+
+                                                            })
+                                                            .Read(read => read.Action("ResidenceRead", "Residences"))
+                                                            .Create(create => create.Action("CreateResidence", "Residences"))
+                                                            .Update(update => update.Action("UpdateResidence", "Residences"))
+                                                            .Destroy(delete => delete.Action("DeleteResidence", "Residences"))
+
+                                                            )
+        ) *@
+    </div>
+
+<script>
+
+    function Error_Handler(e) {
+        console.log(e);
+        if (e.errors) {
+            var message = "Errors: \n";
+            $.each(e.errors, function (key, value) {
+                if ('errors' in value) {
+                    $.each(value.errors, function () {
+                        message += this + "\n";
+                    });
+                }
+            });
+            alert(message);
+        }
+
+
+    };
+
+</script>

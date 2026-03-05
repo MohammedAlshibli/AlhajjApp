@@ -1,0 +1,14 @@
+C:\Alhajj\ITS.Pligrimage\ITS.Core.Abstractions.Trackable\bin\Release\netstandard2.0\ITS.Core.Abstractions.Trackable.deps.json
+C:\Alhajj\ITS.Pligrimage\ITS.Core.Abstractions.Trackable\bin\Release\netstandard2.0\ITS.Core.Abstractions.Trackable.dll
+C:\Alhajj\ITS.Pligrimage\ITS.Core.Abstractions.Trackable\bin\Release\netstandard2.0\ITS.Core.Abstractions.Trackable.pdb
+C:\Alhajj\ITS.Pligrimage\ITS.Core.Abstractions.Trackable\bin\Release\netstandard2.0\ITS.Core.Abstractions.dll
+C:\Alhajj\ITS.Pligrimage\ITS.Core.Abstractions.Trackable\bin\Release\netstandard2.0\ITS.TrackableEntities.Common.Core.dll
+C:\Alhajj\ITS.Pligrimage\ITS.Core.Abstractions.Trackable\bin\Release\netstandard2.0\ITS.Core.Abstractions.pdb
+C:\Alhajj\ITS.Pligrimage\ITS.Core.Abstractions.Trackable\bin\Release\netstandard2.0\ITS.TrackableEntities.Common.Core.pdb
+C:\Alhajj\ITS.Pligrimage\ITS.Core.Abstractions.Trackable\obj\Release\netstandard2.0\ITS.Core.Abstractions.Trackable.csprojAssemblyReference.cache
+C:\Alhajj\ITS.Pligrimage\ITS.Core.Abstractions.Trackable\obj\Release\netstandard2.0\ITS.Core.Abstractions.Trackable.csproj.CoreCompileInputs.cache
+C:\Alhajj\ITS.Pligrimage\ITS.Core.Abstractions.Trackable\obj\Release\netstandard2.0\ITS.Core.Abstractions.Trackable.AssemblyInfoInputs.cache
+C:\Alhajj\ITS.Pligrimage\ITS.Core.Abstractions.Trackable\obj\Release\netstandard2.0\ITS.Core.Abstractions.Trackable.AssemblyInfo.cs
+C:\Alhajj\ITS.Pligrimage\ITS.Core.Abstractions.Trackable\obj\Release\netstandard2.0\ITS.Core.Abstractions.Trackable.csproj.CopyComplete
+C:\Alhajj\ITS.Pligrimage\ITS.Core.Abstractions.Trackable\obj\Release\netstandard2.0\ITS.Core.Abstractions.Trackable.dll
+C:\Alhajj\ITS.Pligrimage\ITS.Core.Abstractions.Trackable\obj\Release\netstandard2.0\ITS.Core.Abstractions.Trackable.pdb

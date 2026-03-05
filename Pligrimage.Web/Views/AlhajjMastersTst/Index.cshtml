@@ -1,0 +1,80 @@
+﻿@model IEnumerable<Pligrimage.Entities.AlhajjMaster>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+
+<link href="~/alhajjlab/jquery.datatables.min.css" rel="stylesheet" />
+<link href="~/alhajjlab/buttons.datatables.min.css" rel="stylesheet" />
+<link href="~/alhajjlab/bootstrap.min.css" rel="stylesheet" />
+<!-- Google Font for Better UI -->
+<link href="~/alhajjlab/css2.css" rel="stylesheet" />
+<table id="tbl" class="display nowrap table table-bordered" style="width:100%">
+    <thead>
+        <tr>
+            <th>الرقم العسكري</th>
+            <th>رقم المدني</th>
+            <th>الاسم بالكامل</th>
+            <th>تاريخ الميلاد</th>
+            <th>المحافظة</th>
+
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ServcieNumber)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.NIC)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FullName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DateOfBirth)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Region)
+                </td>
+
+                <td>
+                    <a asp-action="Edit" button class="btn btn-sm btn-warning"  asp-route-id="@item.PligrimageId">Edit</a> |
+                    <a asp-action="Delete"  button class="btn btn-sm btn-danger" asp-route-id="@item.PligrimageId">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<script src="~/alhajjlab/jquery-3.6.0.min.js"></script>
+<script src="~/alhajjlab/jquery.datatables.min.js"></script>
+<script src="~/alhajjlab/bootstrap.bundle.min.js"></script>
+
+<script>
+    var table;
+
+    $(document).ready(function () {
+        table = $("#tbl").DataTable({
+            dom: '<"dt-buttons"B>frtip',
+            buttons: ['excelHtml5', 'csvHtml5', 'print'],
+            responsive: true,
+            lengthMenu: [[10, 25, 50, 100], [10, 25, 50, 100]],
+            pageLength: 10,
+            pagingType: "full_numbers",
+            language: {
+                search: "_INPUT_",
+                searchPlaceholder: "Search records...",
+                lengthMenu: "Show _MENU_ entries"
+            }
+        });
+    });
+ </script>

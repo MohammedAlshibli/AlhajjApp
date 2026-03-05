@@ -1,0 +1,55 @@
+{
+  "version": 2,
+  "dgSpecHash": "Vgk65oeLiyk=",
+  "success": true,
+  "projectFilePath": "D:\\Alhajj\\ITS.Pligrimage\\ITS.Core.Services\\ITS.Core.Services.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\its\\.nuget\\packages\\automapper\\7.0.1\\automapper.7.0.1.nupkg.sha512",
+    "C:\\Users\\its\\.nuget\\packages\\jquery\\1.9.1\\jquery.1.9.1.nupkg.sha512",
+    "C:\\Users\\its\\.nuget\\packages\\kendouicore\\2019.1.220\\kendouicore.2019.1.220.nupkg.sha512",
+    "C:\\Users\\its\\.nuget\\packages\\microsoft.csharp\\4.5.0\\microsoft.csharp.4.5.0.nupkg.sha512",
+    "C:\\Users\\its\\.nuget\\packages\\system.valuetuple\\4.5.0\\system.valuetuple.4.5.0.nupkg.sha512"
+  ],
+  "logs": [
+    {
+      "code": "NU1902",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Package 'jQuery' 1.9.1 has a known moderate severity vulnerability, https://github.com/advisories/GHSA-6c3j-c64m-qhgq",
+      "libraryId": "jQuery",
+      "targetGraphs": [
+        ".NETStandard,Version=v2.1"
+      ]
+    },
+    {
+      "code": "NU1902",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Package 'jQuery' 1.9.1 has a known moderate severity vulnerability, https://github.com/advisories/GHSA-gxr4-xjj5-5px2",
+      "libraryId": "jQuery",
+      "targetGraphs": [
+        ".NETStandard,Version=v2.1"
+      ]
+    },
+    {
+      "code": "NU1902",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Package 'jQuery' 1.9.1 has a known moderate severity vulnerability, https://github.com/advisories/GHSA-jpcq-cgw6-v4j6",
+      "libraryId": "jQuery",
+      "targetGraphs": [
+        ".NETStandard,Version=v2.1"
+      ]
+    },
+    {
+      "code": "NU1902",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Package 'jQuery' 1.9.1 has a known moderate severity vulnerability, https://github.com/advisories/GHSA-rmxg-73gg-4p98",
+      "libraryId": "jQuery",
+      "targetGraphs": [
+        ".NETStandard,Version=v2.1"
+      ]
+    }
+  ]
+}

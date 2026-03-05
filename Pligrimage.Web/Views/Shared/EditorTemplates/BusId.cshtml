@@ -1,0 +1,18 @@
+﻿@model int
+
+@* @(Html.Kendo().DropDownListFor(c => c)
+                        .AutoBind(false)
+                        .OptionLabel("select")
+                        .DataTextField("BusId")
+                        .DataValueField("BusNo")
+                        .DataSource(d =>
+                        {
+                            d.Read(read => read.Action("getFlight", "Passanger"))
+                        .ServerFiltering(true);
+                        })
+) *@
+@Html.ValidationMessageFor(c => c)
+
+
+
+

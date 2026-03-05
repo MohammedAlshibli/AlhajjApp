@@ -1,0 +1,56 @@
+﻿
+    @*<div class=" col-md-3" style="align-content:center">
+        <table class="table table-fixed w-auto table-info table-bordered">
+            <thead>
+                <tr>
+                    <th style="text-align:center"></th>
+                    <td style="text-align:center">
+                        <div id="allowNumber"></div>
+                    </td>
+                   
+                </tr>
+            </thead>
+        </table>
+    </div>
+    <script>
+
+    $(document).ready(function () {
+        GetServiceCount();
+
+    });
+    
+
+    function GetServiceCount() {
+
+        $.ajax({
+            url: '@Url.Action("StaticAllService", "Home")',
+            type: 'Get',
+            dataType: 'json',
+            contentType: "application/json; charset=utf-8",
+
+
+
+            success: function (data, i) {
+
+
+                console.log(data[0]);
+
+                var allowNumber = data[0].Consumed ;
+                //if (data[0].Consumed == data[0].Consumed) {
+                //    $("#allowNumber").addClass("text-danger");
+                //}
+                $("#allowNumber").html(allowNumber);
+
+
+              
+                }
+        
+            
+        
+
+
+        });
+
+    }
+
+    </script>*@

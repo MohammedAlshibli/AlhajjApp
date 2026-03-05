@@ -1,0 +1,85 @@
+﻿@model Pligrimage.Entities.AlhajjMaster
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h4>حجاج وزارة الدفاع</h4>
+
+<hr />
+
+<div dir="rtl">
+    <br />
+
+
+        <div class=" col-md-3">
+            <table class="table table-fixed w-auto table-info table-bordered">
+                <thead>
+                    <tr>
+                        <th style="text-align:center">العدد المسموح</th>
+                        <td style="text-align:center">
+                            <div id="allowNumber"></div>
+                        </td>
+                        <th style="text-align:center">العدد الأحتياط</th>
+                        <td style="text-align:center">
+                            <div id="standBy"></div>
+                        </td>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+
+
+
+<script>
+
+    $(document).ready(function () {
+        GetServiceCount();
+
+    });
+    
+
+    function GetServiceCount() {
+
+        $.ajax({
+            url: '@Url.Action("StaticService", "AlhajjMasters")',
+            type: 'Get',
+            dataType: 'json',
+            contentType: "application/json; charset=utf-8",
+
+
+
+            success: function (data, i) {
+
+
+                console.log(data[0]);
+
+                var allowNumber = data[0].Consumed + " من " + data[0].Total;
+                if (data[0].Consumed == data[0].Total) {
+                    $("#allowNumber").addClass("text-danger");
+                }
+                $("#allowNumber").html(allowNumber);
+
+
+                var SatndByNumber = data[1].Consumed + " من " + data[1].Total;
+                if (data[1].Consumed == data[1].Total) {
+                    $("standBy").addClass("text-danger");
+
+                }
+                $("#standBy").html(SatndByNumber);
+
+
+
+
+
+
+            }
+
+
+
+        });
+
+    }
+
+</script>

@@ -1,0 +1,15 @@
+E:\URF\URF.Core\URF.Core.Abstractions.Trackable\bin\Debug\netstandard2.0\URF.Core.Abstractions.Trackable.deps.json
+E:\URF\URF.Core\URF.Core.Abstractions.Trackable\bin\Debug\netstandard2.0\URF.Core.Abstractions.Trackable.dll
+E:\URF\URF.Core\URF.Core.Abstractions.Trackable\bin\Debug\netstandard2.0\URF.Core.Abstractions.Trackable.pdb
+E:\URF\URF.Core\URF.Core.Abstractions.Trackable\bin\Debug\netstandard2.0\TrackableEntities.Common.Core.dll
+E:\URF\URF.Core\URF.Core.Abstractions.Trackable\bin\Debug\netstandard2.0\URF.Core.Abstractions.dll
+E:\URF\URF.Core\URF.Core.Abstractions.Trackable\bin\Debug\netstandard2.0\TrackableEntities.Common.Core.pdb
+E:\URF\URF.Core\URF.Core.Abstractions.Trackable\bin\Debug\netstandard2.0\TrackableEntities.Common.Core.xml
+E:\URF\URF.Core\URF.Core.Abstractions.Trackable\bin\Debug\netstandard2.0\URF.Core.Abstractions.pdb
+E:\URF\URF.Core\URF.Core.Abstractions.Trackable\obj\Debug\netstandard2.0\URF.Core.Abstractions.Trackable.csprojAssemblyReference.cache
+E:\URF\URF.Core\URF.Core.Abstractions.Trackable\obj\Debug\netstandard2.0\URF.Core.Abstractions.Trackable.csproj.CoreCompileInputs.cache
+E:\URF\URF.Core\URF.Core.Abstractions.Trackable\obj\Debug\netstandard2.0\URF.Core.Abstractions.Trackable.AssemblyInfoInputs.cache
+E:\URF\URF.Core\URF.Core.Abstractions.Trackable\obj\Debug\netstandard2.0\URF.Core.Abstractions.Trackable.AssemblyInfo.cs
+E:\URF\URF.Core\URF.Core.Abstractions.Trackable\obj\Debug\netstandard2.0\URF.Core.Abstractions.Trackable.csproj.CopyComplete
+E:\URF\URF.Core\URF.Core.Abstractions.Trackable\obj\Debug\netstandard2.0\URF.Core.Abstractions.Trackable.dll
+E:\URF\URF.Core\URF.Core.Abstractions.Trackable\obj\Debug\netstandard2.0\URF.Core.Abstractions.Trackable.pdb

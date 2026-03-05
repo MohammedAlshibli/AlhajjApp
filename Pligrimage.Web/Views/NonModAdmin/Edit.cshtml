@@ -1,0 +1,179 @@
+﻿<div class="card card-cascade wider">
+    <div class="view view-cascade gradient-card-header blue-gradient-rgba">
+        <h2 class="card-header-title mb-3">الاداريين خارج وزارة الدفاع</h2>
+    </div>
+    <div class="card-body card-body-cascade">
+        <div class="container-fluid">
+            <div class="k-rtl">
+               @*  @(Html.Kendo().Grid<Pligrimage.Entities.AlhajjMaster>
+                        ()
+                        .Name("AlhajjNonModAdmin")
+                        .Columns(column =>
+                        {
+                            column.Bound(c => c.FullName).Title("الاسم بالكامل").Filterable(true);
+                            column.Bound(c => c.ServcieNumber).Title(" رقم العسكري");
+                            column.ForeignKey(c => c.Region, (System.Collections.IEnumerable)ViewData["RegionCode"], "DescArabic", "DescArabic").Title("المحافظة").Width(200);
+                            column.Bound(c => c.WilayaDesc).Title("الولاية").Hidden();
+                            column.Bound(c => c.VillageDesc).Title("القرية").Hidden();
+                            column.Bound(c => c.GSM).Title("رقم الهاتف").Hidden();
+                            column.Bound(c => c.NICExpire).Title("تاريخ انتهاء البطاقة الشخصية").Hidden();
+                            column.Bound(c => c.PassportExpire).Title("تاريخ انتهاء جواز السفر").Hidden();
+                            column.Bound(c => c.BloodGroup).Title("فصيلة الدم").Hidden();
+                            column.Bound(c => c.DateOfEnlistment).Title("تاريخ الالتحاق بالخدمة العسكرية").Hidden();
+                            column.Bound(c => c.ReletiveName1).Title("أقرب الاقربين أ").Hidden();
+                            column.Bound(c => c.RelativeGsm1).Title("رقم الهاتف أ").Hidden();
+                            column.Bound(c => c.ReletiveName2).Title("أقرب الاقربين ب").Hidden();
+                            column.Bound(c => c.RelativeGsm2).Title("رقم الهاتف ب").Hidden();
+
+                            column.ForeignKey(c => c.UnitId, (System.Collections.IEnumerable)ViewData["Unit"], "UnitId", "UnitNameAr").Title("إسم السلاح").Width(200);
+                            column.ForeignKey(c => c.CategoryId, (System.Collections.IEnumerable)ViewData["Categories"], "CategoryId", "DescArabic").Title("التصنيف").Width(200);
+
+
+
+                            column.Command(com =>
+                            {
+                                com.Custom("ViewDetails").Click("Deatils");
+                                com.Edit().UpdateText("حفظ").Text("تعديل").CancelText("إلغاء").HtmlAttributes(new { type = "button", @class = "glyphicon-pencil", });
+                                com.Destroy().Text("حذف").HtmlAttributes(new { type = "button", @class = "btn-basic ", });
+                            }).Width(250).Title("Action");
+                        })
+                        .HtmlAttributes(new { style = "height:500px" })
+                        .ToolBar(toolbar => toolbar.Create().Text("إضافة جديدة").HtmlAttributes(new { type = "button", @class = "plus", }))
+                        .Editable(editable => editable.Mode(GridEditMode.PopUp).TemplateName("Edit").Window(c => c.Scrollable(true).Title("تعديل").Width(425).Height(900)))
+                        .Events(e => e.Edit("NewRecord"))
+
+                        .Scrollable()
+                        .Sortable()
+                        .Selectable()
+                        .Filterable(f => f.Extra(false)
+                        .Operators(opertor => opertor
+                        .ForString(str => str.Clear()
+                        .Contains("يحتوي على"))))
+                        .Pageable
+                        (p => p
+                        .ButtonCount(5)
+                        .Refresh(true)
+                        )
+                        .DataSource
+                        (dataSourec => dataSourec
+                        .Ajax()
+                        .ServerOperation(false)
+                        .Events(events =>
+                        {
+                            events.Error("error_handler");
+                            events.RequestEnd("request_end");
+                        })
+                        .Model(m =>
+                        {
+                            m.Id(i => i.PligrimageId);
+                            m.Field(c => c.UnitId).DefaultValue(0);
+                            m.Field(c => c.CategoryId).DefaultValue(0);
+
+                        })
+                        .Read(read => read.Action("ReadNonModAdmin", "NonModAdmin"))
+                        .Create(create => create.Action("CreateNonModAdmin", "NonModAdmin"))
+                        .Update(update => update.Action("UpdateNonModAdmin", "NonModAdmin"))
+                        .Destroy(delete => delete.Action("DeleteNonModAdmin", "NonModAdmin"))
+
+                        )
+                )
+                @(Html.Kendo()
+                                    .Window()
+                                    .Name("Deatils")
+                                    .Title("ViewDetails")
+                     
+                        .Visible(false)
+                        .Modal(true)
+                        .Draggable(true)
+                        .Width(800)
+                        .Height(400)
+                        .Resizable()
+
+
+                )
+
+ *@
+            </div>
+        </div>
+
+        <script>
+            function NewRecord(e) {
+                if (e.model.isNew()) {
+                    $('.k-window-title').text("إضافة جديدة");
+                }
+
+            }
+        </script>
+
+
+        <script>
+
+            function error_handler(e) {
+                //alert("dfsdfsd");
+                console.log(e);
+                if (e.errors) {
+                    var message = "Errors: \n";
+                    $.each(e.errors, function (key, value) {
+                        if ('errors' in value) {
+                            $.each(value.errors, function () {
+                                message += this + "\n";
+                            });
+                        }
+                    });
+                    alert(message);
+                }
+            };
+
+            function request_end(e) {
+
+                if (e.type == "update") {
+                    alert("تم تحديث البيانات بنجاح");
+                }
+                if (e.type == "create") {
+                    alert("تم حفظ البيانات بنجاح");
+
+                }
+                if (e.type == "delete") {
+                    alert("تم حذف البيانات بنجاح");
+
+                }
+            }
+
+
+        </script>
+
+        <script>
+            function OnChange(e) {
+                var selected = parseInt(this.dataItem(this.select()).Id);
+                debugger;
+        @*OpenPopup('@Url.Action("GridDetails", "NonModAdmin", new { PligrimageId = selected })');*@
+
+          $("#Deatils").kendoWindow({
+            content: {
+                url: '@Url.Action("GridDetails", "NonModAdmin")',
+                data: { PligrimageId: selected }
+                        },
+            position: {
+                top: 300,
+                left: "25%"
+            }
+
+                });
+        var wnd = $("#Deatils").data("kendoWindow");
+                wnd.open();
+
+
+        </script>
+
+
+
+
+
+
+
+
+
+
+
+
+

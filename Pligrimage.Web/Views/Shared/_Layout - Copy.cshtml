@@ -1,0 +1,160 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Hajj.Web</title>
+
+    <environment include="Development">
+        <link href="~/css/site.css" rel="stylesheet" />
+        <link href="~/lib/kendo-ui/styles/kendo.common.min.css" rel="stylesheet" />
+        <link href="~/lib/kendo-ui/styles/kendo.blueopal.min.css" rel="stylesheet" />@*style*@
+        <link href="~/lib/kendo-ui/styles/kendo.rtl.min.css" rel="stylesheet" />
+        <link href="~/lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
+        <link href="~/lib/bootstrap/dist/css/rtl/bootstrap.css" rel="stylesheet" />
+        <link href="~/lib/font-awesome-4.7.0/css/font-awesome.css" rel="stylesheet" />
+        <link href="~/lib/mdbootsrap/css/mdb.css" rel="stylesheet" />
+
+    </environment>
+    <environment exclude="Development">
+        <link href="~/css/site.css" rel="stylesheet" />
+        <link href="~/lib/kendo-ui/styles/kendo.common.min.css" rel="stylesheet" />
+        <link href="~/lib/kendo-ui/styles/kendo.blueopal.min.css" rel="stylesheet" />@*style*@
+        <link href="~/lib/kendo-ui/styles/kendo.rtl.min.css" rel="stylesheet" />
+        <link href="~/lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
+        <link href="~/lib/bootstrap/dist/css/rtl/bootstrap.css" rel="stylesheet" />
+        <link href="~/lib/font-awesome-4.7.0/css/font-awesome.css" rel="stylesheet" />
+        <link href="~/lib/mdbootsrap/css/mdb.css" rel="stylesheet" />
+    </environment>
+
+
+    <environment include="Development">
+
+        <script src="~/lib/jquery/dist/jquery.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+        <script src="~/lib/kendo-ui/js/kendo.all.min.js"></script>
+        <script src="~/lib/kendo-ui/js/kendo.aspnetmvc.min.js"></script>
+        @*<script src="~/lib/mdbootsrap/js/mdb.js"></script>*@
+
+
+
+    </environment>
+    @*<environment exclude="Development">
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css"
+                  asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
+                  asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute"
+                  crossorigin="anonymous"
+                  integrity="sha256-eSi1q2PG6J7g7ib17yAaWMcrr5GrtohYChqibrV7PBE=" />
+
+            <link href="~/lib/kendo-ui/styles/kendo.common-nova.min.css" rel="stylesheet" />
+            <link href="~/lib/kendo-ui/styles/kendo.nova.min.css" rel="stylesheet" />
+
+        </environment>*@
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3">
+            <div class="container-fluid">
+
+                <div class="navbar-collapse collapse d-sm-inline-flex">
+                    <ul class="navbar-nav flex-grow-1">
+
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Parameters" asp-action="Index">الشروط</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Categories" asp-action="Index">التصنيفات الادارية</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Units" asp-action="Index">الاسلحة</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Buses" asp-action="Index">الباصات</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Flights" asp-action="Index">الرحلات الجوية</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Documents" asp-action="Index">المرفقات</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="AlhajjMasters" asp-action="Index">حجاج وزارة الدفاع</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="AlhajjAdmin" asp-action="Index">الحجاج الاداريين</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Passengers" asp-action="Index">توزيع الحجاج</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="PassengerSupervisors" asp-action="Index">المشرفين</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Residences" asp-action="Index">السكن</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="AlhajjList" asp-action="Index">القوائم</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Medical" asp-action="Index">الفحص الطبي</a>
+                        </li>
+                        @*<li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="NonModAdmin" asp-action="Index"> الاداريين خارج وزارة الدفاع</a>
+                        </li>*@
+
+
+                    </ul>
+                </div>
+                <img width="61px" src="~/Image/logo.png" />
+
+            </div>
+        </nav>
+    </header>
+    <div class="container-fluid">
+        <partial name="_CookieConsentPartial" />
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted text-center">
+        <div class="container">
+            &copy; 2019 - نظام ادارة بعثات الحج العسكرية - <a asp-area="" asp-controller="Home" asp-action="Privacy"></a>
+        </div>
+    </footer>
+
+    <environment include="Development">
+        <link href="~/css/site.css" rel="stylesheet" />
+
+        <script src="~/lib/jquery/dist/jquery.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.js"></script>
+        <script src="~/lib/kendo-ui/js/kendo.all.min.js"></script>
+        <script src="~/lib/kendo-ui/js/kendo.aspnetmvc.min.js"></script>
+        <script src="~/lib/kendo-ui/js/messages/kendo.ar-JO.js"></script>
+        <script src="~/lib/mdbootsrap/js/mdb.js"></script>
+        
+    </environment>
+
+
+    <environment exclude="Development">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"
+                asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
+                asp-fallback-test="window.jQuery"
+                crossorigin="anonymous"
+                integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=">
+        </script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/js/bootstrap.bundle.min.js"
+                asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"
+                asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"
+                crossorigin="anonymous"
+                integrity="sha256-E/V4cWE4qvAeO5MOhjtGtqDzPndRO1LBk8lJ/PR7CA4=">
+        </script>
+    </environment>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

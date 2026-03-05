@@ -1,0 +1,134 @@
+﻿
+@model Pligrimage.Web.Common.ViewModel.UserViewModel
+
+
+@{
+    //  Layout = null;
+}
+
+
+
+<div asp-validation-summary="All"></div>
+<form asp-area="Admin" asp-controller="Admin" asp-action="UserEditable" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post">
+    @Html.AntiForgeryToken()
+
+    <div class="panel-body">
+        <div class="row">
+
+            <div class=" col-md-4">
+                <h4 class="text-primary">البيانات الرئيسية </h4>
+                <table class="table table-user-information" style="background-color:#f2e8e8">
+                    @Html.HiddenFor(model => model.UserName)
+                    @Html.HiddenFor(model => model.UserId)
+                    @Html.HiddenFor(model => model.Rank)
+                    @Html.HiddenFor(model => model.FullName)
+
+                    <tbody>
+                        <tr>
+                            <th>@Html.DisplayName("أسم المستخدم")</th>
+                            <td>   @Html.DisplayFor(model => model.UserName)</td>
+                        </tr>
+                        <tr>
+                            <th>@Html.DisplayName("الرتبة")</th>
+                            <td>
+                                @Html.DisplayFor(model => model.Rank)
+                            </td>
+
+                        </tr>
+                        <tr>
+                            <th>@Html.DisplayName("الإسم")</th>
+                            <td>@Html.DisplayFor(model => model.FullName)</td>
+                        </tr>
+                        <tr>
+                            <th>@Html.DisplayName("عدد الاسلحة المسجلة ")</th>
+                            <td>
+                                @Html.DisplayFor(model => model.RoleCount)
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>@Html.DisplayName("test ")</th>
+                            <td>
+                                <input type="checkbox" asp-for="Active" class="custom-control-input" name="checkup" id="checkup" />
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+
+            </div>
+        </div>
+
+        @*<div class=" col-md-4" id="checkBoxStyle">
+            <h6 class="text-primary"> التخويل</h6>
+            <div class="custom-control custom-checkbox">
+                <input type="checkbox" asp-for="Active" class="custom-control-input" name="checkup" id="checkup"  />
+                <label class="custom-control-label" for="checkup"></label>
+            
+
+            </div>
+        </div>*@
+
+
+
+        <div class=" col-md-4">
+
+        </div>
+
+
+@*         <div class=" col-md-4">
+            <h4 class="text-primary">الصلاحيات </h4>
+            <table class="table table-user-information" style="background-color:#dee4f6">
+                <tbody>
+
+
+                    @(Html.Kendo().MultiSelectFor(r => r.SelectedRoles)
+                                                        .DataTextField("Text")
+                                                        .DataValueField("Value")
+                                                        .BindTo(Model.AllRoles)
+                    )
+
+
+                </tbody>
+
+
+            </table>
+        </div> *@
+
+
+@*         <div class=" col-md-4">
+            <h4 class="text-primary">الاسلحة </h4>
+            <table class="table table-user-information" style="background-color:#dee4f6">
+                <tbody>
+
+
+                    @(Html.Kendo().MultiSelectFor(r => r.SelectedServices)
+                                                                        .DataTextField("Text")
+                                                                        .DataValueField("Value")
+                                                                        .BindTo(Model.AllServices)
+                    )
+
+
+                </tbody>
+
+
+            </table>
+        </div> *@
+
+
+    </div>
+
+       
+        <div class="row">
+            <div class=" col-md-4">
+                <input type="submit" name="name" value="save" class="btn btn-primary" />
+            </div>
+            <div class=" col-md-1">
+            </div>
+            <div class=" col-md-4">
+
+            </div>
+        </div>
+
+    </form>
+
+

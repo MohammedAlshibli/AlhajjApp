@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "dgSpecHash": "Y/yDzR1DNaA=",
+  "success": true,
+  "projectFilePath": "D:\\Alhajj\\ITS.Pligrimage\\ITS.Core.Abstractions.Trackable\\ITS.Core.Abstractions.Trackable.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\its\\.nuget\\packages\\automapper\\7.0.1\\automapper.7.0.1.nupkg.sha512",
+    "C:\\Users\\its\\.nuget\\packages\\microsoft.csharp\\4.5.0\\microsoft.csharp.4.5.0.nupkg.sha512",
+    "C:\\Users\\its\\.nuget\\packages\\system.valuetuple\\4.5.0\\system.valuetuple.4.5.0.nupkg.sha512"
+  ],
+  "logs": []
+}

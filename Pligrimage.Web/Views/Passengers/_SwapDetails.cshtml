@@ -1,0 +1,47 @@
+﻿@model Pligrimage.Web.Models.SwapVM
+@{
+    ViewData["Title"] = "SwapTransfer1";
+}
+
+<div class="panel-body">
+    <div class="row">
+
+        <div class=" col-md-6">
+            <h4 class="text-primary">التفاصيل </h4>
+            <table class="table table-user-information" style="background-color:#f2e8e8">
+                @Html.HiddenFor(model => model.PassengerId)
+
+
+                <tbody>
+                    <tr>
+                        <th>@Html.DisplayName("الإسم")</th>
+                        <td>   @Html.DisplayFor(model => model.FullName)</td>
+                    </tr>
+                    <tr>
+                        <th>@Html.DisplayName("الرقم العسكري")</th>
+                        <td>
+                            @Html.DisplayFor(model => model.ServcieNumber)
+                        </td>
+
+                    </tr>
+                    <tr>
+                        <th>@Html.DisplayName("الرقم المدني")</th>
+                        <td>@Html.DisplayFor(model => model.NIC)</td>
+                    </tr>
+                    <tr>
+                        <th>@Html.DisplayName(" رقم الرحلة")</th>
+                        <td>@Html.DisplayFor(model => model.FlightNo)</td>
+                    </tr>
+                    <tr>
+                        <th>@Html.DisplayName("رقم الباص")</th>
+                        <td>@Html.DisplayFor(model => model.BusNo)</td>
+                    </tr>
+                </tbody>
+            </table>
+
+
+
+
+        </div>
+    </div>
+</div>

@@ -1,0 +1,362 @@
+﻿
+@* <div class="k-rtl">
+
+    @(Html.Kendo().Grid<Pligrimage.Entities.Passenger>
+            ()
+            .Name("SwapAlhajjaj")
+            .Columns(column =>
+            {
+                column.Bound(c => c.PassengerId).Hidden();
+                column.Bound(c => c.Flight.FlightNo).Title("رقم الرحلة");
+                column.Bound(c => c.Buses.BusNo).Title("رقم الباص");
+                column.Bound(c => c.Flight.Parameter.DescArabic).Title("ذهاب/عودة");
+                column.Bound(c => c.AlhajjMaster.ServcieNumber).Title("الرقم العسكري").Filterable(true);
+                column.Bound(c => c.AlhajjMaster.FullName).Title("الاسم");
+                column.Bound("").ClientTemplate("<a onclick=\"showDetails(#=PassengerId#)\" passId= #=PassengerId#" + " class='btn btn-primary btn-md my-2'> <i class='fa fa-pencil'></i> " + "تعديل" + "</a>");
+            })
+            .PersistSelection(true)
+            .ToolBar(toolbar =>
+            {
+                toolbar.ClientTemplateId("TypeTemplate");
+            })
+
+            .HtmlAttributes(new { style = "height:500px" })
+            .Pageable
+            (p => p
+            .ButtonCount(3)
+            .Refresh(true)
+            )
+            //.Events(e =>
+            //{
+            //    e.Edit("OnTest");
+            //})
+            .Sortable()
+            //.Groupable()
+            .Selectable()
+            .Filterable(f => f.Extra(false)
+            .Operators(opertor => opertor
+            .ForString(str => str.Clear()
+            .Contains("يحتوي على"))))
+            .Scrollable(c => c.Height("800px"))
+            .Pageable(pageable => pageable
+            .Messages(
+            m => m.ItemsPerPage("مدخل للصفحة")
+            .Display("إظهار {0} إلى {1} من أصل {2} مُدخل"))
+
+            )
+            .DataSource
+            (dataSourec => dataSourec
+            .Ajax()
+
+            .Events(events =>
+            {
+                events.Error("error_handler");
+                events.RequestEnd("request_end");
+
+            })
+            .Model(m =>
+            {
+                m.Id(i => i.PassengerId);
+                m.Field(c => c.PligrimageId).DefaultValue(1);
+            })
+            .Read(read => read.Action("PassengerRead", "Passengers"))
+            .Update(update => update.Action("UpdatePassenger", "Passengers"))
+            ))
+</div> *@
+
+
+<script>
+
+    function error_handler(e) {
+        //alert("dfsdfsd");
+        console.log(e);
+        if (e.errors) {
+            var message = "Errors: \n";
+            $.each(e.errors, function (key, value) {
+                if ('errors' in value) {
+                    $.each(value.errors, function () {
+                        message += this + "\n";
+                    });
+                }
+            });
+            alert(message);
+        }
+    };
+
+    function request_end(e) {
+
+        if (e.type == "update") {
+            alert("تم تحديث البيانات بنجاح");
+        }
+
+    }
+
+</script>
+
+
+@* <script id="TypeTemplate" type="text/x-kendo-template">
+    <br />
+    <div class="toolbar">
+        <label class="type-label" for="FlightNo"> تصفيه حسب الرحلات الجوية </label>
+
+        @(Html.Kendo().DropDownList()
+                .Name("FlightNo")
+                .Filter("contains")
+                .OptionLabel("كل الرحلات")
+                .DataTextField("FlightType")
+                .DataValueField("FlightType")
+                .AutoBind(false)
+                .Events(e => e.Change("TypeChange"))
+                .HtmlAttributes(new { style = "width:350px;" })
+                .DataSource(ds =>
+                {
+                    ds.Read("FlightCategory", "Passengers");
+
+                }).ToClientTemplate()
+        )
+
+    </div>
+    <br />
+
+</script>
+ *@
+<script type="text/javascript">
+
+    function TypeChange() {
+
+        var typeName = this.value(),
+
+            grid = $("#SwapAlhajjaj").data("kendoGrid");
+        if (typeName) {
+            grid.dataSource.filter({ field: "Flight.FlightNo", operator: "eq", value: typeName });
+        }
+        else {
+            grid.dataSource.filter({});
+        }
+    }
+
+</script>
+
+<script id="TypeTemplate" type="text/x-kendo-template">
+    <div class="refreshbtnContainer">
+        <a href="\\#" class="k-pager-refresh k-link button k-button-icon" title="Refresh"><span class="k-button-icon k-i-reload"></span></a>
+    </div>
+</script>
+
+
+
+@model Pligrimage.Web.Models.SwapVM
+@{
+    ViewData["Title"] = "SwapTransfer";
+}
+
+<div class="panel-body">
+    <div class="container">
+        <div class="row">
+
+            <div class="col-md-6" id="ViewDetails">
+                <h4 class="text-primary" style="text-align:center">الحاج الاول </h4>
+                <table class="table table-user-information" style="background-color:#f2e8e8">
+                    @*@Html.HiddenFor(model => model.PassengerId)*@
+
+
+                    <tbody>
+
+                        <tr hidden>
+                            <th>@Html.DisplayName("الإسم")</th>
+                            <td id="PassengerIdP1">@Html.DisplayFor(model => model.PassengerId)</td>
+                        </tr>
+                        <tr hidden>
+                            <th>@Html.DisplayName("الإسم")</th>
+                            <td id="FlightIdP1">@Html.DisplayFor(model => model.FlightId)</td>
+                        </tr>
+
+                        <tr hidden>
+                            <th>@Html.DisplayName("الإسم")</th>
+                            <td id="BusIdP1">@Html.DisplayFor(model => model.BusId)</td>
+                        </tr>
+
+                        <tr>
+                            <th>@Html.DisplayName("الإسم")</th>
+                            <td id="FullNameP1">   @Html.DisplayFor(model => model.FullName)</td>
+                        </tr>
+                        <tr>
+                            <th>@Html.DisplayName("الرقم العسكري")</th>
+                            <td id="ServcieNumberP1">
+                                @Html.DisplayFor(model => model.ServcieNumber)
+                            </td>
+
+                        </tr>
+                        <tr>
+                            <th>@Html.DisplayName("الرقم المدني")</th>
+                            <td id="NICP1">@Html.DisplayFor(model => model.NIC)</td>
+                        </tr>
+                        <tr>
+                            <th>@Html.DisplayName(" رقم الرحلة")</th>
+                            <td id="FlightP1">@Html.DisplayFor(model => model.FlightNo)</td>
+                        </tr>
+                        <tr>
+                            <th>@Html.DisplayName("رقم الباص")</th>
+                            <td id="BusP1">@Html.DisplayFor(model => model.BusNo)</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+
+
+
+            </div>
+
+
+            <div class=" col-md-6" id="DispalyData">
+                <h4 class="text-primary" style="text-align:center">الحاج الثاني </h4>
+                <table class="table table-user-information" style="background-color:#f3c5b2">
+
+                    @*@Html.HiddenFor(model => model.PassengerId)*@
+
+                    <tbody>
+                        <tr hidden>
+                            <td><div id="PassengerId" hidden></div></td>
+                        </tr>
+
+                        <tr hidden>
+                            <td><div id="FlightId" hidden></div></td>
+                        </tr>
+
+                        <tr hidden>
+                            <td><div id="BusId" hidden></div></td>
+                        </tr>
+
+
+                        <tr>
+                            <th>@Html.DisplayName("الإسم")</th>
+                            <td><div id="FullName"></div></td>
+                        </tr>
+
+
+
+                        <tr>
+                            <th>@Html.DisplayName("الرقم العسكري")</th>
+                            <td>
+                                <div id="ServiceNumber"></div>
+                            </td>
+
+                        </tr>
+                        <tr>
+                            <th>@Html.DisplayName("الرقم المدني")</th>
+                            <td> <div id="NIC"></div></td>
+                        </tr>
+
+                        <tr>
+                            <th>@Html.DisplayName("رقم الرحلة")</th>
+                            <td><div id="Flight"></div></td>
+                        </tr>
+
+
+                        <tr>
+                            <th>@Html.DisplayName("رقم الباص")</th>
+                            <td> <div id="BusNo"></div></td>
+                        </tr>
+
+
+
+                    </tbody>
+                </table>
+                <div class="row">
+                    <div class=" col-md-3">
+                        <button onclick="SendUpdate()" class="btn btn-primary" type="button">حفظ</button>
+                    </div>
+
+                    <div class=" col-md-3">
+                        <input type="button" class="btn btn-info" value="العودة" onclick="location.href='@Url.Action("Swap1","Passengers")'" />
+                    </div>
+
+                </div>
+               
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+
+
+
+    function showDetails(id) {
+
+        $.ajax({
+            url: '@Url.Action("Swaptransfer2", "Passengers")?passId=' + id,
+            type: 'Get',
+            data: $(this).serialize(),
+            contentType: "application/json; charset=utf-8",
+            dataType: "JSON",
+            success: function (data) {
+                $('#DispalyData').show();
+                $('#PassengerId').text(data.PassengerId);
+                $('#FlightId').text(data.FlightId);
+                $('#BusId').text(data.BusId);
+                $('#FullName').text(data.FullName);
+                $('#ServiceNumber').text(data.ServcieNumber);
+                $('#NIC').text(data.NIC);
+                $('#Flight').text(data.FlightNo);
+                $('#BusNo').text(data.BusNo);
+
+            }
+        });
+    }
+
+
+    function SendUpdate() {
+        var person1 = { PassengerId: "@Model.PassengerId", FlightId: '@Model.FlightId', FlightNo: "@Model.FlightNo", BusId: "@Model.BusId", BusNo: "@Model.BusNo" };
+        var person2 = { PassengerId: $('#PassengerId').text(), FlightId: $('#FlightId').text(), FlightNo: $('#Flight').text(), BusId: $('#BusId').text(), Busno: $('#BusNo').text() }
+
+
+
+        $.ajax({
+            url: '@Url.Action("UpdateSwap", "Passengers")',
+            type: 'Post',
+            dataType: 'Json',
+            data: { p1: person1, p2: person2 },
+            success: function (data) {
+                console.log(JSON.stringify( data.p1))
+                console.log(JSON.stringify(data.p2))
+
+                console.log(data.p1.FlightNo)
+
+
+                alert("تم اعادة التوزيع بنجاح")
+                $('#Flight').text(data.p2.FlightNo);
+                $('#BusNo').text(data.p2.BusNo);
+                $('#FlightP1').text(data.p1.FlightNo);
+                $('#BusP1').text(data.p1.BusNo);
+
+            },
+            error: function (e) {
+                console.log(e)
+            }
+
+
+        }
+        )
+    };
+
+
+
+
+
+
+
+</script>
+
+
+
+
+
+
+

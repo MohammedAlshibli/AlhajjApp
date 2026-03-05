@@ -1,0 +1,14 @@
+E:\URF\URF.Core\TrackableEntities.EF.Core\bin\Debug\netstandard2.0\TrackableEntities.EF.Core.xml
+E:\URF\URF.Core\TrackableEntities.EF.Core\bin\Debug\netstandard2.0\TrackableEntities.EF.Core.deps.json
+E:\URF\URF.Core\TrackableEntities.EF.Core\bin\Debug\netstandard2.0\TrackableEntities.EF.Core.dll
+E:\URF\URF.Core\TrackableEntities.EF.Core\bin\Debug\netstandard2.0\TrackableEntities.EF.Core.pdb
+E:\URF\URF.Core\TrackableEntities.EF.Core\bin\Debug\netstandard2.0\TrackableEntities.Common.Core.dll
+E:\URF\URF.Core\TrackableEntities.EF.Core\bin\Debug\netstandard2.0\TrackableEntities.Common.Core.pdb
+E:\URF\URF.Core\TrackableEntities.EF.Core\bin\Debug\netstandard2.0\TrackableEntities.Common.Core.xml
+E:\URF\URF.Core\TrackableEntities.EF.Core\obj\Debug\netstandard2.0\TrackableEntities.EF.Core.csprojAssemblyReference.cache
+E:\URF\URF.Core\TrackableEntities.EF.Core\obj\Debug\netstandard2.0\TrackableEntities.EF.Core.csproj.CoreCompileInputs.cache
+E:\URF\URF.Core\TrackableEntities.EF.Core\obj\Debug\netstandard2.0\TrackableEntities.EF.Core.AssemblyInfoInputs.cache
+E:\URF\URF.Core\TrackableEntities.EF.Core\obj\Debug\netstandard2.0\TrackableEntities.EF.Core.AssemblyInfo.cs
+E:\URF\URF.Core\TrackableEntities.EF.Core\obj\Debug\netstandard2.0\TrackableEntities.EF.Core.csproj.CopyComplete
+E:\URF\URF.Core\TrackableEntities.EF.Core\obj\Debug\netstandard2.0\TrackableEntities.EF.Core.dll
+E:\URF\URF.Core\TrackableEntities.EF.Core\obj\Debug\netstandard2.0\TrackableEntities.EF.Core.pdb

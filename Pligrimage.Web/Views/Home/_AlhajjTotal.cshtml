@@ -1,0 +1,43 @@
+﻿
+
+    <div id="allowNumber" class="text-center"></div>
+
+<script>
+
+    $(document).ready(function () {
+        GetServiceCount();
+
+    });
+
+
+    function GetServiceCount() {
+
+        $.ajax({
+            url: '@Url.Action("StaticAllService", "Home")',
+            type: 'Get',
+            dataType: 'json',
+            contentType: "application/json; charset=utf-8",
+
+
+
+            success: function (data, i) {
+
+
+                console.log(data[0]);
+
+                var allowNumber = data[0].Consumed ;
+                $("#allowNumber").text(allowNumber);
+
+
+
+                }
+
+
+
+
+
+        });
+
+    }
+
+</script>

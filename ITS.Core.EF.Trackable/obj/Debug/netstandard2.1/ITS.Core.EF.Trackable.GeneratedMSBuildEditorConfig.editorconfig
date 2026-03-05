@@ -1,0 +1,8 @@
+is_global = true
+build_property.RootNamespace = ITS.Core.EF.Trackable
+build_property.ProjectDir = D:\Alhajj\ITS.Pligrimage\ITS.Core.EF.Trackable\
+build_property.EnableComHosting = 
+build_property.EnableGeneratedComInterfaceComImportInterop = 
+build_property.CsWinRTUseWindowsUIXamlProjections = false
+build_property.EffectiveAnalysisLevelStyle = 
+build_property.EnableCodeStyleSeverity = 

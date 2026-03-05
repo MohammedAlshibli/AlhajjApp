@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>TrackableEntities.Common.Core</id>
+    <version>1.2.0</version>
+    <title>Trackable Entities Common for .NET Standard</title>
+    <authors>Tony Sneed</authors>
+    <license type="expression">MIT</license>
+    <licenseUrl>https://licenses.nuget.org/MIT</licenseUrl>
+    <projectUrl>https://github.com/TrackableEntities/TrackableEntities.Core</projectUrl>
+    <iconUrl>http://trackableentities.github.io/images/tracking.png</iconUrl>
+    <description>Assembly containing TrackingState enum and ITrackable, IMergeable interfaces.</description>
+    <releaseNotes>See: https://github.com/TrackableEntities/TrackableEntities.Core/releases/tag/v1.2.0</releaseNotes>
+    <tags>change-tracking entity-framework-core n-tier</tags>
+    <repository type="git" commit="385e5dee88a6b43c0a9703770394afa0df951166" />
+    <dependencies>
+      <group targetFramework=".NETStandard2.1">
+        <dependency id="AutoMapper" version="7.0.1" exclude="Build,Analyzers" />
+      </group>
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="D:\Project_SourceCode\Alhajj\ITS.Pligrimage\ITS.TrackableEntities.Common.Core\bin\Release\netstandard2.1\ITS.TrackableEntities.Common.Core.pdb" target="lib\netstandard2.1\ITS.TrackableEntities.Common.Core.pdb" />
+    <file src="D:\Project_SourceCode\Alhajj\ITS.Pligrimage\ITS.TrackableEntities.Common.Core\bin\Release\netstandard2.1\ITS.TrackableEntities.Common.Core.dll" target="lib\netstandard2.1\ITS.TrackableEntities.Common.Core.dll" />
+    <file src="D:\Project_SourceCode\Alhajj\ITS.Pligrimage\ITS.TrackableEntities.Common.Core\bin\Release\netstandard2.1\TrackableEntities.Common.Core.xml" target="lib\netstandard2.1\TrackableEntities.Common.Core.xml" />
+    <file src="D:\Project_SourceCode\Alhajj\ITS.Pligrimage\ITS.TrackableEntities.Common.Core\IMergeable.cs" target="src\ITS.TrackableEntities.Common.Core\IMergeable.cs" />
+    <file src="D:\Project_SourceCode\Alhajj\ITS.Pligrimage\ITS.TrackableEntities.Common.Core\ITrackable.cs" target="src\ITS.TrackableEntities.Common.Core\ITrackable.cs" />
+    <file src="D:\Project_SourceCode\Alhajj\ITS.Pligrimage\ITS.TrackableEntities.Common.Core\TrackingState.cs" target="src\ITS.TrackableEntities.Common.Core\TrackingState.cs" />
+    <file src="D:\Project_SourceCode\Alhajj\ITS.Pligrimage\ITS.TrackableEntities.Common.Core\ITS.TrackableEntities.Common.Core.csproj" target="src\ITS.TrackableEntities.Common.Core\ITS.TrackableEntities.Common.Core.csproj" />
+  </files>
+</package>

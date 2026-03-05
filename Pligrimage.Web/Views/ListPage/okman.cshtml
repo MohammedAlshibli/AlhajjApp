@@ -1,0 +1,317 @@
+﻿@*@model IEnumerable<Pligrimage.Entities.un>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.ServcieNumber)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.EmployeeStatus)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.NIC)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.NICExpire)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Passport)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PassportExpire)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FullName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DateOfBirth)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.RankCode)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.RankDesc)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.RegistrationDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Snapshote)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.HrmsUnitCode)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.HrmsUnitDesc)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.WorkLocation)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Region)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.WilayaCode)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.WilayaDesc)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.VillageCode)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.VillageDesc)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.WorkPhone)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.GSM)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ReletiveName1)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ReletiveRelation1)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.RelativeGsm1)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ReletiveName2)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ReletiveRelation2)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.RelativeGsm2)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SheikhName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SheikhGsm)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FitFlag)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FitResult)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DoctorNote)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CancelNote)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Notes)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AlhajYear)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BloodGroup)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DateOfEnlistment)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PhotoPath)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ConfirmCode)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.InjectionDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Category)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Unit)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Document)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Parameter)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CreateOn)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CreateBy)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UpdatedOn)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UpdatedBy)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.ServcieNumber)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.EmployeeStatus)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.NIC)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.NICExpire)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Passport)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PassportExpire)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FullName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DateOfBirth)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RankCode)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RankDesc)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RegistrationDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Snapshote)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.HrmsUnitCode)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.HrmsUnitDesc)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.WorkLocation)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Region)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.WilayaCode)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.WilayaDesc)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.VillageCode)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.VillageDesc)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.WorkPhone)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.GSM)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ReletiveName1)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ReletiveRelation1)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RelativeGsm1)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ReletiveName2)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ReletiveRelation2)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RelativeGsm2)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SheikhName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SheikhGsm)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FitFlag)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FitResult)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DoctorNote)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CancelNote)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Notes)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AlhajYear)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.BloodGroup)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DateOfEnlistment)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PhotoPath)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ConfirmCode)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.InjectionDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Category.CategoryId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Unit.UnitId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Document.DocumentId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Parameter.ParameterId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CreateOn)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CreateBy)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UpdatedOn)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UpdatedBy)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.PligrimageId">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.PligrimageId">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.PligrimageId">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>*@

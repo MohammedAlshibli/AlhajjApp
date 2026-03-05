@@ -1,0 +1,10 @@
+C:\Alhajj\ITS.Pligrimage\ITS.TrackableEntities.Common.Core\bin\Release\netstandard2.0\TrackableEntities.Common.Core.xml
+C:\Alhajj\ITS.Pligrimage\ITS.TrackableEntities.Common.Core\bin\Release\netstandard2.0\ITS.TrackableEntities.Common.Core.deps.json
+C:\Alhajj\ITS.Pligrimage\ITS.TrackableEntities.Common.Core\bin\Release\netstandard2.0\ITS.TrackableEntities.Common.Core.dll
+C:\Alhajj\ITS.Pligrimage\ITS.TrackableEntities.Common.Core\bin\Release\netstandard2.0\ITS.TrackableEntities.Common.Core.pdb
+C:\Alhajj\ITS.Pligrimage\ITS.TrackableEntities.Common.Core\obj\Release\netstandard2.0\ITS.TrackableEntities.Common.Core.csproj.CoreCompileInputs.cache
+C:\Alhajj\ITS.Pligrimage\ITS.TrackableEntities.Common.Core\obj\Release\netstandard2.0\ITS.TrackableEntities.Common.Core.AssemblyInfoInputs.cache
+C:\Alhajj\ITS.Pligrimage\ITS.TrackableEntities.Common.Core\obj\Release\netstandard2.0\ITS.TrackableEntities.Common.Core.AssemblyInfo.cs
+C:\Alhajj\ITS.Pligrimage\ITS.TrackableEntities.Common.Core\obj\Release\netstandard2.0\ITS.TrackableEntities.Common.Core.dll
+C:\Alhajj\ITS.Pligrimage\ITS.TrackableEntities.Common.Core\obj\Release\netstandard2.0\ITS.TrackableEntities.Common.Core.pdb
+C:\Alhajj\ITS.Pligrimage\ITS.TrackableEntities.Common.Core\obj\Release\netstandard2.0\ITS.TrackableEntities.Common.Core.csprojAssemblyReference.cache

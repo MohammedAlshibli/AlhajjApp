@@ -1,0 +1,47 @@
+﻿@model IEnumerable<Pligrimage.Web.Common.ViewModel.ServiceStatcisVM>
+
+<div class="row">
+    @*<div class="col-md-4">*@
+        <table class="table table-user-information table-bordered" style="background-color:#f2e8e8">
+
+            <thead>
+                <tr>
+                    <th>
+                        @*@Html.DisplayNameFor(model => model.ServiceName)*@
+                        السلاح
+                    </th>
+                    <th>
+                        @*@Html.DisplayNameFor(model => model.AllowNumber)*@
+                        العدد المسموح
+                    </th>
+                    <th>
+                        @*@Html.DisplayNameFor(model => model.SatndByNumber)*@
+                        عدد الاحتياط
+                    </th>
+
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.ServiceName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.AllowNumber)
+                            من
+                            @Html.DisplayFor(modelItem => item.FromAllowNumber)
+
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.SatndByNumber)
+                            من
+                            @Html.DisplayFor(modelItem => item.FromSatndByNumber)
+
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>

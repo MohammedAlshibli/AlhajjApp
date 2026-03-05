@@ -1,0 +1,95 @@
+﻿<div class="card card-cascade wider">
+    <div class="view view-cascade gradient-card-header blue-gradient-rgba">
+        <h2 class="card-header-title mb-3">الفحص الطبي</h2>
+    </div>
+    <div class="card-body card-body-cascade">
+        <div class="k-rtl">
+            <div>
+              @*   @(Html.Kendo().Grid<Pligrimage.Web.Models.DoctorNoteModel>
+                                            ()
+                                            .Name("DoctorNote")
+                                            .ToolBar(c => c.Excel().Text("تحميل الملف"))
+                                            .Excel(excel => excel
+                                            .AllPages()
+                                            .FileName("StandBy")
+                                            .ProxyURL(Url.Action("Pdf_Export_Save", "AlhajjAdmin"))
+                                            )
+                                            .Columns(column =>
+                                            {
+                                                column.Bound(c => c.Name).Title("الاسم").Width(100).EditorTemplateName("Name");
+                                                column.Bound(c => c.ServcieNumber).Title(" الرقم العسكري").Width(50);
+                                                column.Bound(c => c.NationalID).Title("الرقم المدني").Width(70);
+                                                column.Bound(c => c.UnitNameAr).Title("الوحدة").Width(100);
+                                                column.Bound(c => c.DoctorNote).Title("الملاحظة").Width(100);
+                                                //column.ForeignKey(c => c.parameter, (System.Collections.IEnumerable)
+                                                //ViewData["FitResult"], "ParameterId", "DescArabic").Title("حالة الفحص").Width(100);
+                                                column.Bound(c => c.parameter).Title("الملاحظة").Width(100).EditorTemplateName("FitResultDropDownList");
+
+
+
+                                                column.Command(com =>
+                                                {
+                                                    com.Edit().UpdateText("حفظ").Text("تعديل").CancelText("إلغاء");
+                                                }).Width(50);
+
+
+                                            })
+
+                                            .HtmlAttributes(new { style = "height:500px" })
+                                            .Editable(editable => editable.Mode(GridEditMode.PopUp))
+                                            .Scrollable()
+                                            .Sortable()
+                                            .Selectable()
+                                            .Filterable(f => f.Extra(false)
+                                            .Operators(opertor => opertor
+                                            .ForString(str => str.Clear()
+                                            .Contains("يحتوي على"))))
+                                            .Pageable
+                                            (p => p
+                                            .ButtonCount(5)
+                                            .Refresh(true)
+                                            )
+                                            .Selectable(s => s.Mode(GridSelectionMode.Multiple))
+                                            .DataSource
+                                            (dataSourec => dataSourec
+                                            .Ajax()
+                                             .Model(m =>
+                                             {
+                                                 m.Id(id => id.ServcieNumber);
+                                                 //m.Field(c =>c.Parameter).DefaultValue(ViewData["FitResult"] as Pligrimage.Entities.Parameter);
+                                             })
+
+                                            .Events(events =>
+                                            {
+                                                events.Error("error_handler");
+
+                                            })
+
+                                            .Read(read => read.Action("DoctorRead", "Medical"))
+                                            .Update(update => update.Action("UpdateDoctorNOte", "Medical"))
+
+                                            )
+                ) *@
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function error_handler(e) {
+        console.log(e);
+        if (e.errors) {
+            var message = "Errors: \n";
+            $.each(e.errors, function (key, value) {
+                if ('errors' in value) {
+                    $.each(value.errors, function () {
+                        message += this + "\n";
+
+                    });
+                }
+            });
+            alert(message);
+        }
+
+
+    };
+</script>

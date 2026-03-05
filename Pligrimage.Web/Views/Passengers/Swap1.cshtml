@@ -1,0 +1,137 @@
+﻿
+<div class="card card-cascade wider">
+    <div class="view view-cascade gradient-card-header blue-gradient-rgba">
+        <h2 class="card-header-title mb-3">إدارة التوزيع </h2>
+    </div>
+    <div class="k-rtl">
+
+       @*  @(Html.Kendo().Grid<Pligrimage.Entities.Passenger>
+                                    ()
+                                    .Name("SwapAlhajjaj")
+                                        .Columns(column =>
+                                        {
+                                            column.Bound(c => c.PassengerId).Hidden();
+                                            column.Bound(c => c.Flight.FlightNo).Title("رقم الرحلة");
+                                            column.Bound(c => c.Buses.BusNo).Title("رقم الباص");
+                                            column.Bound(c => c.Flight.Parameter.DescArabic).Title("ذهاب/عودة");
+                                            column.Bound(c => c.AlhajjMaster.ServcieNumber).Title("الرقم العسكري");
+                                            column.Bound(c => c.AlhajjMaster.FullName).Title("الاسم");
+                                            column.Bound("").ClientTemplate("<a id='SwapTransfer' href='" + Url.Action("SwapTransfer", new { passId = "#= PassengerId #'" }) + "class='btn btn-primary btn-md my-2'> <i class='fa fa-pencil'></i> " + "تعديل" + "</a>");
+
+                                        })
+                                        .PersistSelection(true)
+                                            .ToolBar(toolbar =>
+                                            {
+                                                toolbar.ClientTemplateId("TypeTemplate");
+                                            })
+
+                                            .HtmlAttributes(new { style = "height:500px" })
+                                            .Pageable
+                                            (p => p
+                                            .ButtonCount(3)
+                                            .Refresh(true)
+                                            )
+                                            .Sortable()
+                                            //.Groupable()
+                                            .Selectable()
+                                            .Filterable(f => f.Extra(false)
+                                            .Operators(opertor => opertor
+                                            .ForString(str => str.Clear()
+                                            .Contains("يحتوي على"))))
+                                            .Scrollable(c => c.Height("800px"))
+                                            .Pageable(pageable => pageable
+                                            .Messages(
+                                            m => m.ItemsPerPage("مدخل للصفحة")
+                                            .Display("إظهار {0} إلى {1} من أصل {2} مُدخل"))
+
+                                            )
+                                            .DataSource
+                                            (dataSourec => dataSourec
+                                            .Ajax()
+
+                                            .Events(events =>
+                                            {
+                                                events.Error("error_handler");
+                                                events.RequestEnd("request_end");
+                                            })
+                                            .Model(m =>
+                                            {
+                                                m.Id(i => i.PassengerId);
+                                                m.Field(c => c.PligrimageId).DefaultValue(1);
+                                            })
+                                            .Read(read => read.Action("PassengerRead", "Passengers"))
+                                            .Update(update => update.Action("UpdatePassenger", "Passengers"))
+                                            )) *@
+    </div>
+
+</div>
+
+
+
+
+<script>
+
+    function error_handler(e) {
+        //alert("dfsdfsd");
+        console.log(e);
+        if (e.errors) {
+            var message = "Errors: \n";
+            $.each(e.errors, function (key, value) {
+                if ('errors' in value) {
+                    $.each(value.errors, function () {
+                        message += this + "\n";
+                    });
+                }
+            });
+            alert(message);
+        }
+    };
+
+    function request_end(e) {
+
+        if (e.type == "update") {
+            alert("تم تحديث البيانات بنجاح");
+        }
+    
+    }
+
+</script>
+
+
+<script id="TypeTemplate" type="text/x-kendo-template">
+    <br />
+    <div class="toolbar">
+        <label class="type-label" for="FlightNo"> تصفيه حسب الرحلات الجوية </label>
+
+       
+    </div>
+    <br />
+
+</script>
+
+<script type="text/javascript">
+
+    function TypeChange() {
+
+        var typeName = this.value(),
+
+            grid = $("#SwapAlhajjaj").data("kendoGrid");
+        if (typeName) {
+            grid.dataSource.filter({ field: "Flight.FlightNo", operator: "eq", value: typeName });
+        }
+        else {
+            grid.dataSource.filter({});
+        }
+    }
+
+</script>
+
+<script id="TypeTemplate" type="text/x-kendo-template">
+    <div class="refreshbtnContainer">
+        <a href="\\#" class="k-pager-refresh k-link button k-button-icon" title="Refresh"><span class="k-button-icon k-i-reload"></span></a>
+    </div>
+</script>
+
+
+
+

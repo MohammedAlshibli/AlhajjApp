@@ -1,0 +1,136 @@
+﻿<div class="card card-cascade wider">
+    <div class="view view-cascade gradient-card-header blue-gradient-rgba">
+        <h2 class="card-header-title mb-3">سجلات التطعيم</h2>
+    </div>
+    <div class="card-body card-body-cascade">
+        <div class="k-rtl">
+            <div>
+                @* @(Html.Kendo().Grid<Pligrimage.Entities.AlhajjMaster>
+            ()
+            .Name("Mediacl")
+            .Columns(column =>
+            {
+                column.Bound(c => c.FullName).Title("الاسم").Width(150);
+                column.Bound(c => c.ServcieNumber).Title(" الرقم العسكري").Width(70);
+                column.Bound(c => c.NIC).Title("الرقم المدني").Width(70);
+                column.Bound(c => c.Unit.UnitNameAr).Title("الوحدة").Width(100);
+                column.Bound(c => c.BloodGroup).Title("فصيلة الدم").Width(70);
+                column.ForeignKey(c => c.FitResult, (System.Collections.IEnumerable)ViewData["FitResult"], "ParameterId", "DescArabic").Title("حالة الفحص").Width(100);
+                column.Bound(c => c.InjectionDate).Title("تاريخ الحقن").Format("{0:dd/MM/yyyy}").Width(100);
+                column.Bound(c => c.DoctorNote).Title("ملاحظات الطبيب").Width(150);
+
+                column.Command(com =>
+                {
+                    com.Edit().UpdateText("حفظ").Text("تعديل").CancelText("إلغاء");
+                }).Width(50);
+
+            })
+            .HtmlAttributes(new { style = "height:500px" })
+            .Editable(editable => editable.Mode(GridEditMode.PopUp).TemplateName("Edit").Window(c => c.Resizable().Title("تعديل")))
+            .Scrollable()
+            .Sortable()
+            .Selectable()
+            .Filterable(f => f.Extra(false)
+            .Operators(opertor => opertor
+            .ForString(str => str.Clear()
+            .Contains("يحتوي على"))))
+            .Pageable
+            (p => p
+            .ButtonCount(5)
+            .Refresh(true)
+
+            )
+            .Selectable(s => s.Mode(GridSelectionMode.Multiple))
+            .DataSource
+            (dataSourec => dataSourec
+            .Ajax()
+            .Model(m =>
+            {
+                m.Id(id => id.PligrimageId);
+                m.Field(c => c.ServcieNumber);
+                m.Field(c => c.NIC);
+                m.Field(c => c.FullName);
+                m.Field(c => c.FitResult).Editable(false);
+
+            })
+            .Events(events =>
+            {
+                events.Error("error_handler");
+                events.RequestEnd("request_end");
+            })
+
+            .Read(read => read.Action("Read", "Injection"))
+            .Update(update => update.Action("Update", "Injection"))
+
+            )
+                ) *@
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+
+    function error_handler(e) {
+        console.log(e);
+        if (e.errors) {
+            var message = "Errors: \n";
+            $.each(e.errors, function (key, value) {
+                if ('errors' in value) {
+                    $.each(value.errors, function () {
+                        message += this + "\n";
+
+                    });
+                }
+            });
+            alert(message);
+        }
+
+
+    };
+
+    function request_end(e) {
+
+        if (e.type == "update") {
+            alert("تم تحديث البيانات بنجاح");
+            $('#Mediacl').data('kendoGrid').dataSource.read();
+            $('#Mediacl').data('kendoGrid').refresh();
+        }
+        if (e.type == "create") {
+            alert("تم حفظ البيانات بنجاح");
+
+        }
+        if (e.type == "delete") {
+            alert("تم حذف البيانات بنجاح");
+
+        }
+    }
+
+
+
+
+        
+   
+
+</script>
+
+
+
+
+<style>
+    .k-grid .k-grid-header {
+        border-color: #dde2e7;
+        color: #212529;
+        background-color: #f8f9fa;
+        font-weight: bold;
+    }
+</style>
+
+
+
+
+
+
+
+
+

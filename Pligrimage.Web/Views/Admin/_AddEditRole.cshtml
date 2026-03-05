@@ -1,0 +1,138 @@
+﻿
+@model Pligrimage.Web.Common.ViewModel.RoleCreateEditViewModel
+@using  Pligrimage.Web.Common;
+
+@{ if (Model.Id <= 0)
+    {
+        Layout = null;
+    }
+
+}
+
+
+
+<form asp-area="Admin" asp-controller="Admin" asp-action="AddEditRole" role="form" method="post">
+    @Html.AntiForgeryToken()
+
+    <input type="hidden" asp-for="Id" />
+    <div class="modal-body form">
+        <label asp-for="Name">إسم الصلاحية</label>
+        <input asp-for="Name" class="form-control" />
+
+        <label asp-for="Description">الوصف </label>
+        <textarea asp-for="Description" class="form-control"></textarea>
+
+    </div>
+
+
+
+    <div class="form-group">
+        <div class="col-md-12">
+            <h4 class="text-primary">الشاشات </h4>
+            @*<table class="table table-user-information" style="background-color:#dee4f6">
+                    <tbody>
+                        @(Html.Kendo().MultiSelectFor(r => r.SelectedPermissions)
+                                                                            .DataTextField("Text")
+                                                                            .DataValueField("Value")
+                                                                            .BindTo(Model.AllPermissions)
+                        )
+
+
+                    </tbody>
+                </table>*@
+
+@*             <table class="table table-user-information" style="background-color:#dee4f6">
+                <tbody>
+
+
+                    @(Html.Kendo().MultiSelectFor(r => r.SelectedPermissions)
+                                                                        .DataTextField("Text")
+                                                                        .DataValueField("Value")
+                                                                        .BindTo(Model.AllPermissions)
+                    )
+
+
+
+                </tbody>
+
+
+            </table> *@
+
+
+
+        </div>
+
+    </div>
+
+
+
+
+
+    @await Html.PartialAsync("_ModalFooter", new ModalFooter { CancelButtonText = "Cancel", SubmitButtonText = "Submit" })
+</form>
+
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js" asp-append-version="true"></script>
+
+
+
+@*<form asp-controller="Admin" asp-action="AddEditRole" role="form" method="post">
+        @Html.AntiForgeryToken()
+
+
+        <input type="hidden" asp-for="Id" />
+        <div class="panel-body">
+            <div class="row">
+                <div class=" col-md-4">
+                    </div>
+
+                <div class=" col-md-8">
+                    <h4 class="text-primary">البيانات الرئيسية </h4>
+                    <table class="table table-user-information" style="background-color:#f2e8e8">
+                        @Html.HiddenFor(model => model.Id)
+                        @Html.HiddenFor(model => model.Name)
+
+
+                        <tbody>
+                            <tr>
+                                <th>@Html.DisplayName("أسم الصلاحية")</th>
+                                <td>   @Html.DisplayFor(model => model.Name)</td>
+                            </tr>
+                            <tr>
+                                <th>@Html.DisplayName("الوصف")</th>
+                                <td>
+                                    @Html.DisplayFor(model => model.Description)
+                                </td>
+
+                            </tr>
+
+
+                        </tbody>
+                    </table>
+
+                    <h4 class="text-primary">الشاشات </h4>
+                    <table class="table table-user-information" style="background-color:#dee4f6">
+                        <tbody>
+                            @(Html.Kendo().MultiSelectFor(r => r.SelectedPermissions)
+                                                                                                       .DataTextField("Text")
+                                                                                                       .DataValueField("Value")
+                                                                                                       .BindTo(Model.AllPermissions)
+                            )
+
+                        </tbody>
+
+
+                    </table>
+
+                </div>
+
+
+                              </div>
+
+            </div>
+
+
+
+        @await Html.PartialAsync("_ModalFooter", new ModalFooter { CancelButtonText = "Cancel", SubmitButtonText = "Submit" })
+    </form>*@
+
+@*<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js" asp-append-version="true"></script>*@

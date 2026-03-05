@@ -1,0 +1,10 @@
+E:\URF\URF.Core\TrackableEntities.Common.Core\bin\Debug\netstandard2.0\TrackableEntities.Common.Core.xml
+E:\URF\URF.Core\TrackableEntities.Common.Core\bin\Debug\netstandard2.0\TrackableEntities.Common.Core.deps.json
+E:\URF\URF.Core\TrackableEntities.Common.Core\bin\Debug\netstandard2.0\TrackableEntities.Common.Core.dll
+E:\URF\URF.Core\TrackableEntities.Common.Core\bin\Debug\netstandard2.0\TrackableEntities.Common.Core.pdb
+E:\URF\URF.Core\TrackableEntities.Common.Core\obj\Debug\netstandard2.0\TrackableEntities.Common.Core.csproj.CoreCompileInputs.cache
+E:\URF\URF.Core\TrackableEntities.Common.Core\obj\Debug\netstandard2.0\TrackableEntities.Common.Core.AssemblyInfoInputs.cache
+E:\URF\URF.Core\TrackableEntities.Common.Core\obj\Debug\netstandard2.0\TrackableEntities.Common.Core.AssemblyInfo.cs
+E:\URF\URF.Core\TrackableEntities.Common.Core\obj\Debug\netstandard2.0\TrackableEntities.Common.Core.dll
+E:\URF\URF.Core\TrackableEntities.Common.Core\obj\Debug\netstandard2.0\TrackableEntities.Common.Core.pdb
+E:\URF\URF.Core\TrackableEntities.Common.Core\obj\Debug\netstandard2.0\TrackableEntities.Common.Core.csprojAssemblyReference.cache

@@ -1,0 +1,127 @@
+﻿
+
+
+@model Pligrimage.Web.Common.ViewModel.UserCreateViewModel
+
+
+@{
+    Layout = null;
+}
+
+
+
+
+    <div class="panel-body">
+        <div class="row">
+
+            <div class=" col-md-4">
+                <h4 class="text-primary">البيانات الرئيسية </h4>
+                <table class="table table-user-information" style="background-color:#f2e8e8">
+                    @Html.HiddenFor(model => model.UserName)
+                    @Html.HiddenFor(model => model.Rank)
+                    @Html.HiddenFor(model => model.FullName)
+                    @Html.HiddenFor(model => model.UnitId)
+                    <tbody>
+                        <tr>
+                            <th>@Html.DisplayName("أسم المستخدم")</th>
+                            <td>   @Html.DisplayFor(model => model.UserName)</td>
+                        </tr>
+                        <tr>
+                            <th>@Html.DisplayName("الرتبة")</th>
+                            <td>
+                                @Html.DisplayFor(model => model.Rank)
+                            </td>
+
+                        </tr>
+                        <tr>
+                            <th>@Html.DisplayName("الإسم")</th>
+                            <td>@Html.DisplayFor(model => model.FullName)</td>
+                        </tr>
+                        <tr>
+                            <th>@Html.DisplayName("السلاح")</th>
+                            <td>
+                                @Html.DisplayFor(model => model.Unit)
+                            </td>
+                        </tr>
+
+                        @*<tr>
+                            <th>@Html.DisplayName("رقم السلاح")</th>
+                            <td>
+                                @Html.DisplayFor(model => model.UnitId)
+                            </td>
+                        </tr>*@
+
+
+
+
+
+
+
+
+                    </tbody>
+                </table>
+            </div>
+            <div class=" col-md-1">
+            </div>
+
+            <div class=" col-md-4"></div>
+@*             <div class=" col-md-4">
+                <h4 class="text-primary">الصلاحيات </h4>
+                <table class="table table-user-information" style="background-color:#dee4f6">
+                    <tbody>
+
+
+                        @(Html.Kendo().MultiSelectFor(r => r.SelectedRoles)
+                                    .DataTextField("Text")
+                                    .DataValueField("Value")
+                                    .BindTo(Model.AllRoles)
+                        )
+
+
+                    </tbody>
+
+
+                </table>
+            </div> *@
+
+
+@*             <div class=" col-md-4">
+                <h4 class="text-primary">الاسلحة </h4>
+                <table class="table table-user-information" style="background-color:#dee4f6">
+                    <tbody>
+
+
+                        @(Html.Kendo().MultiSelectFor(r => r.SelectedServices)
+                                    .DataTextField("Text")
+                                    .DataValueField("Value")
+                                    .BindTo(Model.AllServices)
+                        )
+
+
+                    </tbody>
+
+
+                </table>
+            </div> *@
+
+
+
+
+        </div>
+
+    </div>
+    <div class="row">
+        <div class=" col-md-4">
+        </div>
+        <div class=" col-md-1">
+        </div>
+        <div class=" col-md-4">
+       
+        </div>
+    </div>
+ 
+
+
+
+
+@*<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js" asp-append-version="true"></script>*@

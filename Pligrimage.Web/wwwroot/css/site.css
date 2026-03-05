@@ -1,0 +1,138 @@
+﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
+for details on configuring this project to bundle and minify static web assets. */
+
+
+
+@font-face {
+    font-family: 'Droid-Arabic-Kufi';
+    src: url('../font/Droid-Arabic-Kufi.ttf.woff') format('woff'), url('../font/Droid-Arabic-Kufi.ttf.svg#Droid-Arabic-Kufi') format('svg'), url('../font/Droid-Arabic-Kufi.ttf.eot'), url('../font/Droid-Arabic-Kufi.ttf.eot?#iefix') format('embedded-opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+
+nav {
+    direction: rtl ;
+    background-color:#a3d0e4
+}
+footer {
+    background-color: #a3d0e4
+}
+a.navbar-brand {
+  white-space: normal;
+  text-align: center;
+  word-break: break-all;
+}
+
+/* Sticky footer styles
+-------------------------------------------------- */
+html {
+  font-size: 14px;
+}
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.border-top {
+  border-top: 1px solid #e5e5e5;
+}
+.border-bottom {
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.box-shadow {
+  box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
+}
+
+button.accept-policy {
+  font-size: 1rem;
+  line-height: inherit;
+}
+
+/* Sticky footer styles
+-------------------------------------------------- */
+html {
+    position: relative;
+    min-height: 100%;
+    font-family: Droid-Arabic-Kufi;
+}
+
+body {
+    /* Margin bottom by footer height */
+    margin-bottom: 60px;
+    font-family: Droid-Arabic-Kufi;
+}
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  white-space: nowrap;
+  /* Set the fixed height of the footer here */
+  height: 60px;
+  line-height: 60px; /* Vertically center the text there */
+}
+
+#details-container {
+    padding: 10px;
+}
+
+    #details-container h2 {
+        margin: 0;
+    }
+
+    #details-container em {
+        color: #8c8c8c;
+    }
+
+    #details-container dt {
+        margin: 0;
+    }
+
+.customClass {
+    background-color: red;
+}
+.double-nav .breadcrumb-dn {
+    color: #fff;
+}
+
+
+#slide-out {
+    left:0;
+}
+
+[dir="rtl"] #slide-out{
+    left: auto;
+    right: 0;
+}
+
+.k-grid-content .k-button {
+    border-color: #695058;
+    background-color: #b8c5d6;
+}
+
+.k-grid-toolbar .k-button {
+    border-color: #695058;
+    background-color: #b8c5d6;
+   }
+
+.nav-item dropdown {
+   margin-left:auto;
+}
+.switch label input[type=checkbox] {
+    opacity: unset;
+    width: 0;
+    height: 0;
+}
+
+ .k-grid-header {
+    border-color: #dde2e7;
+    color: #212529;
+    background-color: #f8f9fa;
+    font-weight: bold;
+}
+
+/*.card-body card-body-cascade{
+    background-color:burlywood;
+}*/

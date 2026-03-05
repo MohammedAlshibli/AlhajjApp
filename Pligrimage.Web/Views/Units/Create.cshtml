@@ -1,0 +1,58 @@
+﻿@model Pligrimage.Entities.Unit
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>Unit</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="UnitNameEn" class="control-label"></label>
+                <input asp-for="UnitNameEn" class="form-control" />
+                <span asp-validation-for="UnitNameEn" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="UnitNameAr" class="control-label"></label>
+                <input asp-for="UnitNameAr" class="form-control" />
+                <span asp-validation-for="UnitNameAr" class="text-danger"></span>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="ModFlag" /> @Html.DisplayNameFor(model => model.ModFlag)
+                </label>
+            </div>
+            <div class="form-group">
+                <label asp-for="AlhajYear" class="control-label"></label>
+                <input asp-for="AlhajYear" class="form-control" />
+                <span asp-validation-for="AlhajYear" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="AllowNumber" class="control-label"></label>
+                <input asp-for="AllowNumber" class="form-control" />
+                <span asp-validation-for="AllowNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="StandBy" class="control-label"></label>
+                <input asp-for="StandBy" class="form-control" />
+                <span asp-validation-for="StandBy" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

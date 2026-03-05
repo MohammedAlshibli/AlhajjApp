@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>ITS.TrackableEntities.Common.Core</name>
+    </assembly>
+    <members>
+        <member name="T:ITS.TrackableEntities.Common.Core.IMergeable">
+            <summary>
+            Provides an EntityIdentifier for correlation when merging changes.
+            </summary>
+        </member>
+        <member name="P:ITS.TrackableEntities.Common.Core.IMergeable.EntityIdentifier">
+            <summary>Identifier used for correlation with MergeChanges.</summary>
+        </member>
+        <member name="T:ITS.TrackableEntities.Common.Core.ITrackable">
+            <summary>
+            Interface implemented by entities that are change-tracked.
+            </summary>
+        </member>
+        <member name="P:ITS.TrackableEntities.Common.Core.ITrackable.TrackingState">
+            <summary>
+            Change-tracking state of an entity.
+            </summary>
+        </member>
+        <member name="P:ITS.TrackableEntities.Common.Core.ITrackable.ModifiedProperties">
+            <summary>
+            Properties on an entity that have been modified.
+            </summary>
+        </member>
+        <member name="T:ITS.TrackableEntities.Common.Core.TrackingState">
+            <summary>
+            Change-tracking state of an entity.
+            </summary>
+        </member>
+        <member name="F:ITS.TrackableEntities.Common.Core.TrackingState.Unchanged">
+            <summary>Existing entity that has not been modified.</summary>
+        </member>
+        <member name="F:ITS.TrackableEntities.Common.Core.TrackingState.Added">
+            <summary>Newly created entity.</summary>
+        </member>
+        <member name="F:ITS.TrackableEntities.Common.Core.TrackingState.Modified">
+            <summary>Existing entity that has been modified.</summary>
+        </member>
+        <member name="F:ITS.TrackableEntities.Common.Core.TrackingState.Deleted">
+            <summary>Existing entity that has been marked as deleted.</summary>
+        </member>
+    </members>
+</doc>

@@ -1,0 +1,17 @@
+E:\URF\URF.Core\URF.Core.Abstractions.Services\bin\Debug\netstandard2.0\URF.Core.Abstractions.Services.deps.json
+E:\URF\URF.Core\URF.Core.Abstractions.Services\bin\Debug\netstandard2.0\URF.Core.Abstractions.Services.dll
+E:\URF\URF.Core\URF.Core.Abstractions.Services\bin\Debug\netstandard2.0\URF.Core.Abstractions.Services.pdb
+E:\URF\URF.Core\URF.Core.Abstractions.Services\bin\Debug\netstandard2.0\TrackableEntities.Common.Core.dll
+E:\URF\URF.Core\URF.Core.Abstractions.Services\bin\Debug\netstandard2.0\URF.Core.Abstractions.dll
+E:\URF\URF.Core\URF.Core.Abstractions.Services\bin\Debug\netstandard2.0\URF.Core.Abstractions.Trackable.dll
+E:\URF\URF.Core\URF.Core.Abstractions.Services\bin\Debug\netstandard2.0\URF.Core.Abstractions.Trackable.pdb
+E:\URF\URF.Core\URF.Core.Abstractions.Services\bin\Debug\netstandard2.0\URF.Core.Abstractions.pdb
+E:\URF\URF.Core\URF.Core.Abstractions.Services\bin\Debug\netstandard2.0\TrackableEntities.Common.Core.pdb
+E:\URF\URF.Core\URF.Core.Abstractions.Services\bin\Debug\netstandard2.0\TrackableEntities.Common.Core.xml
+E:\URF\URF.Core\URF.Core.Abstractions.Services\obj\Debug\netstandard2.0\URF.Core.Abstractions.Services.csprojAssemblyReference.cache
+E:\URF\URF.Core\URF.Core.Abstractions.Services\obj\Debug\netstandard2.0\URF.Core.Abstractions.Services.csproj.CoreCompileInputs.cache
+E:\URF\URF.Core\URF.Core.Abstractions.Services\obj\Debug\netstandard2.0\URF.Core.Abstractions.Services.AssemblyInfoInputs.cache
+E:\URF\URF.Core\URF.Core.Abstractions.Services\obj\Debug\netstandard2.0\URF.Core.Abstractions.Services.AssemblyInfo.cs
+E:\URF\URF.Core\URF.Core.Abstractions.Services\obj\Debug\netstandard2.0\URF.Core.Abstractions.Services.csproj.CopyComplete
+E:\URF\URF.Core\URF.Core.Abstractions.Services\obj\Debug\netstandard2.0\URF.Core.Abstractions.Services.dll
+E:\URF\URF.Core\URF.Core.Abstractions.Services\obj\Debug\netstandard2.0\URF.Core.Abstractions.Services.pdb

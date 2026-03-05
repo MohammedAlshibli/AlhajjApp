@@ -1,0 +1,156 @@
+﻿@model Pligrimage.Web.Dto.DashboardViewModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+<link href="~/alhajjlab/DashBordIconall.min.css" rel="stylesheet"/>
+<link href="~/alhajjlab/bootstrap.min.css" rel="stylesheet"/>
+
+
+
+<div class="mt-md-3 center">
+    <div class="row">
+        <!-- Requested Vehicles -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-primary shadow-sm h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                <h4>إجمالي العدد</h4>
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.RequestsNumber</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fa-solid fa-clipboard-list fa-2x text-primary"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Approved Requests -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-info shadow-sm h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                <h4>الاعداد حسب السلاح</h4>
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.ApprovedRequestsNumber</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fa-solid fa-clipboard-list fa-2x text-primary"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Canceled Requests -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-secondary shadow-sm h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-secondary text-uppercase mb-1">
+                                <h4>عدد الاحتياط</h4>
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.CanceledRequestsNumber</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fa-solid fa-clipboard-list fa-2x text-primary"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Number of Vehicles -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow-sm h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                <h4>اعداد الاداريين</h4>
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.VehiclesNumber</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fa-solid fa-clipboard-list fa-2x text-primary"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Section -->
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <h6 class="m-0 font-weight-bold text-primary">Requests Overview</h6>
+                </div>
+                <div class="card-body">
+                    <div class="chart-area">
+                        <canvas id="myAreaChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <h6 class="m-0 font-weight-bold text-primary">Test</h6>
+                </div>
+                <div class="card-body">
+                    <div class="chart-area">
+                        <canvas id="myAreaChartDailyBooking"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Chart.js Library -->
+<script src="~/alhajjlab/chart.js"></script>
+
+<!-- Custom Chart Script -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var ctx = document.getElementById("myAreaChart").getContext("2d");
+        var myAreaChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
+                datasets: [{
+                    label: "Requests",
+                    data: [10, 20, 30, 40, 50, 60],
+                    borderColor: "rgba(78, 115, 223, 1)",
+                    backgroundColor: "rgba(78, 115, 223, 0.1)",
+                    borderWidth: 2
+                }]
+            }
+        });
+
+        var ctx2 = document.getElementById("myAreaChartDailyBooking").getContext("2d");
+        var myAreaChartDailyBooking = new Chart(ctx2, {
+            type: 'bar',
+            data: {
+                labels: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+                datasets: [{
+                    label: "Daily Bookings",
+                    data: [5, 10, 15, 20, 25, 30, 35],
+                    backgroundColor: "rgba(28, 200, 138, 0.5)",
+                    borderColor: "rgba(28, 200, 138, 1)",
+                    borderWidth: 2
+                }]
+            }
+        });
+    });
+</script>

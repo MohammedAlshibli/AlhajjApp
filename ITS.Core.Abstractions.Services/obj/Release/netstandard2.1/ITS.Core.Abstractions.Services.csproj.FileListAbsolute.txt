@@ -1,0 +1,17 @@
+D:\Project_SourceCode\Alhajj\ITS.Pligrimage\ITS.Core.Abstractions.Services\bin\Release\netstandard2.1\ITS.Core.Abstractions.Services.deps.json
+D:\Project_SourceCode\Alhajj\ITS.Pligrimage\ITS.Core.Abstractions.Services\bin\Release\netstandard2.1\ITS.Core.Abstractions.Services.dll
+D:\Project_SourceCode\Alhajj\ITS.Pligrimage\ITS.Core.Abstractions.Services\bin\Release\netstandard2.1\ITS.Core.Abstractions.Services.pdb
+D:\Project_SourceCode\Alhajj\ITS.Pligrimage\ITS.Core.Abstractions.Services\bin\Release\netstandard2.1\ITS.Core.Abstractions.dll
+D:\Project_SourceCode\Alhajj\ITS.Pligrimage\ITS.Core.Abstractions.Services\bin\Release\netstandard2.1\ITS.Core.Abstractions.Trackable.dll
+D:\Project_SourceCode\Alhajj\ITS.Pligrimage\ITS.Core.Abstractions.Services\bin\Release\netstandard2.1\ITS.TrackableEntities.Common.Core.dll
+D:\Project_SourceCode\Alhajj\ITS.Pligrimage\ITS.Core.Abstractions.Services\bin\Release\netstandard2.1\ITS.Core.Abstractions.Trackable.pdb
+D:\Project_SourceCode\Alhajj\ITS.Pligrimage\ITS.Core.Abstractions.Services\bin\Release\netstandard2.1\ITS.Core.Abstractions.pdb
+D:\Project_SourceCode\Alhajj\ITS.Pligrimage\ITS.Core.Abstractions.Services\bin\Release\netstandard2.1\ITS.TrackableEntities.Common.Core.pdb
+D:\Project_SourceCode\Alhajj\ITS.Pligrimage\ITS.Core.Abstractions.Services\obj\Release\netstandard2.1\ITS.Core.Abstractions.Services.csproj.AssemblyReference.cache
+D:\Project_SourceCode\Alhajj\ITS.Pligrimage\ITS.Core.Abstractions.Services\obj\Release\netstandard2.1\ITS.Core.Abstractions.Services.GeneratedMSBuildEditorConfig.editorconfig
+D:\Project_SourceCode\Alhajj\ITS.Pligrimage\ITS.Core.Abstractions.Services\obj\Release\netstandard2.1\ITS.Core.Abstractions.Services.AssemblyInfoInputs.cache
+D:\Project_SourceCode\Alhajj\ITS.Pligrimage\ITS.Core.Abstractions.Services\obj\Release\netstandard2.1\ITS.Core.Abstractions.Services.AssemblyInfo.cs
+D:\Project_SourceCode\Alhajj\ITS.Pligrimage\ITS.Core.Abstractions.Services\obj\Release\netstandard2.1\ITS.Core.Abstractions.Services.csproj.CoreCompileInputs.cache
+D:\Project_SourceCode\Alhajj\ITS.Pligrimage\ITS.Core.Abstractions.Services\obj\Release\netstandard2.1\ITS.Core.8BE41793.Up2Date
+D:\Project_SourceCode\Alhajj\ITS.Pligrimage\ITS.Core.Abstractions.Services\obj\Release\netstandard2.1\ITS.Core.Abstractions.Services.dll
+D:\Project_SourceCode\Alhajj\ITS.Pligrimage\ITS.Core.Abstractions.Services\obj\Release\netstandard2.1\ITS.Core.Abstractions.Services.pdb

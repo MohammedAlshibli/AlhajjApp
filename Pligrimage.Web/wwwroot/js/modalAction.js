@@ -1,0 +1,15 @@
+﻿
+function modalAction(data) {
+ 
+    $(data).on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget); // Button that triggered the modal
+        var url = button.attr("href");
+        var modal = $(this);
+
+        // note that this will replace the content of modal-content ever time the modal is opened
+        modal.find('.modal-content').load(url);
+    });
+
+};
+
+

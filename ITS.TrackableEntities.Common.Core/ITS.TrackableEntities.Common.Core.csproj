@@ -1,0 +1,35 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <PackageId>TrackableEntities.Common.Core</PackageId>
+    <PackageVersion>1.2.0</PackageVersion>
+    <Authors>Tony Sneed</Authors>
+    <Company>Tony Sneed</Company>
+    <Title>Trackable Entities Common for .NET Standard</Title>
+    <Description>Assembly containing TrackingState enum and ITrackable, IMergeable interfaces.</Description>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <PackageReleaseNotes>See: https://github.com/TrackableEntities/TrackableEntities.Core/releases/tag/v1.2.0</PackageReleaseNotes>
+    <PackageTags>change-tracking entity-framework-core n-tier</PackageTags>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/TrackableEntities/TrackableEntities.Core</PackageProjectUrl>
+    <PackageIconUrl>http://trackableentities.github.io/images/tracking.png</PackageIconUrl>
+    <IncludeSource>true</IncludeSource>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>bin\Debug\netstandard2.0\TrackableEntities.Common.Core.xml</DocumentationFile>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DocumentationFile>bin\Release\netstandard2.0\TrackableEntities.Common.Core.xml</DocumentationFile>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="7.0.1" />
+  </ItemGroup>
+
+</Project>

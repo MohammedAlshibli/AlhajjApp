@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>TrackableEntities.EF.Core</id>
+    <version>1.2.0</version>
+    <title>Trackable Entities for EF Core</title>
+    <authors>Tony Sneed</authors>
+    <owners>Tony Sneed</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <license type="expression">MIT</license>
+    <licenseUrl>https://licenses.nuget.org/MIT</licenseUrl>
+    <projectUrl>https://github.com/TrackableEntities/TrackableEntities.Core</projectUrl>
+    <iconUrl>http://trackableentities.github.io/images/tracking.png</iconUrl>
+    <description>Provides an ApplyChanges extension method for DbContext that sets EntityState on trackable entities, so they can be saved by a service in a single transaction.</description>
+    <releaseNotes>See: https://github.com/TrackableEntities/TrackableEntities.Core/releases/tag/v1.2.0</releaseNotes>
+    <tags>change-tracking entity-framework-core n-tier</tags>
+    <dependencies>
+      <group targetFramework=".NETStandard2.0">
+        <dependency id="TrackableEntities.Common.Core" version="1.2.0" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.EntityFrameworkCore" version="2.2.1" exclude="Build,Analyzers" />
+      </group>
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="E:\URF\URF.Core\TrackableEntities.EF.Core\bin\Debug\netstandard2.0\TrackableEntities.EF.Core.dll" target="lib\netstandard2.0\TrackableEntities.EF.Core.dll" />
+    <file src="E:\URF\URF.Core\TrackableEntities.EF.Core\bin\Debug\netstandard2.0\TrackableEntities.EF.Core.xml" target="lib\netstandard2.0\TrackableEntities.EF.Core.xml" />
+  </files>
+</package>

@@ -1,0 +1,119 @@
+﻿
+<div class="card card-cascade wider">
+    <div class="view view-cascade gradient-card-header blue-gradient-rgba">
+        <h2 class="card-header-title mb-3">قوائم للتعديل </h2>
+    </div>
+    <div class="card-body card-body-cascade">
+        <div class="k-rtl">
+
+
+
+        </div>
+    </div>
+
+
+
+    @*<script type="text/x-kendo-template" id="template">
+        <div id="details-container">
+            <h2>#= ReletiveName1 # #= RelativeGsm1  #</h2>
+            <h2>#= ReletiveName2 # #= RelativeGsm2  #</h2>
+        </div>
+    </script>
+
+    <script type="text/javascript">
+        var detailsTemplate = kendo.template($("#template").html());
+
+        function showDetails(e) {
+            e.preventDefault();
+
+            var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+            var wnd = $("#Details").data("kendoWindow");
+
+            wnd.content(detailsTemplate(dataItem));
+            wnd.center().open();
+        }
+    </script>*@
+
+
+    <script>
+
+        function error_handler(e) {
+            //alert("dfsdfsd");
+            console.log(e);
+            if (e.errors) {
+                var message = "Errors: \n";
+                $.each(e.errors, function (key, value) {
+                    if ('errors' in value) {
+                        $.each(value.errors, function () {
+                            message += this + "\n";
+                        });
+                    }
+                });
+                alert(message);
+            }
+        };
+
+        function request_end(e) {
+
+            if (e.type == "update") {
+                alert("تم تحديث البيانات بنجاح");
+            }
+            //if (e.type == "create") {
+            //    alert("تم حفظ البيانات بنجاح");
+
+            //}
+            //if (e.type == "delete") {
+            //    alert("تم حذف البيانات بنجاح");
+
+            //}
+        }
+
+    </script>
+
+
+    <script id="TypeTemplate" type="text/x-kendo-template">
+        <br />
+        <div class="toolbar">
+            <label class="type-label" for="UnitNameAr"> تصفيه حسب نوع السلاح</label>
+
+
+
+        </div>
+        <br />
+
+    </script>
+
+    <script type="text/javascript">
+
+        function TypeChange() {
+
+            var typeName = this.value(),
+
+                grid = $("#AlhajjMasterGrid").data("kendoGrid");
+            if (typeName) {
+                grid.dataSource.filter({ field: "Unit.UnitNameAr", operator: "eq", value: typeName });
+            }
+            else {
+                grid.dataSource.filter({});
+            }
+        }
+
+    </script>
+
+    <script id="TypeTemplate" type="text/x-kendo-template">
+        <div class="refreshbtnContainer">
+            <a href="\\#" class="k-pager-refresh k-link button k-button-icon" title="Refresh"><span class="k-button-icon k-i-reload"></span></a>
+        </div>
+    </script>
+
+
+
+
+    <style>
+        .k-grid .k-grid-header {
+            border-color: #dde2e7;
+            color: #212529;
+            background-color: #f8f9fa;
+            font-weight: bold;
+        }
+    </style>

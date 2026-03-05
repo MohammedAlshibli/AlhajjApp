@@ -1,0 +1,125 @@
+﻿<div class="card card-cascade wider">
+    <div class="view view-cascade gradient-card-header blue-gradient-rgba">
+        <h2 class="card-header-title mb-3">تاكيد طلبات الاسلحة</h2>
+    </div>
+    <div class="card-body card-body-cascade">
+        <div class="k-rtl">
+            <div>
+               @*  @(Html.Kendo().Grid<Pligrimage.Entities.AlhajjMaster>
+                                                    ()
+                                                    .Name("ConfirmAlhajj")
+                                                    .Columns(column =>
+                                                    {
+                                                        column.Bound(c => c.FullName).Title("الاسم").Width(150);
+                                                        //column.Bound(c => c.ConfirmCode).ClientTemplate("#=confirm").Title("hdd").Width(150);
+                                                        column.Bound(c => c.ServcieNumber).Title(" الرقم العسكري").Width(70);
+                                                        column.Bound(c => c.NIC).Title("الرقم المدني").Width(70);
+                                                        column.ForeignKey(c => c.ConfirmCode, (System.Collections.IEnumerable)ViewData["ConfirmCode"], "ParameterId", "DescArabic").Title("حالة الطلب").Width(100);
+                                                        column.Bound(c => c.Notes).Title("ملاحظات ").Width(150);
+
+                                                        column.Command(com =>
+                                                        {
+                                                            com.Edit().UpdateText("حفظ").Text("تعديل").CancelText("إلغاء");
+                                                        }).Width(50);
+
+                                                    })
+                                                    .HtmlAttributes(new { style = "height:500px" })
+                                                    .Editable(editable => editable.Mode(GridEditMode.PopUp).TemplateName("Edit").Window(c => c.Resizable().Title("تعديل")))
+                                                    .Scrollable()
+                                                    .Sortable()
+                                                    .Selectable()
+                                                    .Filterable(f => f.Extra(false)
+                                                    .Operators(opertor => opertor
+                                                    .ForString(str => str.Clear()
+                                                    .Contains("يحتوي على"))))
+                                                    .Pageable
+                                                    (p => p
+                                                    .ButtonCount(5)
+                                                    .Refresh(true)
+                                                    )
+                                                    .Selectable(s => s.Mode(GridSelectionMode.Multiple))
+                                                    .DataSource
+                                                    (dataSourec => dataSourec
+                                                    .Ajax()
+                                                    .Model(m =>
+                                                    {
+                                                        m.Id(id => id.PligrimageId);
+                                                        m.Field(c => c.ServcieNumber);
+                                                        m.Field(c => c.NIC);
+                                                        m.Field(c => c.FullName);
+                                                        m.Field(c => c.ConfirmCode);
+                                                    })
+                                                    .Events(events =>
+                                                    {
+                                                        events.Error("error_handler");
+                                                        events.RequestEnd("request_end");
+                                                    })
+
+                                                    .Read(read => read.Action("ConfirmAlhajjRead", "ConfirmAlhajjMaster"))
+                                                    .Update(update => update.Action("Update", "ConfirmAlhajjMaster"))
+
+                                                    )
+                ) *@
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+    function error_handler(e) {
+        console.log(e);
+        if (e.errors) {
+            var message = "Errors: \n";
+            $.each(e.errors, function (key, value) {
+                if ('errors' in value) {
+                    $.each(value.errors, function () {
+                        message += this + "\n";
+
+                    });
+                }
+            });
+            alert(message);
+        }
+
+
+    };
+
+    function request_end(e) {
+
+        if (e.type == "update") {
+            alert("تم تحديث البيانات بنجاح");
+            $('#ConfirmAlhajj').data('kendoGrid').dataSource.read();
+            $('#ConfirmAlhajj').data('kendoGrid').refresh();
+        }
+        if (e.type == "create") {
+            alert("تم حفظ البيانات بنجاح");
+
+        }
+        if (e.type == "delete") {
+            alert("تم حذف البيانات بنجاح");
+
+        }
+    }
+
+</script>
+
+
+
+
+<style>
+    .k-grid .k-grid-header {
+        border-color: #dde2e7;
+        color: #212529;
+        background-color: #f8f9fa;
+        font-weight: bold;
+    }
+</style>
+
+
+
+
+
+
+
+
+

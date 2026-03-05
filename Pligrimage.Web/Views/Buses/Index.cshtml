@@ -1,0 +1,120 @@
+﻿<link href="~/lib/font-awesome-4.7.0/css/font-awesome.css" rel="stylesheet" />
+
+<div class="card card-cascade wider">
+    <div class="view view-cascade gradient-card-header blue-gradient-rgba">
+        <h2 class="card-header-title mb-3">الحافلات<span class="fa fa-bus"></span> </h2>
+    </div>
+    <div class="card-body card-body-cascade">
+       @*  <div class="k-rtl">
+            @(Html.Kendo().Grid<Pligrimage.Entities.Buses>
+                                            ()
+                                            .Name("BusGrid")
+                                            .Columns(column =>
+                                            {
+                                                column.Bound(c => c.BusNo).Title(" رقم الباص").Width(50);
+                                                column.Bound(c => c.BusCapacity).Title("عدد الركاب").Filterable(true).Width(50).Format("");
+                                                column.Bound(c => c.Date).Title("التاريخ").Format("{0:dd/MM/yyyy}").Width(50);
+                                                column.ForeignKey(c => c.FlightId, (System.Collections.IEnumerable)ViewData["Flights"], "FlightId", "FlightNo").Title("رقم الرحلة").Width(50);
+
+                                                column.Command(com =>
+                                                {
+                                                    com.Edit().UpdateText("حفظ").Text("تعديل").CancelText("إلغاء").HtmlAttributes(new { type = "button", @class = "glyphicon-pencil", });
+                                                    com.Destroy().Text("حذف").HtmlAttributes(new { type = "button", @class = "btn-basic ", });
+                                                }).Width(50);
+                                            })
+                                            .HtmlAttributes(new { style = "height:500px" })
+                                            .ToolBar(toolbar => toolbar.Create().Text("إضافة جديدة").HtmlAttributes(new { type = "button", @class = "plus", }))
+                                            .Editable(editable => editable.Mode(GridEditMode.PopUp).TemplateName("Edit").Window(c => c.Resizable().Title("تعديل")))
+                                            .Events(c => c.Edit("NewRecord"))
+                                            .Events(c => c.Save("onSave"))
+                                            .Scrollable()
+                                            .Sortable()
+                                            .Selectable()
+                                            .Filterable(f => f.Extra(false)
+                                            .Operators(opertor => opertor
+                                            .ForString(str => str.Clear()
+                                            .Contains("يحتوي على"))))
+                                            .Pageable
+                                            (p => p
+                                            .ButtonCount(5)
+                                            .Refresh(true)
+                                            )
+                                            .DataSource
+                                            (dataSourec => dataSourec
+                                            .Ajax()
+                                            .Events(e => e.Error("Error_Handler"))
+                                            .Model(m =>
+                                            {
+                                                m.Id(i => i.BusId);
+                                                m.Field(c => c.FlightId).DefaultValue(1);
+                                            })
+                                            .Read(read => read.Action("BusRead", "Buses"))
+                                            .Create(create => create.Action("CreateBus", "Buses"))
+                                            .Update(update => update.Action("UpdateBus", "Buses"))
+                                            .Destroy(delete => delete.Action("DeleteBus", "Buses"))
+
+                                            )
+            )
+        </div>
+ *@
+    </div>
+</div>
+
+
+
+
+
+<script>
+
+    function Error_Handler(e) {
+        console.log(e);
+        if (e.errors) {
+            var message = "Errors: \n";
+            $.each(e.errors, function (key, value) {
+                if ('errors' in value) {
+                    $.each(value.errors, function () {
+                        message += this + "\n";
+                    });
+                }
+            });
+            alert(message);
+        }
+
+
+    };
+
+
+
+</script>
+
+
+<script>
+    function NewRecord(e) {
+        if (e.model.isNew()) {
+            $('.k-window-title').text("إضافة جديدة");
+        }
+
+    }
+</script>
+
+<script>
+    function onSave() {
+        alert("تم حفظ البيانات"), "info"
+    }
+</script>
+
+
+
+
+
+
+<style>
+    .k-grid .k-grid-header {
+        border-color: #dde2e7;
+        color: #212529;
+        background-color: #f8f9fa;
+        font-weight: bold;
+    }
+</style>
+
+

@@ -1,0 +1,256 @@
+﻿
+@model IEnumerable<Pligrimage.Entities.IdentityModels.User>
+
+@{
+    ViewData["Title"] = "Online user ";
+}
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <span class="clickable filter" data-toggle="tooltip" title="Toggle table filter" data-container="body">
+            <i class="glyphicon glyphicon-filter"></i>
+        </span>
+
+        <h3 class="panel-title" style="font-size:20px"> online user List </h3>
+
+    </div>
+    <div class="panel-body">
+        <input type="text" class="form-control" id="dev-table-filter" data-action="filter" data-filters="#dev-table" placeholder="البحث في   " />
+    </div>
+
+    <div class="" style="overflow-y:scroll; max-height:800px; min-height:200px">
+        <table class="table  table-hover table-bordered table-striped" id="dev-table">
+
+            <thead>
+
+                <tr>
+
+
+                    <th>
+                        Username
+                    </th>
+                    <th>
+                        Full name
+                    </th>
+                    <th>
+                        Service
+                    </th>
+                    <th>
+                        LastLoginDate
+                    </th>
+
+                    <th>
+                        LastActiveTime
+                    </th>
+                </tr>
+
+            </thead>
+            <tbody>
+
+                @foreach (var item in Model.Where(x => x.LastLoginDate > DateTime.Now.AddMinutes(-6)))
+                {
+                    <tr>
+                        <td>
+
+                            @item.UserName
+                        </td>
+                        <td>
+                            @item.FullName
+
+                        </td>
+                        <td>
+                            @item.UserServices
+
+                        </td>
+                        <td>
+                            @item.LastLoginDate
+
+                        </td>
+                        <td>
+                            @item.Active
+
+                        </td>
+
+                    </tr>
+
+                }
+
+
+
+            </tbody>
+        </table>
+
+    </div>
+
+</div>
+
+
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <span class="clickable filter" data-toggle="tooltip" title="Toggle table filter" data-container="body">
+            <i class="glyphicon glyphicon-filter"></i>
+        </span>
+
+        <h3 class="panel-title" style="font-size:20px"> Last 14 users logging   </h3>
+
+    </div>
+    <div class="panel-body">
+        <input type="text" class="form-control" id="dev-table-filter" data-action="filter" data-filters="#dev-table1" placeholder="البحث في   " />
+    </div>
+
+    <div class="" style="overflow-y:scroll; max-height:800px; min-height:200px">
+        <table class="table  table-hover table-bordered table-striped" id="dev-table1">
+
+            <thead>
+
+                <tr>
+
+
+                    <th>
+                        Username
+                    </th>
+                    <th>
+                        Full name
+                    </th>
+                    <th>
+                        Service
+                    </th>
+                    <th>
+                        LastLoginDate
+                    </th>
+
+                    <th>
+                        LastActiveTime
+                    </th>
+                </tr>
+
+            </thead>
+            <tbody>
+
+                @foreach (var item in Model.Where(x => x.LastLoginDate != null).OrderByDescending(b => b.LastLoginDate).Take(14))
+                {
+                    <tr>
+                        <td>
+
+                            @item.UserName
+                        </td>
+                        <td>
+                            @item.FullName
+
+                        </td>
+                        <td>
+                            @item.UserServices
+
+                        </td>
+
+
+                        <td>
+                            @item.LastLoginDate
+
+                        </td>
+                        <td>
+                            @item.Active
+
+                        </td>
+
+                    </tr>
+
+                }
+
+
+
+            </tbody>
+        </table>
+
+    </div>
+
+
+
+
+
+</div>
+
+
+
+
+<script>
+
+    $(document).ready(function () {
+        $('.clickable').click(function () {
+            $('.panel-body').slideToggle();
+        });
+
+
+    });
+
+
+
+
+
+    (function () {
+        'use strict';
+        var $ = jQuery;
+        $.fn.extend({
+            filterTable: function () {
+                return this.each(function () {
+                    $(this).on('keyup', function (e) {
+                        $('.filterTable_no_results').remove();
+                        var $this = $(this),
+                            search = $this.val().toLowerCase(),
+                            target = $this.attr('data-filters'),
+                            $target = $(target),
+                            $rows = $target.find('tbody tr');
+
+                        if (search == '') {
+                            $rows.show();
+                        } else {
+                            $rows.each(function () {
+                                var $this = $(this);
+                                $this.text().toLowerCase().indexOf(search) === -1 ? $this.hide() : $this.show();
+                            })
+                            if ($target.find('tbody tr:visible').size() === 0) {
+                                var col_count = $target.find('tr').first().find('td').size();
+                                var no_results = $('<tr class="filterTable_no_results"><td colspan="' + col_count + '">No results found</td></tr>')
+                                $target.find('tbody').append(no_results);
+                            }
+                        }
+                    });
+                });
+            }
+        });
+        $('[data-action="filter"]').filterTable();
+    })(jQuery);
+
+
+</script>
+
+
+<style>
+    .row {
+        margin-top: 40px;
+        padding: 0 10px;
+    }
+
+    .clickable {
+        cursor: pointer;
+    }
+
+    .panel-heading div {
+        margin-top: -18px;
+        font-size: 15px;
+    }
+
+        .panel-heading div span {
+            margin-left: 5px;
+        }
+
+    .panel-body {
+        display: none;
+    }
+</style>
+
+
+
+
+

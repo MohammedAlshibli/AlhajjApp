@@ -1,0 +1,11 @@
+C:\Alhajj\ITS.Pligrimage\ITS.Core.Abstractions\bin\Release\netstandard2.0\ITS.Core.Abstractions.deps.json
+C:\Alhajj\ITS.Pligrimage\ITS.Core.Abstractions\bin\Release\netstandard2.0\ITS.Core.Abstractions.dll
+C:\Alhajj\ITS.Pligrimage\ITS.Core.Abstractions\bin\Release\netstandard2.0\ITS.Core.Abstractions.pdb
+C:\Alhajj\ITS.Pligrimage\ITS.Core.Abstractions\obj\Release\netstandard2.0\ITS.Core.Abstractions.Properties.Resources.resources
+C:\Alhajj\ITS.Pligrimage\ITS.Core.Abstractions\obj\Release\netstandard2.0\ITS.Core.Abstractions.csproj.GenerateResource.cache
+C:\Alhajj\ITS.Pligrimage\ITS.Core.Abstractions\obj\Release\netstandard2.0\ITS.Core.Abstractions.csproj.CoreCompileInputs.cache
+C:\Alhajj\ITS.Pligrimage\ITS.Core.Abstractions\obj\Release\netstandard2.0\ITS.Core.Abstractions.AssemblyInfoInputs.cache
+C:\Alhajj\ITS.Pligrimage\ITS.Core.Abstractions\obj\Release\netstandard2.0\ITS.Core.Abstractions.AssemblyInfo.cs
+C:\Alhajj\ITS.Pligrimage\ITS.Core.Abstractions\obj\Release\netstandard2.0\ITS.Core.Abstractions.dll
+C:\Alhajj\ITS.Pligrimage\ITS.Core.Abstractions\obj\Release\netstandard2.0\ITS.Core.Abstractions.pdb
+C:\Alhajj\ITS.Pligrimage\ITS.Core.Abstractions\obj\Release\netstandard2.0\ITS.Core.Abstractions.csprojAssemblyReference.cache

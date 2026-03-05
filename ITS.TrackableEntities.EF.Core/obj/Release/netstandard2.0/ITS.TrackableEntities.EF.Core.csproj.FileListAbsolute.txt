@@ -1,0 +1,13 @@
+C:\Alhajj\ITS.Pligrimage\ITS.TrackableEntities.EF.Core\bin\Release\netstandard2.0\TrackableEntities.EF.Core.xml
+C:\Alhajj\ITS.Pligrimage\ITS.TrackableEntities.EF.Core\bin\Release\netstandard2.0\ITS.TrackableEntities.EF.Core.deps.json
+C:\Alhajj\ITS.Pligrimage\ITS.TrackableEntities.EF.Core\bin\Release\netstandard2.0\ITS.TrackableEntities.EF.Core.dll
+C:\Alhajj\ITS.Pligrimage\ITS.TrackableEntities.EF.Core\bin\Release\netstandard2.0\ITS.TrackableEntities.EF.Core.pdb
+C:\Alhajj\ITS.Pligrimage\ITS.TrackableEntities.EF.Core\bin\Release\netstandard2.0\ITS.TrackableEntities.Common.Core.dll
+C:\Alhajj\ITS.Pligrimage\ITS.TrackableEntities.EF.Core\bin\Release\netstandard2.0\ITS.TrackableEntities.Common.Core.pdb
+C:\Alhajj\ITS.Pligrimage\ITS.TrackableEntities.EF.Core\obj\Release\netstandard2.0\ITS.TrackableEntities.EF.Core.csprojAssemblyReference.cache
+C:\Alhajj\ITS.Pligrimage\ITS.TrackableEntities.EF.Core\obj\Release\netstandard2.0\ITS.TrackableEntities.EF.Core.csproj.CoreCompileInputs.cache
+C:\Alhajj\ITS.Pligrimage\ITS.TrackableEntities.EF.Core\obj\Release\netstandard2.0\ITS.TrackableEntities.EF.Core.AssemblyInfoInputs.cache
+C:\Alhajj\ITS.Pligrimage\ITS.TrackableEntities.EF.Core\obj\Release\netstandard2.0\ITS.TrackableEntities.EF.Core.AssemblyInfo.cs
+C:\Alhajj\ITS.Pligrimage\ITS.TrackableEntities.EF.Core\obj\Release\netstandard2.0\ITS.TrackableEntities.EF.Core.csproj.CopyComplete
+C:\Alhajj\ITS.Pligrimage\ITS.TrackableEntities.EF.Core\obj\Release\netstandard2.0\ITS.TrackableEntities.EF.Core.dll
+C:\Alhajj\ITS.Pligrimage\ITS.TrackableEntities.EF.Core\obj\Release\netstandard2.0\ITS.TrackableEntities.EF.Core.pdb

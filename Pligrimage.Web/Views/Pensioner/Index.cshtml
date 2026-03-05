@@ -1,137 +1,44 @@
-﻿
 <div class="card card-cascade wider">
     <div class="view view-cascade gradient-card-header blue-gradient-rgba">
-        <h2 class="card-header-title mb-3">بيانات المتقاعدين </h2>
+        <h2 class="card-header-title mb-3">بيانات المتقاعدين</h2>
     </div>
     <div class="card-body card-body-cascade">
-        <div class="k-rtl">
-@* 
-            @(Html.Kendo().Grid<Pligrimage.Entities.AlhajjMaster>
-                                ()
-                                .Name("PensionerGrid")
-
-                                .Columns(column =>
-                                {
-
-                                    column.Bound(c => c.FullName).Title("الاسم").Filterable(true).Width(150);
-                                    column.Bound(c => c.ServcieNumber).Title(" الرقم العسكري").Width(100);
-                                    column.Bound(c => c.NIC).Title(" الرقم المدني").Width(100);
-                                    column.Bound(c => c.Region).Title("المحافظة").Width(100);
-                                    column.Bound(c => c.ReletiveName1).Title("أقرب الاقربين أ").Hidden();
-                                    column.Bound(c => c.RelativeGsm1).Title("رقم الهاتف أ").Hidden();
-                                    column.Bound(c => c.ReletiveName2).Title("أقرب الاقربين ب").Hidden();
-                                    column.Bound(c => c.RelativeGsm2).Title("رقم الهاتف ب").Hidden();
-                                    column.Bound(c => c.EmployeeStatus).Title("حالة الموظف").Width(100);
-                                    //column.ForeignKey(c => c.ParameterId, (System.Collections.IEnumerable)ViewData["ClassTypeList"], "ParameterId", "DescArabic").Title(" تصنيف الحاج").Width(100);
-                                    column.Bound(c => c.Unit.UnitNameAr).Title("السلاح").Width(100);
-                                    //column.Command(com =>
-                                    //{
-                                    //    com.Edit().UpdateText("حفظ").Text("تعديل").CancelText("إلغاء");
-                                    //}).Width(100);
-                                })
-
-                                .HtmlAttributes(new { style = "height:500px" })
-                                .ToolBar(toolbar =>
-                                {
-
-                                    toolbar.ClientTemplate("<a class='k-button k-button-icontext ' href='"
-                                    + Url.Action("Create", "Pensioner") + "'>إضافةالمتقاعدين " +
-                                    "</a>" +
-
-                                    "");
-                                })
-
-                                .Editable(editable => editable.Mode(GridEditMode.PopUp).TemplateName("Edit").Window(c => c.Resizable().Title("تعديل")))
-                                .Scrollable()
-                                .ClientDetailTemplateId("template")
-                                .Sortable()
-                                .Selectable()
-                                .Filterable(f => f.Extra(false)
-                                            .Operators(opertor => opertor
-                                            .ForString(str => str.Clear()
-                                            .Contains("يحتوي على"))))
-                                .Pageable
-                                (p => p
-                                .ButtonCount(5)
-                                .Refresh(true)
-                                )
-                                .DataSource
-                                (dataSourec => dataSourec
-                                .Ajax()
-                                //.Events(e => e.Error("Error_Handler"))
-                                .Events(events =>
-                                {
-                                    events.Error("error_handler");
-                                    events.RequestEnd("request_end");
-                                })
-                                .Model(m =>
-                                {
-                                    m.Id(i => i.PligrimageId);
-                                    m.Field(c => c.CategoryId).DefaultValue(1);
-                                })
-
-                                .Read(read => read.Action("PensionerRead", "Pensioner"))
-                                .Create(create => create.Action("CreatePensioner", "Pensioner"))
-                                .Update(update => update.Action("UpdatePensioner", "Pensioner"))
-                                .Destroy(delete => delete.Action("DeletePensioner", "Pensioner"))
-                                )
-                                .Events(events => events.DataBound("dataBound"))
-            ) *@
+        <div class="mb-3">
+            <a href="@Url.Action("Create","Pensioner")" class="btn btn-primary btn-sm">
+                <i class="fa fa-plus"></i> إضافة متقاعد
+            </a>
+        </div>
+        <div class="table-responsive">
+            <table id="pensionerTable" class="table table-bordered table-hover table-striped w-100">
+                <thead>
+                    <tr>
+                        <th>الاسم</th>
+                        <th>الرقم العسكري</th>
+                        <th>الرقم المدني</th>
+                        <th>المحافظة</th>
+                        <th>حالة الموظف</th>
+                        <th>السلاح</th>
+                    </tr>
+                </thead>
+            </table>
         </div>
     </div>
 </div>
 
+@section Scripts {
 <script>
-
-
-    function error_handler(e) {
-        console.log(e);
-        if (e.errors) {
-            var message = "Errors: \n";
-            $.each(e.errors, function (key, value) {
-                if ('errors' in value) {
-                    $.each(value.errors, function () {
-                        message += this + "\n";
-                    });
-                }
-            });
-            alert(message);
-        }
-    };
-
-    function request_end(e) {
-
-        if (e.type == "update") {
-            alert("تم تحديث البيانات بنجاح");
-        }
-        if (e.type == "create") {
-            alert("تم حفظ البيانات بنجاح");
-
-        }
-        if (e.type == "delete") {
-            alert("تم حذف البيانات بنجاح");
-
-        }
-    }
-
+    $(function () {
+        $('#pensionerTable').DataTable({
+            ajax: { url: '@Url.Action("PensionerRead","Pensioner")', dataSrc: '' },
+            columns: [
+                { data: 'fullName' },
+                { data: 'servcieNumber' },
+                { data: 'nic' },
+                { data: 'region' },
+                { data: 'employeeStatus' },
+                { data: 'unitNameAr' }
+            ]
+        });
+    });
 </script>
-
-
-
-
-<script>
-    function dataBound() {
-        //this.expandRow(this.tbody.find("tr.k-master-row").first());
-    }
-</script>
-
-
-
-<style>
-    .k-grid .k-grid-header {
-        border-color: #dde2e7;
-        color: #212529;
-        background-color: #f8f9fa;
-        font-weight: bold;
-    }
-</style>
+}

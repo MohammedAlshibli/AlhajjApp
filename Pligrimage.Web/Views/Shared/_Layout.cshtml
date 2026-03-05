@@ -1,5 +1,3 @@
-﻿<!DOCTYPE html>
-
 @inject Pligrimage.Services.Interface.IAdminService _userService
 @using System.Security.Claims;
 
@@ -9,55 +7,52 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Hajj.Web</title>
 
-    <environment include="Development">
-        <link href="~/css/site.css" rel="stylesheet" />
-        <link href="~/lib/bootstrap-rtl/css/bootstrap-rtl.css" rel="stylesheet" />
-        <link href="~/lib/hc-offcanvas/hc-offcanvas-nav.css" rel="stylesheet" />
-        @*<link href="~/lib/kendo-ui/styles/kendo.bootstrap-v4.min.css" rel="stylesheet" />
-        <link href="~/lib/kendo-ui/styles/kendo.rtl.min.css" rel="stylesheet" />*@
-        <link href="~/lib/bootstrap/dist/css/rtl/bootstrap.css" rel="stylesheet" />
-        <link href="~/lib/font-awesome-4.7.0/css/font-awesome.css" rel="stylesheet" />
-        <link href="~/lib/mdbootsrap/css/mdb.css" rel="stylesheet" />
+    <!-- Core styles -->
+    <link href="~/css/site.css" rel="stylesheet" />
+    <link href="~/lib/bootstrap-rtl/css/bootstrap-rtl.css" rel="stylesheet" />
+    <link href="~/lib/bootstrap/dist/css/rtl/bootstrap.css" rel="stylesheet" />
+    <link href="~/lib/hc-offcanvas/hc-offcanvas-nav.css" rel="stylesheet" />
+    <link href="~/lib/font-awesome-4.7.0/css/font-awesome.css" rel="stylesheet" />
+    <link href="~/lib/mdbootsrap/css/mdb.css" rel="stylesheet" />
 
+    <!-- DataTables with Bootstrap 4 styling -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap4.min.css" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.bootstrap4.min.css" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap4.min.css" />
 
-    </environment>
-    <environment exclude="Development">
+    <!-- Toastr notifications -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
 
+    <!-- Select2 for searchable / multi-select dropdowns -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" />
 
-        <link href="~/css/site.css" rel="stylesheet" />
-        <link href="~/lib/bootstrap-rtl/css/bootstrap-rtl.css" rel="stylesheet" />
-        <link href="~/lib/hc-offcanvas/hc-offcanvas-nav.css" rel="stylesheet" />
+    <!-- Flatpickr date pickers -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" />
 
-        <link href="~/lib/bootstrap/dist/css/rtl/bootstrap.css" rel="stylesheet" />
-        <link href="~/lib/font-awesome-4.7.0/css/font-awesome.css" rel="stylesheet" />
-        <link href="~/lib/mdbootsrap/css/mdb.css" rel="stylesheet" />
-
-
-    </environment>
-
-
-    <environment include="Development">
-
-        <script src="~/lib/jquery/dist/jquery.js"></script>
-        <script src="~/lib/bootstrap-rtl/js/bootstrap.bundle.js"></script>
-        <script src="~/lib/bootstrap-rtl/js/bootstrap.js"></script>
-        <script src="~/lib/kendo-ui/js/kendo.all.min.js"></script>
-        <script src="~/lib/kendo-ui/js/kendo.aspnetmvc.min.js"></script>
-        <script src="~/lib/hc-offcanvas/hc-offcanvas-nav.js"></script>
-        <script src="~/lib/JsZip/jszip.js"></script>
-
-
-    </environment>
-    <environment exclude="Development">
-        <script src="~/lib/jquery/dist/jquery.js"></script>
-        <script src="~/lib/bootstrap-rtl/js/bootstrap.bundle.js"></script>
-        <script src="~/lib/bootstrap-rtl/js/bootstrap.js"></script>
-        <script src="~/lib/kendo-ui/js/kendo.all.min.js"></script>
-        <script src="~/lib/kendo-ui/js/kendo.aspnetmvc.min.js"></script>
-        <script src="~/lib/hc-offcanvas/hc-offcanvas-nav.js"></script>
-        <script src="~/lib/JsZip/jszip.js"></script>
-
-    </environment>
+    <style>
+        /* DataTables RTL fixes */
+        .dataTables_wrapper .dataTables_length,
+        .dataTables_wrapper .dataTables_filter,
+        .dataTables_wrapper .dataTables_info,
+        .dataTables_wrapper .dataTables_paginate {
+            direction: rtl;
+            text-align: right;
+        }
+        .dataTables_wrapper .dataTables_filter input {
+            margin-right: 0.5em;
+            margin-left: 0;
+        }
+        table.dataTable thead th {
+            background-color: #f8f9fa;
+            color: #212529;
+            font-weight: bold;
+            border-color: #dde2e7;
+        }
+        table.dataTable tbody tr:hover {
+            background-color: #f1f8ff;
+        }
+        .dt-buttons { margin-bottom: 10px; }
+    </style>
 </head>
 
 <body>
@@ -67,88 +62,55 @@
         IEnumerable<Claim> claims = identity.Claims;
         var permissionVm = await _userService.GetPermissionsByUser(identity.Name);
         var roles = permissionVm.GroupBy(x => x.RoleName);
-
-
-
     }
 
     <header>
+        <nav class="navbar fixed-top navbar-expand-lg rgba-blue-grey-strong scrolling-navbar">
+            <div class="navbar-brand"><a>&nbsp;</a></div>
+            <div class="toggle"><span></span></div>
 
+            <ul class="navbar-nav ml-auto nav-flex-icons">
+                <li class="nav-item dropdown">
+                    <a id="navbarMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></a>
+                    <div class="dropdown-menu dropdown-menu-right dropdown-default" aria-labelledby="navbarMenuLink">
+                        <a class="dropdown-item">User1</a>
+                        <a class="dropdown-item">User2</a>
+                    </div>
+                </li>
+            </ul>
 
-        @*<nav class="navbar fixed-top navbar-expand-lg heavy-rain-gradient scrolling-navbar">*@
-            <nav class="navbar fixed-top navbar-expand-lg rgba-blue-grey-strong scrolling-navbar">
+            <ul class="nav navbar-nav navbar-right">
+                <li>@await Html.PartialAsync("_LoginPartial")</li>
+            </ul>
 
-                <div class="navbar-brand">
-                    <a>
-                        &nbsp;
-                    </a>
-                </div>
+            <div style="float:left">
+                <a href="@Url.Action("Index","Home")"><img src="~/Image/logo.png" style="width:40px" /></a>
+            </div>
+        </nav>
 
-
-                <div class="toggle"><span></span></div>
-
-
-                <ul class="navbar-nav ml-auto nav-flex-icons">
-                    <li class="nav-item dropdown ">
-                        <a id="navbarMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            @*<i class="fa fa-user fa-2x"></i>*@
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-right dropdown-default" aria-labelledby="navbarMenuLink">
-                            <a class="dropdown-item">User1</a>
-                            <a class="dropdown-item">User2</a>
-                        </div>
-                    </li>
-                </ul>
-
-                <ul class="nav navbar-nav navbar-right">
+        <nav id="main-nav">
+            <ul>
+                @foreach (var role in roles)
+                {
                     <li>
-                        @await Html.PartialAsync("_LoginPartial")
+                        <span>@role.Key</span>
+                        <ul>
+                            @foreach (var item in permissionVm.Where(x => x.RoleName == @role.Key))
+                            {
+                                <li>
+                                    <a asp-area="" asp-controller=@item.ControllerName asp-action=@item.ActionName>
+                                        @item.Description
+                                    </a>
+                                </li>
+                            }
+                        </ul>
                     </li>
-                </ul>
-
-
-
-                <div style="float:left">
-                    <a href="@Url.Action("Index","Home")"><img src="~/Image/logo.png" style="width:40px" /></a>
-                </div>
-            </nav>
-
-
-            <nav id="main-nav">
-                <ul>
-                    @foreach (var role in roles)
-                    {
-                        <li>
-                            <span> @role.Key</span>
-                            <ul>
-                                @foreach (var item in permissionVm.Where(x => x.RoleName == @role.Key))
-                                {
-                                    <li>
-                                        @{
-
-                                            <a asp-area="" asp-controller=@item.ControllerName asp-action=@item.ActionName>
-                                                @item.Description
-
-                                            </a>
-                                        }
-                                    </li>
-                                }
-
-                            </ul>
-                        </li>
-                    }
-
-
-                </ul>
-            </nav>
-
-
-</header>
-
+                }
+            </ul>
+        </nav>
+    </header>
 
     <div class="container-fluid" id="slide" style="margin-top: 80px">
-
-        @*<partial name="_CookieConsentPartial" />*@
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
@@ -156,67 +118,75 @@
 
     <footer class="border-top footer heavy-rain-gradient text-center">
         <div class="container">
-            &copy; 2019 - نظام إدارة بعثة الحج العسكرية - <a asp-area="" asp-controller="Home" asp-action="Privacy"></a>
+            &copy; 2019 - نظام إدارة بعثة الحج العسكرية -
+            <a asp-area="" asp-controller="Home" asp-action="Privacy"></a>
         </div>
     </footer>
 
+    <!-- Core scripts (jQuery first) -->
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+    <script src="~/lib/bootstrap-rtl/js/bootstrap.bundle.js"></script>
+    <script src="~/lib/bootstrap-rtl/js/bootstrap.js"></script>
+    <script src="~/lib/hc-offcanvas/hc-offcanvas-nav.js"></script>
+    <script src="~/lib/mdbootsrap/js/mdb.js"></script>
+    <script src="~/lib/JsZip/jszip.js"></script>
 
+    <!-- DataTables -->
+    <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap4.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.bootstrap4.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
 
+    <!-- Toastr -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
-    <environment include="Development">
-        <link href="~/css/site.css" rel="stylesheet" />
+    <!-- Select2 -->
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
-        <script src="~/lib/jquery/dist/jquery.js"></script>
-        @*<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.js"></script>*@
-        <script src="~/lib/bootstrap-rtl/js/bootstrap.bundle.js"></script>
-        <script src="~/lib/kendo-ui/js/kendo.all.min.js"></script>
-        <script src="~/lib/kendo-ui/js/kendo.aspnetmvc.min.js"></script>
-        <script src="~/lib/kendo-ui/js/messages/kendo.ar-JO.js"></script>
-        <script src="~/lib/hc-offcanvas/hc-offcanvas-nav.js"></script>
-        <script src="~/lib/mdbootsrap/js/mdb.js"></script>
-        <script src="~/lib/JsZip/jszip.js"></script>
-    </environment>
+    <!-- Flatpickr -->
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ar.js"></script>
 
-
-    <environment exclude="Development">
-        <link href="~/css/site.css" rel="stylesheet" />
-
-        <script src="~/lib/jquery/dist/jquery.js"></script>
-        @*<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.js"></script>*@
-        <script src="~/lib/bootstrap-rtl/js/bootstrap.bundle.js"></script>
-        <script src="~/lib/kendo-ui/js/kendo.all.min.js"></script>
-        <script src="~/lib/kendo-ui/js/kendo.aspnetmvc.min.js"></script>
-        <script src="~/lib/kendo-ui/js/messages/kendo.ar-JO.js"></script>
-        <script src="~/lib/hc-offcanvas/hc-offcanvas-nav.js"></script>
-        <script src="~/lib/mdbootsrap/js/mdb.js"></script>
-        <script src="~/lib/JsZip/jszip.js"></script>
-    </environment>
     <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <script>
+        // Global Toastr defaults (top-left RTL)
+        toastr.options = {
+            closeButton: true,
+            progressBar: true,
+            positionClass: "toast-top-left",
+            timeOut: "4000",
+            rtl: true
+        };
+
+        // Global DataTables defaults (Arabic + RTL)
+        $.extend(true, $.fn.dataTable.defaults, {
+            language: { url: 'https://cdn.datatables.net/plug-ins/1.13.8/i18n/ar.json' },
+            responsive: true,
+            dom: '<"row"<"col-sm-6"B><"col-sm-6"f>>rt<"row"<"col-sm-6"i><"col-sm-6"p>>',
+            buttons: [
+                { extend: 'excel', text: '<i class="fa fa-file-excel-o"></i> Excel', className: 'btn btn-success btn-sm' },
+                { extend: 'print', text: '<i class="fa fa-print"></i> طباعة', className: 'btn btn-info btn-sm' }
+            ]
+        });
+
+        // Off-canvas RTL nav
+        $('#main-nav').hcOffcanvasNav({
+            maxWidth: false,
+            navTitle: 'القائمة الرئيسية',
+            customToggle: $('.toggle'),
+            levelTitles: true,
+            side: 'right',
+            pushContent: '#slide',
+            labelClose: 'إغلاق',
+            labelBack: 'رجوع'
+        });
+    </script>
 
     @RenderSection("Scripts", required: false)
 </body>
 
 </html>
-
-
-<script>
-
-    var mainNav = $('#main-nav');
-    var toggle = $('.toggle');
-
-    var defaultSetting = {
-        maxWidth: false,
-        navTitle: 'القائمة الرئيسية',
-        customToggle: toggle,
-        levelTitles: true,
-        pushContent: false,
-        side: 'right',
-        //insertClose: 1,
-        pushContent: '#slide',
-        labelClose: 'إغلاق',
-        labelBack: 'رجوع'
-    };
-
-    var nav = mainNav.hcOffcanvasNav(defaultSetting);
-
-</script>

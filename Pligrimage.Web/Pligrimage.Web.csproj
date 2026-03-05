@@ -14,18 +14,6 @@
     <Content Include="Views\Passengers\UpdateIndexcshtml" />
   </ItemGroup>
 
-  <!--
-    Kendo.Mvc.dll is a licensed Telerik assembly (server-side Html.Kendo() helpers).
-    It is stored locally in lib/ because it is not on the public NuGet feed.
-    The front-end JS/CSS files are in wwwroot/lib/kendo-ui/ (static assets).
-    IMPORTANT: When upgrading Kendo UI, replace this DLL with the matching version.
-  -->
-  <ItemGroup>
-    <Reference Include="Kendo.Mvc">
-      <HintPath>lib\Kendo.Mvc.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-
   <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.11" />

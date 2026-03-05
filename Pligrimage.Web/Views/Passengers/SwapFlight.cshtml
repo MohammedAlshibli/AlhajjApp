@@ -91,7 +91,7 @@
     $("#Save").on('click', function (e) {
 
         var FlightDropDown1Value = $("#FlightDropDown1").val()
-        var listbox = $("#Flight1").data("kendoListBox");
+        // ListBox replaced with standard HTML
         data = listbox.dataItems()
 
         $.each(data, function (key, item) {
@@ -101,7 +101,7 @@
 
 
         var FlightDropDown2Value = $("#FlightDropDown2").val()
-        var listbox2 = $("#Flight2").data("kendoListBox");
+        // ListBox replaced with standard HTML
         data2 = listbox2.dataItems()
 
         $.each(data2, function (key, item) {
@@ -155,8 +155,8 @@
               data: { flightID: flightID},
               dataType:"Json",
               success: function (result) {
-                            var flight1=$("#Flight1").data("kendoListBox");
-                            flight1.dataSource.data(result);
+                            
+                            console.log("data:", result);
                         },
                 error: function (e) {
                             console.log(e)
@@ -180,8 +180,8 @@
               data: { flightID: flightID},
               dataType:"Json",
               success: function (result) {
-                        var flight1 = $("#Flight2").data("kendoListBox");
-                        flight1.dataSource.data(result);
+                        
+                        console.log("data:", result);
                     },
                 error: function (e) {
                         console.log(e)

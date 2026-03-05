@@ -1,96 +1,12 @@
-﻿<div class="card card-cascade wider">
+<div class="card card-cascade wider">
     <div class="view view-cascade gradient-card-header blue-gradient-rgba">
-        <h2 class="card-header-title mb-3">الاداريين خارج وزارة الدفاع</h2>
+        <h2 class="card-header-title mb-3">الاداريين خارج وزارة الدفاع - التفاصيل</h2>
     </div>
     <div class="card-body card-body-cascade">
         <div class="container-fluid">
-            <div class="k-rtl">
-
-
-               @*  @(Html.Kendo().Grid<Pligrimage.Entities.AlhajjMaster>()
-                                        .Name("grid")
-                                        .Columns(columns =>
-                                        {
-                                            columns.Bound(e => e.FullName).Width(120);
-                                            columns.Bound(e => e.ServcieNumber).Width(120);
-                                            columns.Bound(e => e.Region).Width(120);
-                                            columns.Bound(c => c.WilayaDesc).Title("الولاية");
-                                            columns.Bound(c => c.VillageDesc).Title("القرية");
-                                            columns.Bound(c => c.GSM).Title("رقم الهاتف");
-                                            //columns.ForeignKey(c => c.ReletiveCode1, (System.Collections.IEnumerable)ViewData["RTNCodeList"], "ParameterId", "DescArabic").Title("صلة القرابة 1").Width(200).Hidden();
-                                            columns.Command(com =>
-                                            {
-                                                com.Edit().UpdateText("حفظ").Text("تعديل").CancelText("إلغاء").HtmlAttributes(new { type = "button", @class = "glyphicon-pencil", });
-                                                com.Destroy().Text("حذف").HtmlAttributes(new { type = "button", @class = "btn-basic ", });
-                                            }).Width(250).Title("Action");
-                                        })
-                                        .Sortable()
-                                        .Pageable()
-                                        .Scrollable()
-                                        .ClientDetailTemplateId("template")
-                                        .HtmlAttributes(new { style = "height:550px;" })
-                                        .DataSource(dataSource => dataSource
-                                            .Ajax()
-                                            .PageSize(5)
-                                            .Read(read => read.Action("ReadNonModAdmin", "NonModAdmin"))
-                                        )
-                                        .Events(events => events.DataBound("dataBound"))
-                ) *@
-            </div>
+            <p class="text-muted">
+                استخدم <a href="@Url.Action("Index","NonModAdmin")">صفحة الفهرس</a> لعرض وإدارة السجلات.
+            </p>
         </div>
     </div>
 </div>
-<script id="template" type="text/kendo-tmpl">
-    @* @(Html.Kendo().TabStrip()
-                                            .Name("tabStrip_#=PligrimageId#")
-                                            .SelectedIndex(0)
-                                            .Animation(animation => animation.Open(open => open.Fade(FadeDirection.In)))
-                                            .Items(items =>
-                                            {
-                                                items.Add().Text("تفاصيل اضافية").Content(@<text>
-                                                    @(Html.Kendo().Grid<Pligrimage.Entities.AlhajjMaster>()
-                                                                        .Name("grid_#=PligrimageId#") // template expression, to be evaluated in the master context
-                                                                        .Columns(columns =>
-                                                                        {
-                                                                    columns.Bound(o => o.ServcieNumber).Title("ID").Width(100);
-                                                                    columns.Bound(o => o.NIC).Width(150);
-                                                                    columns.Bound(c => c.NICExpire).Title("تاريخ انتهاء البطاقة الشخصية");
-                                                                    columns.Bound(c => c.PassportExpire).Title("تاريخ انتهاء جواز السفر");
-                                                                    columns.Bound(c => c.BloodGroup).Title("فصيلة الدم").Hidden();
-                                                                    columns.Bound(c => c.DateOfEnlistment).Title("تاريخ الالتحاق بالخدمة العسكرية");
-                                                                    columns.Bound(c => c.ReletiveName1).Title("أقرب الاقربين أ");
-                                                                    columns.Bound(c => c.RelativeGsm1).Title("رقم الهاتف أ");
-                                                                })
-                                                                        .DataSource(dataSource => dataSource
-                                                                            .Ajax()
-                                                                            .PageSize(5)
-                                                                            .Read(read => read.Action("NonModAdminDetails", "NonModAdmin", new { pligrimageId = "#=PligrimageId#" }))
-                                                                        )
-                                                                         .Editable(editable => editable.Mode(GridEditMode.PopUp).TemplateName("Edit").Window(c => c.Scrollable(true).Title("تعديل").Width(425).Height(900)))
-
-                                                                        .Pageable()
-                                                                        .Sortable()
-                                                                        .ToClientTemplate())
-                                                </text>
-                                                                                                                                                                            );
-                                                                                                        //items.Add().Text("Contact Information").Content(
-                                                                                                        //    "<div class='employee-details'>" +
-                                                                                                        //        "<ul>" +
-                                                                     *@                                    //            "<li><label>Country:</label>#= Country #</li>" +
-                                                                                                        //            "<li><label>City:</label>#= City #</li>" +
-                                                                                                        //            "<li><label>Address:</label>#= Address #</li>" +
-                                                                                                        //            "<li><label>Home Phone:</label>#= HomePhone #</li>" +
-                                                                                                        //        "</ul>" +
-                                                                                                        //    "</div>"
-                                                                                                        //);
-                                                                                                    })
-                                                                                                                                                .ToClientTemplate())
-
-</script>
-
-<script>
-    function dataBound() {
-        this.expandRow(this.tbody.find("tr.k-master-row").first());
-    }
-</script>
-

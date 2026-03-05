@@ -115,7 +115,7 @@
 
         var typeName = this.value(),
 
-            grid = $("#SwapAlhajjaj").data("kendoGrid");
+            grid = $.fn.DataTable.isDataTable("#SwapAlhajjaj") ? $("#SwapAlhajjaj").DataTable() : null;
         if (typeName) {
             grid.dataSource.filter({ field: "Flight.FlightNo", operator: "eq", value: typeName });
         }

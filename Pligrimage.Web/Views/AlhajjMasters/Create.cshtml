@@ -64,7 +64,7 @@
     
     });
     function GetEmployee() {
-        var popUpNotification = $("#WSNotification").data("kendoNotification");
+        
 
          $.ajax({
             url: '@Url.Action("GetAlhajjDataFormWebService", "AlhajjMasters")',
@@ -82,12 +82,12 @@
                 $("#spinner").hide();
                 $("#EmployeeDetailsView").html(data);
 
-                popUpNotification.show(kendo.toString("تم جلب البيانات بنجاح"), "info");
+                toastr.success("تم جلب البيانات بنجاح");
                 $("#getServiceNumber").val("");
              },
              error: function (xhr, status, error) {
 
-                 popUpNotification.show(kendo.toString(xhr.responseText), "error");
+                 toastr.error(xhr.responseText || "حدث خطأ");
 
              },
 

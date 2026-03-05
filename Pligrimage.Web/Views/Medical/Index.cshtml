@@ -1,156 +1,56 @@
-﻿<div class="card card-cascade wider">
+<div class="card card-cascade wider">
     <div class="view view-cascade gradient-card-header blue-gradient-rgba">
         <h2 class="card-header-title mb-3">الفحص الطبي</h2>
     </div>
     <div class="card-body card-body-cascade">
-        <div class="k-rtl">
-            <div>
-     @*            @(Html.Kendo().Grid<Pligrimage.Entities.AlhajjMaster>
-                    ()
-                    .Name("Mediacl")
-                    .Columns(column =>
-                    {
-                        column.Bound(c => c.FullName).Title("الاسم").Width(150);
-                        column.Bound(c => c.ServcieNumber).Title(" الرقم العسكري").Width(70);
-                        column.Bound(c => c.NIC).Title("الرقم المدني").Width(70);
-                        column.Bound(c => c.Unit.UnitNameAr).Title("الوحدة").Width(100);
-                        column.Bound(c => c.BloodGroup).Title("فصيلة الدم").Width(70);
-                        //column.Bound(c => c.FitResult).ClientTemplate("#FitResults#").Width(80).Title("ok");
-                        column.ForeignKey(c => c.FitResult, (System.Collections.IEnumerable)ViewData["FitResult"], "ParameterId", "DescArabic").Title("حالة الفحص").Width(100);
-                        column.Bound(c => c.InjectionDate).Title("تاريخ الحقن").Hidden().Visible(true);
-                        //column.Bound(c => c.DoctorNote).Title("ملاحظات الطبيب")
-                        //.ClientTemplate("<textarea rows='2' style='text-overflow:ellipsis; display:black;widht:99%;height:100%;font-family:Arial;font-size:12px;'> #= DoctorNote #</textarea>");
-                        column.Bound(c => c.DoctorNote).Title("ملاحظات الطبيب").Width(100).EditorViewData("TaskTextArea");
-                        column.Command(com =>
-                        {
-                            com.Edit().UpdateText("حفظ").Text("تعديل").CancelText("إلغاء");
-                        }).Width(50);
-
-                    })
-                        .ToolBar(toolbar =>
-                        {
-
-                            toolbar.ClientTemplate("<a class='k-button k-button-icontext ' href='"
-                                + Url.Action("Index", "Injection") + "'>سجلات التطعيم " +
-                                "</a>");
-
-                        })
-                    .HtmlAttributes(new { style = "height:600px" })
-                    .Editable(editable => editable.Mode(GridEditMode.PopUp).TemplateName("NonMode").Window(c => c.Resizable().Title("تعديل")))
-                    .Scrollable()
-                    .Sortable()
-                    .Selectable()
-                    .Filterable(f => f.Extra(false)
-                    .Operators(opertor => opertor
-                    .ForString(str => str.Clear()
-                    .Contains("يحتوي على"))))
-                    .Pageable
-                    (p => p
-                    .ButtonCount(5)
-                    .Refresh(true)
-                    
-                    )
-                    .Events(c =>c.Edit("OnEdit"))
-                    //.Selectable(s => s.Mode(GridSelectionMode.Multiple))
-                    .DataSource
-                    (dataSourec => dataSourec
-                    .Ajax()
-                    .Model(m =>
-                    {
-                        m.Id(id => id.PligrimageId);
-                        m.Field(c => c.ServcieNumber);
-                        //    m.Field(c => c.NIC);
-                        //    m.Field(c => c.FullName);
-                    })
-                    .Events(events =>
-                    {
-                        events.Error("error_handler");
-                        events.RequestEnd("request_end");
-
-                    })
-                    .Read(read => read.Action("ReadMedical", "Medical"))
-                    .Update(update => update.Action("UpdateMedical", "Medical"))
-
-                    )
-                ) *@
-            </div>
+        <div class="mb-3">
+            <a href="@Url.Action("Index","Injection")" class="btn btn-secondary btn-sm">
+                <i class="fa fa-syringe"></i> سجلات التطعيم
+            </a>
+        </div>
+        <div class="table-responsive">
+            <table id="medicalTable" class="table table-bordered table-hover table-striped w-100">
+                <thead>
+                    <tr>
+                        <th>الاسم</th>
+                        <th>الرقم العسكري</th>
+                        <th>الرقم المدني</th>
+                        <th>الوحدة</th>
+                        <th>فصيلة الدم</th>
+                        <th>حالة الفحص</th>
+                        <th>تاريخ الحقن</th>
+                        <th>ملاحظات الطبيب</th>
+                        <th>الإجراءات</th>
+                    </tr>
+                </thead>
+            </table>
         </div>
     </div>
 </div>
+
+@section Scripts {
 <script>
-
-
-    function error_handler(e) {
-        console.log(e);
-        if (e.errors) {
-            var message = "Errors: \n";
-            $.each(e.errors, function (key, value) {
-                if ('errors' in value) {
-                    $.each(value.errors, function () {
-                        message += this + "\n";
-
-                    });
+    $(function () {
+        $('#medicalTable').DataTable({
+            ajax: { url: '@Url.Action("ReadMedical","Medical")', dataSrc: '' },
+            columns: [
+                { data: 'fullName' },
+                { data: 'servcieNumber' },
+                { data: 'nic' },
+                { data: 'unitNameAr' },
+                { data: 'bloodGroup' },
+                { data: 'fitResult' },
+                { data: 'injectionDate' },
+                { data: 'doctorNote' },
+                {
+                    data: 'pligrimageId', orderable: false,
+                    render: function (id) {
+                        return '<a href="@Url.Action("UpdateDoctorNote","Medical")?id=' + id +
+                               '" class="btn btn-warning btn-xs"><i class="fa fa-pencil"></i> تعديل</a>';
+                    }
                 }
-            });
-            alert(message);
-        }
-
-
-    };
-
-    function request_end(e) {
-
-        if (e.type == "update") {
-            alert("تم تحديث البيانات بنجاح");
-            $('#Mediacl').data('kendoGrid').dataSource.read();
-            $('#Mediacl').data('kendoGrid').refresh();
-        }
-        if (e.type == "create") {
-            alert("تم حفظ البيانات بنجاح");
-
-        }
-        if (e.type == "delete") {
-            alert("تم حذف البيانات بنجاح");
-
-        }
-    }
-
-    function OnChange(e) {
-        var grid = $("#Mediacl").data("kendoGrid");
-        console.log(grid);
-    }
-
-
-    function OnEdit(e) {
-        if (e.model.isNew() == false) {
-            $("#NIC").attr("readonly", true);
-            $("#ServcieNumber").attr("readonly", true);
-            $("#BloodGroup").attr("readonly", true);
-
-        }
-    }
-
+            ]
+        });
+    });
 </script>
-
-
-<style>
-    .k-grid .k-grid-header {
-        border-color: #dde2e7;
-        color: #212529;
-        background-color: #f8f9fa;
-        font-weight: bold;
-    }
-</style>
-
-
-
-
-
-
-
-
-
-
-
-
-
+}

@@ -36,7 +36,7 @@ namespace Pligrimage.Web.Controllers
         public IActionResult UnitRead()
         {
 
-            return View(_unitService.Queryable());
+            return Json(_unitService.Queryable().ToList());
         }
 
 

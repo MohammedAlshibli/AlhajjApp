@@ -1,240 +1,138 @@
-﻿
 @{
-    ViewData["Title"] = "ImportExport";
+    ViewData["Title"] = "استيراد البيانات";
 }
 
 <div class="card">
     <div class="card-header">
-        <div class="card-text">  إرفاق بيانات حجاج خارج وزارة الدفاع </div>
+        <div class="card-text">إرفاق بيانات حجاج خارج وزارة الدفاع</div>
     </div>
     <div class="card-body">
-
-        <form method="post" class="k-rtl" enctype="multipart/form-data" id="test">
+        <form method="post" enctype="multipart/form-data" id="uploadForm">
             <div class="row">
-              @*   <div class="col-md-3 form-group" style="width:500px">
-                    @Html.Kendo().DropDownList().Name("NonModService").BindTo((System.Collections.IEnumerable)ViewBag.NonModService).DataTextField("UnitNameAr").DataValueField("UnitId")
-                    @Html.Kendo().DropDownList().Name("AlhajjType").BindTo((System.Collections.IEnumerable)ViewBag.AlhajjType).DataTextField("DescArabic").DataValueField("ParameterId")
-
-                </div> *@
-
-                @*<div class="col-md-3 form-group" style="width:500px">
-                    @Html.Kendo().DropDownList().Name("AlhajjType").BindTo((System.Collections.IEnumerable)ViewBag.AlhajjType).DataTextField("DescArabic").DataValueField("ParameterId")
-                </div>*@
-
-                <div class="col-md-4">
-                    <input type="file" id="fUpload" name="files" class="form-control" />
+                <div class="col-md-3 form-group">
+                    <label>السلاح / الجهة</label>
+                    <select id="NonModService" name="NonModServiceId" class="form-control">
+                        <option value="">-- اختر الجهة --</option>
+                        @if (ViewBag.NonModService != null)
+                        {
+                            foreach (var item in ViewBag.NonModService)
+                            {
+                                <option value="@item.UnitId">@item.UnitNameAr</option>
+                            }
+                        }
+                    </select>
                 </div>
-
-           @*      <div class="form-group">
-                    @Html.Kendo().Button().Name("btnUpload").Content("عرض الملف").HtmlAttributes(new { type = "button" }).Icon("upload")
-                </div> *@
+                <div class="col-md-3 form-group">
+                    <label>نوع الحاج</label>
+                    <select id="AlhajjType" name="AlhajjTypeId" class="form-control">
+                        <option value="">-- اختر النوع --</option>
+                        @if (ViewBag.AlhajjType != null)
+                        {
+                            foreach (var item in ViewBag.AlhajjType)
+                            {
+                                <option value="@item.ParameterId">@item.DescArabic</option>
+                            }
+                        }
+                    </select>
+                </div>
+                <div class="col-md-4 form-group">
+                    <label>ملف Excel</label>
+                    <input type="file" id="fUpload" name="files" class="form-control" accept=".xlsx,.xls" />
+                </div>
+                <div class="col-md-2 form-group d-flex align-items-end">
+                    <button type="button" id="btnUpload" class="btn btn-primary">
+                        <i class="fa fa-upload"></i> عرض الملف
+                    </button>
+                </div>
             </div>
-         
-            <br />
         </form>
-
     </div>
-    <div class="card-footer k-rtl">
-@*         @(Html.Kendo().Grid<Pligrimage.Entities.AlhajjMaster>()
-            .Name("AlhajjGrid")
-            .Columns(column =>
-            {
-
-                column.Select().Width(50);
-                column.Bound(c => c.ServcieNumber).Title("الرقم العسكري");
-                column.Bound(c => c.FullName).Title("الاسم");
-                column.Bound(c => c.RankDesc).Title("الرتبة");
-                column.Bound(c => c.NIC).Title("البطاقة الشخصية");
-                column.Bound(c => c.Passport).Title("جواز السفر");
-                column.Bound(c => c.Region).Title("المحافظة");
-                column.Bound(c => c.WilayaDesc).Title("الولاية");
-                column.Bound(c => c.VillageDesc).Title("القرية");
-                column.Bound(c => c.Parameter.DescArabic).Title("تصنيف الحاج");
-                column.Bound(c => c.Unit.UnitNameAr).Title("اسم السلاح");
-
-            })
-            .PersistSelection(true)
-            .ToolBar(toolbar =>
-            {
-
-                toolbar.ClientTemplate("<a role='button' class='k-button k-button-icontext k-grid-Save' onclick='SelectQuestions()'><span class=''save'>حفظ البيانات</a>" +
-                 "<a class='k-button' href='" + Url.Action("Index", "AlhajjList") + "'" + ">القوائم</a>"
-                 );
-            })
-   ) *@
-
-</div>
+    <div class="card-footer">
+        <div id="previewSection" style="display:none">
+            <div class="mb-2">
+                <button type="button" onclick="saveImportedData()" class="btn btn-success">
+                    <i class="fa fa-save"></i> حفظ البيانات
+                </button>
+                <a href="@Url.Action("Index","AlhajjList")" class="btn btn-info">
+                    <i class="fa fa-list"></i> القوائم
+                </a>
+            </div>
+            <div class="table-responsive">
+                <table id="importTable" class="table table-bordered table-striped w-100">
+                    <thead><tr>
+                        <th><input type="checkbox" id="selectAll"/></th>
+                        <th>الرقم العسكري</th><th>الاسم</th><th>الرتبة</th>
+                        <th>البطاقة الشخصية</th><th>جواز السفر</th>
+                        <th>المحافظة</th><th>الولاية</th><th>القرية</th>
+                        <th>تصنيف الحاج</th><th>السلاح</th>
+                    </tr></thead>
+                    <tbody id="importBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </div>
 
-
-<div>
-@*     @(Html.Kendo().Notification()
-        .Name("WSNotification")
-        .HideOnClick(true)
-        .AutoHideAfter(1000)
-        .Position(c => c.Top(30).Right(30))
-    ) *@
-</div>
-
-
-
-
-
+@section Scripts {
 <script>
+    var importedData = [];
 
+    $('#btnUpload').on('click', function () {
+        var filename = $('#fUpload').val();
+        if (!filename) { toastr.warning('الرجاء اختيار ملف'); return; }
+        var ext = filename.split('.').pop().toLowerCase();
+        if (ext !== 'xlsx' && ext !== 'xls') { toastr.warning('الرجاء اختيار ملف Excel فقط'); return; }
 
-    var popUpNotification= $("#WSNotification").data("kendoNotification");
+        var fdata = new FormData();
+        var file = $('#fUpload')[0].files[0];
+        fdata.append(file.name, file);
+        fdata.append('NonModServiceId', $('#NonModService').val());
+        fdata.append('NonModServiceName', $('#NonModService option:selected').text());
+        fdata.append('AlhajjTypeId', $('#AlhajjType').val());
+        fdata.append('AlhajjTypeDesc', $('#AlhajjType option:selected').text());
 
-
-    $(document).ready(function () {
-        var popUpNotification = $("#WSNotification").data("kendoNotification");
-
-        //$('#fUpload').kendoUpload({
-        //    localization: {
-        //        select:"اختيار الملف"
-        //    },
-        //    async: {
-        //        saveUrl: '/Upload/OnPostImport',
-        //        complete:finish
-        //    }
-        //})
-
-        //function finish() {
-        //    popUpNotification.show(kendo.toString("تم جلب البيانات بنجاح"), "info");
-
-        //}
-
-        $('#btnUpload').on('click', function () {
-            var NonModServiceId = $("#NonModService").val();
-            var NonModServiceName = $("#NonModService").data("kendoDropDownList").text();
-
-            var AlhajjTypeId = $("#AlhajjType").val();
-            var AlhajjTypeDesc = $("#AlhajjType").data("kendoDropDownList").text();
-
-
-            //var upload = $("#fUpload").data("kendoUpload");
-            //var Excelfile = upload.getFiles();
-            //var ss = Excelfile[0];
-            //var FileName = Excelfile[0].name
-            var fileExtension = ['xls', 'xlsx'];
-            var filename = $('#fUpload').val();
-            if (filename.length == 0) {
-                alert("Please select a file.");
-                return false;
-            }
-            else {
-                var extension = filename.replace(/^.*\./, '');
-                if ($.inArray(extension, fileExtension) == -1) {
-                    alert("Please select only excel files.");
-                    return false;
-                }
-            }
-            var fdata = new FormData();
-            var fileUpload = $("#fUpload").get(0);
-            var files = fileUpload.files;
-            fdata.append(files[0].name, files[0]);
-            fdata.append("NonModServiceId", NonModServiceId)
-            fdata.append("NonModServiceName", NonModServiceName)
-
-            fdata.append("AlhajjTypeId", AlhajjTypeId)
-            fdata.append("AlhajjTypeDesc", AlhajjTypeDesc)
-
-            $.ajax({
-                type: "POST", //type of action in controller(Request Type Post-Get)
-                url: "@Url.Action("OnPostImport","Upload")",
-                dataType:"Json", // the type of data which return from controller
-                beforeSend: function (xhr) {
-                    xhr.setRequestHeader("XSRF-TOKEN",
-                        $('input:hidden[name="__RequestVerificationToken"]').val());
-                },
-                data: fdata, //parameters data send it to the controller
-                contentType: false, //type of parameter data which will send it to controller
-                processData: false,
-                success: function (response) { // resopnse is data which come from controller
-                       popUpNotification.show(kendo.toString("تم جلب البيانات بنجاح"), "info");
-
-                    if (response.length == 0)
-                        alert('Some error occured while uploading');
-                    else {
-                        console.log(response);
-                        //$('#dvData').html(response);
-                        $("#AlhajjGrid").data("kendoGrid").dataSource.data(response);
-                    }
-                },
-                error: function (e) {
-
-                    $('#dvData').html(e.responseText);
-                }
-            });
-
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("OnPostImport","Upload")',
+            beforeSend: function(xhr){ xhr.setRequestHeader('XSRF-TOKEN', $('input[name="__RequestVerificationToken"]').val()); },
+            data: fdata, contentType: false, processData: false,
+            success: function (response) {
+                toastr.success('تم جلب البيانات بنجاح');
+                importedData = response;
+                renderImportTable(response);
+            },
+            error: function (xhr) { toastr.error(xhr.responseText || 'حدث خطأ أثناء تحميل الملف'); }
         });
     });
 
-    function CreateAlhajjNonMod(e) {
-        var List = []
-        var griddata = $("#AlhajjGrid").data("kendoGrid");
-
-        var rows = griddata.select();
-        rows.each(function (e) {
-            var dataItem = griddata.dataItem(this);
-            List.push(dataItem);
+    function renderImportTable(data) {
+        $('#previewSection').show();
+        var tbody = $('#importBody').empty();
+        $.each(data, function (i, r) {
+            tbody.append('<tr><td><input type="checkbox" class="rowCheck" checked/></td>' +
+                '<td>' + (r.servcieNumber||'') + '</td><td>' + (r.fullName||'') + '</td>' +
+                '<td>' + (r.rankDesc||'') + '</td><td>' + (r.nic||'') + '</td>' +
+                '<td>' + (r.passport||'') + '</td><td>' + (r.region||'') + '</td>' +
+                '<td>' + (r.wilayaDesc||'') + '</td><td>' + (r.villageDesc||'') + '</td>' +
+                '<td>' + (r.alhajjType||'') + '</td><td>' + (r.unitNameAr||'') + '</td></tr>');
         });
-        var alhajList = JSON.stringify({ EmployeeList: List });
-        console.log(alhajList);
-
-
-        var popUpNotification = $("#WSNotification").data("kendoNotification");
-        
-
-           $.ajax({
-                 type: "POST",
-                 url: "@Url.Action("CreateAlhajjNonMod", "AlhajjMasters")",
-                 dataType: "text",
-                 data: JSON.stringify(List),
-                 contentType: "application/json; charset=utf-8",
-                 processData: false,
-
-               success: function (data) {
-                   
-                   //alert('data' + data);
-                   popUpNotification.show(kendo.toString("تم الحفظ البيانات"), "info");
-                   $("#AlhajjGrid").data('kendoGrid').dataSource.data([]);
-                   $("#AlhajjGrid").data('kendoGrid').refresh();
-
-
-
-               },
-            
-               //error: function (e) {
-               error: function (xhr, status, error) {
-                   //alert(xhr.responseText)
-                   popUpNotification.show(kendo.toString(xhr.responseText), "error");
-
-
-
-            if (e.errors) {
-                var message = "Errors: \n";
-                $.each(e.errors, function (key, value) {
-                    if ('errors' in value) {
-                        $.each(value.errors, function () {
-                            message += this + "\n";
-                        });
-                    }
-                });
-                alert(message);
-                   }
-
-
-        }
-        });
-    };
-
-    function resetForm(test) {
-        $(':input', '#' + test).not(':button, :submit, :reset, :hidden').val('')
-            .removeAttr('checked').removeAttr('selected');
+        $('#selectAll').on('change', function(){ $('.rowCheck').prop('checked', this.checked); });
     }
 
-   
+    function saveImportedData() {
+        var selected = [];
+        $('#importBody tr').each(function(i){
+            if ($(this).find('.rowCheck').is(':checked')) selected.push(importedData[i]);
+        });
+        if (!selected.length) { toastr.warning('الرجاء تحديد سجل واحد على الأقل'); return; }
 
+        $.ajax({
+            type: 'POST', url: '@Url.Action("CreateAlhajjNonMod","AlhajjMasters")',
+            data: JSON.stringify(selected),
+            contentType: 'application/json; charset=utf-8', processData: false,
+            success: function(){ toastr.success('تم حفظ البيانات بنجاح'); $('#importBody').empty(); $('#previewSection').hide(); },
+            error: function(xhr){ toastr.error(xhr.responseText || 'حدث خطأ أثناء الحفظ'); }
+        });
+    }
 </script>
-
+}

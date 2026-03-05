@@ -44,9 +44,18 @@ namespace Pligrimage.Web.Controllers
 
         public IActionResult FlightRead()
         {
-            var result = _flightService.Query().Include(c => c.Parameter).SelectAsync();
-
-            return RedirectToAction("Index", "Flights");
+            var result = _flightService.Queryable()
+                .Select(c => new
+                {
+                    c.FlightId,
+                    c.FlightNo,
+                    FlightDate = c.FlightDate.ToString("dd/MM/yyyy"),
+                    ArriveDate = c.ArriveDate.HasValue ? c.ArriveDate.Value.ToString("dd/MM/yyyy") : "",
+                    c.FlightCapacity,
+                    c.Direction,
+                    FlightType = c.Parameter != null ? c.Parameter.DescArabic : ""
+                }).ToList();
+            return Json(result);
         }
 
         [HttpPost]

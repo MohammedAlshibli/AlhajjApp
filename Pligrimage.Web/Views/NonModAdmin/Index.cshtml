@@ -1,147 +1,63 @@
-﻿<div class="card card-cascade wider">
+<div class="card card-cascade wider">
     <div class="view view-cascade gradient-card-header blue-gradient-rgba">
         <h2 class="card-header-title mb-3">الاداريين خارج وزارة الدفاع</h2>
     </div>
     <div class="card-body card-body-cascade">
-        <div class="container-fluid">
-            <div class="k-rtl">
-               @*  @(Html.Kendo().Grid<Pligrimage.Entities.AlhajjMaster>
-                    ()
-                    .Name("AlhajjNonModAdmin")
-                    .Columns(column =>
-                    {
-                        column.Bound(c => c.FullName).Title("الاسم").Filterable(true).Width(100);
-                        column.Bound(c => c.ServcieNumber).Title(" رقم العسكري").Width(100);
-                        column.Bound(c => c.NIC).Title(" الرقم المدني").Width(100);
-                        column.Bound(c => c.Passport).Title("الرقم الجواز").Width(100);
-                        //column.Bound(c => c.DateOfBirth).Title("تاريخ الميلاد").Width(150).Format("{0:dd/MM/yyyy}");
-                        column.Bound(c => c.WorkLocation).Title("موقع العمل").Hidden();
-                        //column.ForeignKey(c => c.Region, (System.Collections.IEnumerable)ViewData["RegionCode"], "DescArabic", "DescArabic").Title("المحافظة").Width(200);
-                        column.Bound(c => c.Region).Title("المحافظة").Width(100);
-                        column.Bound(c => c.WilayaDesc).Title("الولاية").Hidden();
-                        column.Bound(c => c.VillageDesc).Title("القرية").Hidden();
-                        column.Bound(c => c.GSM).Title("رقم الهاتف").Hidden();
-                        column.Bound(c => c.NICExpire).Title("تاريخ انتهاء البطاقة الشخصية").Hidden();
-                        column.Bound(c => c.PassportExpire).Title("تاريخ انتهاء جواز السفر").Hidden();
-                        column.Bound(c => c.BloodGroup).Title("فصيلة الدم").Hidden();
-                        column.Bound(c => c.DateOfEnlistment).Title("تاريخ الالتحاق بالخدمة العسكرية").Hidden();
-                        column.Bound(c => c.ReletiveName1).Title("أقرب الاقربين أ").Hidden();
-                        column.Bound(c => c.RelativeGsm1).Title("رقم الهاتف أ").Hidden();
-                        column.Bound(c => c.ReletiveRelation1).Title("صلة القرابة").Hidden();
-                        column.Bound(c => c.ReletiveName2).Title("أقرب الاقربين ب").Hidden();
-                        column.Bound(c => c.RelativeGsm2).Title("رقم الهاتف ب").Hidden();
-                        column.Bound(c => c.ReletiveRelation2).Title("صلة القرابة ب").Hidden();
-                        column.Bound(c => c.SheikhName).Title("اسم الشيخ").Hidden();
-                        column.Bound(c => c.SheikhGsm).Title("رقم الهاتف").Hidden();
-
-                        column.ForeignKey(c => c.UnitId, (System.Collections.IEnumerable)ViewData["Unit"], "UnitId", "UnitNameAr").Title("إسم السلاح").Width(150);
-                        column.ForeignKey(c => c.CategoryId, (System.Collections.IEnumerable)ViewData["Categories"], "CategoryId", "DescArabic").Title("التصنيف").Width(100);
-
-
-
-                        column.Command(com =>
-                        {
-                            com.Edit().UpdateText("حفظ").Text("تعديل").CancelText("إلغاء").HtmlAttributes(new { type = "button", @class = "glyphicon-pencil", });
-                        }).Width(200).Title("Action");
-                    })
-                    .HtmlAttributes(new { style = "height:500px" })
-                        .ToolBar(toolbar =>
-                        {
-                            toolbar.Create().Text("إضافة جديدة").HtmlAttributes(new { type = "button", @class = "plus", });
-                        })
-
-                    .Editable(editable => editable.Mode(GridEditMode.PopUp).TemplateName("Edit").Window(c => c.Scrollable(true).Title("تعديل").Width(450).Height(900)))
-                    .Events(e => e.Edit("NewRecord"))
-                    .Scrollable()
-                    .Sortable()
-                    .Selectable()
-                    .Filterable(f => f.Extra(false)
-                    .Operators(opertor => opertor
-                    .ForString(str => str.Clear()
-                    .Contains("يحتوي على"))))
-                    .Pageable
-                    (p => p
-                    .ButtonCount(5)
-                    .Refresh(true)
-                    )
-                    .DataSource
-                    (dataSourec => dataSourec
-                    .Ajax()
-                    .ServerOperation(false)
-                    .Events(events =>
-                    {
-                        events.Error("error_handler");
-                        //events.RequestEnd("request_end");
-                    })
-                    .Model(m =>
-                    {
-                        m.Id(i => i.PligrimageId);
-                        m.Field(c => c.UnitId).DefaultValue(0);
-                        m.Field(c => c.CategoryId).DefaultValue(0);
-
-                    })
-                    .Read(read => read.Action("ReadNonModAdmin", "NonModAdmin"))
-                    .Create(create => create.Action("CreateNonModAdmin", "NonModAdmin"))
-                    .Update(update => update.Action("UpdateNonModAdmin", "NonModAdmin"))
-                    .Destroy(delete => delete.Action("DeleteNonModAdmin", "NonModAdmin"))
-
-                    ))
-                @(Html.Kendo()
-                                        .Window()
-                                        .Name("Details")
-                                        .Title("رسالة خطاء")
-                                        .Visible(false)
-                                        .Modal(true)
-                                        .Draggable(true)
-                                        .Width(300)
-                ) *@
-
-            </div>
+        <div class="mb-3">
+            <a href="@Url.Action("Create","NonModAdmin")" class="btn btn-primary btn-sm">
+                <i class="fa fa-plus"></i> إضافة جديدة
+            </a>
         </div>
+        <div class="table-responsive">
+            <table id="nonModTable" class="table table-bordered table-hover table-striped w-100">
+                <thead>
+                    <tr>
+                        <th>الاسم</th>
+                        <th>الرقم العسكري</th>
+                        <th>الرقم المدني</th>
+                        <th>جواز السفر</th>
+                        <th>المحافظة</th>
+                        <th>السلاح</th>
+                        <th>التصنيف</th>
+                        <th>الإجراءات</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
 
-
-
-
-        <script>
-
-            function NewRecord(e) {
-                if (e.model.isNew()) {
-                    $('.k-window-title').text("إضافة جديدة");
+@section Scripts {
+<script>
+    $(function () {
+        $('#nonModTable').DataTable({
+            ajax: { url: '@Url.Action("ReadNonModAdmin","NonModAdmin")', dataSrc: '' },
+            columns: [
+                { data: 'fullName' },
+                { data: 'servcieNumber' },
+                { data: 'nic' },
+                { data: 'passport' },
+                { data: 'region' },
+                { data: 'unitNameAr' },
+                { data: 'categoryDesc' },
+                {
+                    data: 'pligrimageId', orderable: false,
+                    render: function (id) {
+                        return '<a href="@Url.Action("Edit","NonModAdmin")?pligrimageId=' + id +
+                               '" class="btn btn-warning btn-xs"><i class="fa fa-pencil"></i> تعديل</a> ' +
+                               '<button onclick="deleteRecord(' + id + ')" class="btn btn-danger btn-xs"><i class="fa fa-trash"></i> حذف</button>';
+                    }
                 }
+            ]
+        });
+    });
 
-            }
-
-
-            function error_handler(e) {
-
-                if ("#AlhajjNonModAdmin" !== "") {
-                    alert("تجاوزت العدد المسموح به ")
-                }
-                console.log(e);
-                if (e.errors) {
-                    var message = "Errors: \n";
-                    $.each(e.errors, function (key, value) {
-                        if ('errors' in value) {
-                            $.each(value.errors, function () {
-                                message += this + "\n";
-                            });
-                        }
-                    });
-                    alert(message);
-                }
-            };
-
-        </script>
-
-
-        
-
-
-
-
-
-
-
-
-
-
+    function deleteRecord(id) {
+        if (!confirm('هل تريد حذف هذا السجل؟')) return;
+        $.post('@Url.Action("DeleteNonModAdmin","NonModAdmin")', { pligrimageId: id }, function () {
+            toastr.success('تم الحذف بنجاح');
+            $('#nonModTable').DataTable().ajax.reload();
+        }).fail(function (xhr) { toastr.error(xhr.responseText || 'تجاوزت العدد المسموح به'); });
+    }
+</script>
+}

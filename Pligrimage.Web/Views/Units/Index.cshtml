@@ -1,104 +1,63 @@
-﻿
-
 <div class="card card-cascade wider">
     <div class="view view-cascade gradient-card-header blue-gradient-rgba">
         <h2 class="card-header-title mb-3">الوحدة / الادارة / الفئة</h2>
     </div>
     <div class="card-body card-body-cascade">
-        <div class="k-rtl">
-          @*   @(Html.Kendo().Grid<Pligrimage.Entities.Unit>
-                                    ()
-                                    .Name("UnitGrid")
-                                    .Columns(column =>
-                                    {
-                                        column.Bound(c => c.UnitNameAr).Title("الوحدة").Width("250px");
-                                        //column.Bound(c => c.UnitCode).Title("رقم السلاح").Width("250px");
-                                        column.Bound(c => c.ModFlag).ClientTemplate("#if(ModFlag==true){# <span style='color:red;text-align:center'>وزارة الدفاع</span> #}else{#<span style='color:green;text-align:center'>خارج وزارة الدفاع</span>#}#").Title("تصنيف الوحدة");
-                                        //column.Bound(c => c.AlhajYear).Format("{0:dd/MM/yyyy}").Title("التاريخ");
-                                        column.Bound(c => c.AllowNumber).Title("العدد");
-                                        column.Bound(c => c.StandBy).Title(" الاحتياط");
-
-                                        column.Command(com =>
-                                        {
-                                            com.Edit().UpdateText("حفظ").Text("تعديل").CancelText("إلغاء").HtmlAttributes(new { type = "button", @class = "glyphicon-pencil", });
-                                            com.Destroy().Text("حذف").HtmlAttributes(new { type = "button", @class = "btn-basic ", });
-                                        }).Width(200);
-
-                                    })
-
-
-
-
-                                    .HtmlAttributes(new { style = "height:500px" })
-                                    .ToolBar(toolbar => toolbar.Create().Text("إضافة جديدة").HtmlAttributes(new { type = "button", @class = "btn-basic ", }))
-                                    .Editable(editable => editable.Mode(GridEditMode.PopUp).TemplateName("Edit").Window(w => w.Title("تعديل").HtmlAttributes(new { style = "width:1000%" })))
-                                    .Events(e => e.Edit("NewRecord"))
-                                    .Scrollable()
-                                    .Sortable()
-                                    .Selectable()
-                                    .Filterable(f => f.Extra(false)
-                                               .Operators(opertor => opertor
-                                               .ForString(str => str.Clear()
-                                               .Contains("يحتوي على"))))
-                                    .Pageable
-                                    (p => p
-                                    .ButtonCount(5)
-                                    .Refresh(true))
-                                    .DataSource
-                                    (dataSourec => dataSourec
-                                    .Ajax()
-                                    .Events(e => e.Error("Error_Handler"))
-                                    .Model(m =>
-                                    {
-                                        m.Id(i => i.UnitId);
-                                        //m.Field(i => i.ModFlag).Editable(true);
-                                    })
-                                    .Read(read => read.Action("UnitRead", "Units"))
-                                    .Create(create => create.Action("CreateUnit", "Units"))
-                                    .Update(update => update.Action("UpdateUnit", "Units"))
-                                    .Destroy(delete => delete.Action("DeleteUnit", "Units"))
-
-                                    )
-
-            ) *@
-
+        <div class="mb-3">
+            <a href="@Url.Action("Create","Units")" class="btn btn-primary btn-sm">
+                <i class="fa fa-plus"></i> إضافة وحدة
+            </a>
+        </div>
+        <div class="table-responsive">
+            <table id="unitTable" class="table table-bordered table-hover table-striped w-100">
+                <thead>
+                    <tr>
+                        <th>الوحدة</th>
+                        <th>تصنيف الوحدة</th>
+                        <th>العدد المسموح</th>
+                        <th>الاحتياط</th>
+                        <th>الإجراءات</th>
+                    </tr>
+                </thead>
+            </table>
         </div>
     </div>
+</div>
 
-    <script>
-
-        function Error_Handler(e) {
-            console.log(e);
-            if (e.errors) {
-                var message = "Errors: \n";
-                $.each(e.errors, function (key, value) {
-                    if ('errors' in value) {
-                        $.each(value.errors, function () {
-                            message += this + "\n";
-                        });
+@section Scripts {
+<script>
+    $(function () {
+        $('#unitTable').DataTable({
+            ajax: { url: '@Url.Action("UnitRead","Units")', dataSrc: '' },
+            columns: [
+                { data: 'unitNameAr' },
+                {
+                    data: 'modFlag',
+                    render: function (v) {
+                        return v ? "<span class='badge badge-danger'>وزارة الدفاع</span>"
+                                 : "<span class='badge badge-success'>خارج وزارة الدفاع</span>";
                     }
-                });
-                alert(message);
-            }
+                },
+                { data: 'allowNumber' },
+                { data: 'standBy' },
+                {
+                    data: 'unitId', orderable: false,
+                    render: function (id) {
+                        return '<a href="@Url.Action("Edit","Units")/' + id +
+                               '" class="btn btn-warning btn-xs"><i class="fa fa-pencil"></i> تعديل</a> ' +
+                               '<button onclick="deleteUnit(' + id + ')" class="btn btn-danger btn-xs"><i class="fa fa-trash"></i> حذف</button>';
+                    }
+                }
+            ]
+        });
+    });
 
-
-        };
-
-
-    </script>
-
-    <script>
-        function NewRecord(e) {
-            if (e.model.isNew()) {
-                $('.k-window-title').text("إضافة جديدة");
-            }
-
-        }
-    </script>
-
-    <style>
-        [type="checkbox"]:not(:checked), [type="checkbox"]:checked {
-            position: absolute !important;
-            opacity: 100 !important;
-            pointer-events: auto !important;
-    </style>
+    function deleteUnit(id) {
+        if (!confirm('هل تريد حذف هذه الوحدة؟')) return;
+        $.post('@Url.Action("DeleteUnit","Units")', { unitId: id }, function () {
+            toastr.success('تم الحذف بنجاح');
+            $('#unitTable').DataTable().ajax.reload();
+        }).fail(function () { toastr.error('حدث خطأ'); });
+    }
+</script>
+}

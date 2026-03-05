@@ -1,67 +1,59 @@
-﻿@* 
-@model IEnumerable<Pligrimage.Web.Common.ViewModel.RoleViewModel>
-@using Kendo.Mvc.UI
 @using Pligrimage.Web.Common
-
-@{
-    ViewData["Title"] = "Role";
-}
 
 <div class="card card-cascade wider">
     <div class="view view-cascade gradient-card-header blue-gradient-rgba">
-        <h2 class="card-header-title mb-3"><span class="fa fa-pencil"></span>صلاحيات المستخدمين</h2>
+        <h2 class="card-header-title mb-3"><span class="fa fa-shield"></span> صلاحيات المستخدمين</h2>
     </div>
     <div class="card-body card-body-cascade">
-
-        <div class="k-rtl">
-            @(Html.Kendo().Grid(Model)
-                                        .Name("RoleGrid")
-                                            .ToolBar(toolbar =>
-                                            {
-                                                toolbar.ClientTemplate("<a id = 'addRoleModal' href='" + Url.Action("AddEditRole","Admin") + "' data-toggle='modal' asp-action='AddEditRole' data-target='\\#modal-action-role' class='btn btn-primary btn-md my-2'> <i class='fa fa-plus'></i> " + "إضافة" + "</a>");
-
-                                            })
-                                            .DataSource(dataSource => dataSource
-                                                .Ajax()
-                                                .PageSize(15)
-                                                .Read(read => read.Action("GetAllRoles", "Admin")))
-                                            .Columns(columns =>
-                                            {
-                                                columns.Bound(c => c.Id);
-                                                columns.Bound(c => c.Name);
-                                                columns.Bound(c => c.Description);
-                                                //columns.Bound(c => c.UserRoleViewModel);
-                                                columns.Bound(c => c.CreatedBy);
-                                                columns.Bound(c => c.CreatedOn).Format("{0:dd/MM/yyyy}");
-                                                columns.Bound(c => c.ModifiedBy);
-                                                columns.Bound(c => c.ModifiedOn);
-                                                columns.Bound("").ClientTemplate("<a id='editRoleModal' href='" + Url.Action("AddEditRole", new { roleId = "#= Id #'" }) + "class='btn btn-primary btn-md my-2'> <i class='fa fa-pencil'></i> " + "تعديل" + "</a>");
-
-                                            })
-
-                                            .Pageable(pageable =>
-                                            {
-                                                pageable.Refresh(true);
-                                                pageable.ButtonCount(5);
-                                            })
-                                            .Sortable())
-
+        <div class="mb-3">
+            <a href="@Url.Action("AddEditRole","Admin")" class="btn btn-primary btn-sm"
+               data-toggle="modal" data-target="#modal-action-role">
+                <i class="fa fa-plus"></i> إضافة صلاحية
+            </a>
+        </div>
+        <div class="table-responsive">
+            <table id="roleTable" class="table table-bordered table-hover table-striped w-100">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>الاسم</th>
+                        <th>الوصف</th>
+                        <th>أنشئ بواسطة</th>
+                        <th>تاريخ الإنشاء</th>
+                        <th>الإجراءات</th>
+                    </tr>
+                </thead>
+            </table>
         </div>
     </div>
 </div>
 
 @Html.Partial("_Modal", new BootstrapModel { ID = "modal-action-role", AreaLabeledId = "modal-action-role-label", Size = ModalSize.Large })
 
+@section Scripts {
+<script src="~/js/modalAction.js"></script>
+<script>
+    modalAction("#modal-action-role");
 
-@section scripts{
-    <script src="~/js/modalAction.js"></script>
-
-    <script type="text/javascript">
-       modalAction("#modal-action-role");
-    </script>
-
-
+    $(function () {
+        $('#roleTable').DataTable({
+            ajax: { url: '@Url.Action("GetAllRoles","Admin")', dataSrc: '' },
+            columns: [
+                { data: 'id' },
+                { data: 'name' },
+                { data: 'description' },
+                { data: 'createdBy' },
+                { data: 'createdOn', render: function(d){ return d ? new Date(d).toLocaleDateString('ar-SA') : ''; } },
+                {
+                    data: 'id', orderable: false,
+                    render: function (id) {
+                        return '<a href="@Url.Action("AddEditRole","Admin")?roleId=' + id +
+                               '" class="btn btn-warning btn-xs" data-toggle="modal" data-target="#modal-action-role">' +
+                               '<i class="fa fa-pencil"></i> تعديل</a>';
+                    }
+                }
+            ]
+        });
+    });
+</script>
 }
-
-
- *@

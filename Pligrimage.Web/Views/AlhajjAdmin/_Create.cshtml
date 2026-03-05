@@ -173,7 +173,7 @@
 
 
 <script>
-    var popUpNotification = $("#WSNotification").data("kendoNotification");
+    
 
     $('#AlhajjMasterForm').submit(function (e) {
 
@@ -192,7 +192,7 @@
             data: $(this).serialize(), 
             success: function (data) {
 
-                popUpNotification.show(kendo.toString("تمت الإضافة بنجاح"), "info");
+                toastr.success("تمت الإضافة بنجاح");
                 $("#ServiceNumber").val("");
                 window.location.href = '@Url.Action("Index", "AlhajjAdmin")';
 
@@ -200,7 +200,7 @@
             error: function (xhr, status, error) {
 
                 console.log(xhr);
-                popUpNotification.show(kendo.toString(xhr.responseText), "error");
+                toastr.error(xhr.responseText || "حدث خطأ");
 
 
 

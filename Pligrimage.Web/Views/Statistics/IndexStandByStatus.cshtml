@@ -1,129 +1,21 @@
-﻿
-
-
 <div class="card card-cascade wider">
     <div class="view view-cascade gradient-card-header blue-gradient-rgba">
-        <h2 class="card-header-title mb-3">حاج إحتياط</h2>
+        <h2 class="card-header-title mb-3">حاج احتياط</h2>
     </div>
     <div class="card-body card-body-cascade">
-        <div class="k-rtl">
-          @*   <div>
-                @(Html.Kendo().Grid<Pligrimage.Web.Models.MedicalViewModel>
-                            ()
-                            .Name("AlhajjCancel")
-                            .ToolBar(c => c.Excel().Text("تحميل الملف"))
-                            .Excel(excel => excel
-                            .AllPages()
-                            .FileName("StandBy")
-                            .ProxyURL(Url.Action("Pdf_Export_Save", "AlhajjAdmin"))
-                            )
-                            .Columns(column =>
-                            {
-                                column.Bound(c => c.Name).Title("الاسم").Width(100);
-                                column.Bound(c => c.ServcieNumber).Title(" الرقم العسكري").Width(70);
-                                column.Bound(c => c.NationalID).Title("الرقم المدني").Width(70);
-                                column.Bound(c => c.UnitNameAr).Title("الوحدة").Width(100);
-                                //column.Bound(c => c.AlhajjCancelNote).Title("الملاحظة").Width(100);
-                            })
-
-                            .HtmlAttributes(new { style = "height:500px" })
-                            .Scrollable()
-                            .Sortable()
-                            .Selectable()
-                            .Filterable(f => f.Extra(false)
-                            .Operators(opertor => opertor
-                            .ForString(str => str.Clear()
-                            .Contains("يحتوي على"))))
-                            .Pageable
-                            (p => p
-                            .ButtonCount(5)
-                            .Refresh(true)
-                            )
-                            .Selectable(s => s.Mode(GridSelectionMode.Multiple))
-                            .DataSource
-                            (dataSourec => dataSourec
-                            .Ajax()
-                          
-                            .Events(events =>
-                            {
-                                events.Error("error_handler");
-
-                            })
-
-                            .Read(read => read.Action("StandByStatusRead", "Statistics"))
-
-                            )
-                ) *@
-@*             </div>
- *@        </div>
+        <div class="table-responsive">
+            <table id="standByTable" class="table table-bordered table-hover table-striped w-100">
+                <thead><tr>
+                    <th>الاسم</th><th>الرقم العسكري</th><th>الرقم المدني</th><th>الوحدة</th><th>ملاحظات</th>
+                </tr></thead>
+            </table>
+        </div>
     </div>
 </div>
+@section Scripts {
 <script>
-    function error_handler(e) {
-        console.log(e);
-        if (e.errors) {
-            var message = "Errors: \n";
-            $.each(e.errors, function (key, value) {
-                if ('errors' in value) {
-                    $.each(value.errors, function () {
-                        message += this + "\n";
-
-                    });
-                }
-            });
-            alert(message);
-        }
-
-
-    };
-</script>
-
-@*@model IEnumerable<Pligrimage.Web.Models.MedicalViewModel>*@
-
-@*<p style="text-align:center">
-
-    </p>
-    <table class="table tab-content table-bordered table-hover">
-        <thead style="background-color:burlywood">
-            <tr>
-                <th>
-                    الرقم العسكري
-                </th>
-                <th>
-                    الرقم المدني
-                </th>
-                <th>
-                    الاسم
-                </th>
-                <th>
-                    ملاحظات الطبيب
-                </th>
-                <th>
-                    السلاح
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.ServcieNumber)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.NationalID)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Name)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.DoctorNote)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.UnitNameAr)
-                    </td>
-
-                </tr>
-            }
-        </tbody>
-    </table>*@
+$(function(){
+    $('#standByTable').DataTable({ ajax:{url:'@Url.Action("StandByStatusRead","Statistics")',dataSrc:''},
+    columns:[{data:'name'},{data:'servcieNumber'},{data:'nationalID'},{data:'unitNameAr'},{data:'doctorNote'}]});
+});
+</script>}

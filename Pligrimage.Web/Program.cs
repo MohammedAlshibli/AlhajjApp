@@ -61,8 +61,7 @@ builder.Services.AddControllersWithViews()
             Newtonsoft.Json.ReferenceLoopHandling.Ignore;
     });
 
-// Kendo UI MVC server-side helpers (Html.Kendo().Grid() etc.)
-builder.Services.AddKendo();
+// DataTables, Toastr, Select2, and Flatpickr are loaded via CDN in _Layout.cshtml
 
 // ── Localization (used by CultureLocalizer) ───────────────────────────────────
 builder.Services.AddLocalization(opts => opts.ResourcesPath = "Resources");

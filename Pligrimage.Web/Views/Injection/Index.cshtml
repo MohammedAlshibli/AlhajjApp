@@ -93,8 +93,8 @@
 
         if (e.type == "update") {
             alert("تم تحديث البيانات بنجاح");
-            $('#Mediacl').data('kendoGrid').dataSource.read();
-            $('#Mediacl').data('kendoGrid').refresh();
+            if($.fn.DataTable.isDataTable('#Mediacl')){ $('#Mediacl').DataTable().ajax.reload(); }
+            
         }
         if (e.type == "create") {
             alert("تم حفظ البيانات بنجاح");

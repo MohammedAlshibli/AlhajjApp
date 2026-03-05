@@ -109,7 +109,7 @@ namespace Pligrimage.Web.Controllers
                 DoctorNote = c.DoctorNote,
                 UnitNameAr = c.Unit.UnitNameAr
             }).ToList();
-            return View(StandByStatus);
+            return Json(StandByStatus);
         }
         public IActionResult IndexAlhajjNonFit()
         {
@@ -125,7 +125,7 @@ namespace Pligrimage.Web.Controllers
                 DoctorNote = c.DoctorNote,
                 UnitNameAr = c.Unit.UnitNameAr
             }).ToList();
-            return View(alhajjNonfit);
+            return Json(alhajjNonfit);
         }
 
         public IActionResult IndexAlhajjFitResult()
@@ -147,7 +147,7 @@ namespace Pligrimage.Web.Controllers
 
                 
             }).ToList();
-            return View(alhajjfitResult);
+            return Json(alhajjfitResult);
 
 
         }
@@ -168,7 +168,7 @@ namespace Pligrimage.Web.Controllers
                 UnitNameAr = c.Unit.UnitNameAr
 
             }).ToList();
-            return View(alhajjAdminlist);
+            return Json(alhajjAdminlist);
 
 
         }
@@ -191,7 +191,7 @@ namespace Pligrimage.Web.Controllers
                 UnitNameAr = c.Unit.UnitNameAr
 
             }).ToList();
-            return RedirectToAction("Index", "Residences");
+            return Json(PensionList);
 
 
         }

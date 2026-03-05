@@ -47,9 +47,20 @@ namespace Pligrimage.Web.Controllers
 
         public IActionResult ReadMedical()
         {
- 
-            var list = _alHajjRepostory.Queryable().Include(c =>c.Unit)/*.Where(x=>x.FitResult==7)*/;
-            return View(list);
+            var list = _alHajjRepostory.Queryable().Include(c => c.Unit)
+                .Select(c => new
+                {
+                    c.PligrimageId,
+                    c.FullName,
+                    c.ServcieNumber,
+                    c.NIC,
+                    UnitNameAr = c.Unit != null ? c.Unit.UnitNameAr : "",
+                    c.BloodGroup,
+                    c.FitResult,
+                    InjectionDate = c.InjectionDate.HasValue ? c.InjectionDate.Value.ToString("dd/MM/yyyy") : "",
+                    c.DoctorNote
+                }).ToList();
+            return Json(list);
         }
 
 

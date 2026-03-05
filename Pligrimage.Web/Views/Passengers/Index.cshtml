@@ -96,7 +96,7 @@
         function CreateAlhajjFlightDepat(e)
         {
             var List = []
-            var griddata = $("#AlhajjGrid").data("kendoGrid");
+            var griddata = $.fn.DataTable.isDataTable("#AlhajjGrid") ? $("#AlhajjGrid").DataTable() : null;
 
             var rows = griddata.select();
             rows.each(function (e) {
@@ -118,8 +118,8 @@
             success: function (response) {
             alert("تم توزيع البيانات بنجاح");
 
-            $('#AlhajjGrid').data('kendoGrid').dataSource.read();
-            $('#AlhajjGrid').data('kendoGrid').refresh();
+            if($.fn.DataTable.isDataTable('#AlhajjGrid')){ $('#AlhajjGrid').DataTable().ajax.reload(); }
+            
 
             },
                 error: function (e) {
@@ -127,8 +127,8 @@
                     if (e.status == 200) {
                         alert("تم توزيع البيانات بنجاح");
 
-                        $('#AlhajjGrid').data('kendoGrid').dataSource.read();
-                        $('#AlhajjGrid').data('kendoGrid').refresh();
+                        if($.fn.DataTable.isDataTable('#AlhajjGrid')){ $('#AlhajjGrid').DataTable().ajax.reload(); }
+                        
 
                     }
                     else {
@@ -144,7 +144,7 @@
         function CreateAlhajjFlightReturn(e)
         {
         var List = []
-        var griddata = $("#AlhajjGrid").data("kendoGrid");
+        var griddata = $.fn.DataTable.isDataTable("#AlhajjGrid") ? $("#AlhajjGrid").DataTable() : null;
 
         var rows = griddata.select();
         rows.each(function (e) {
@@ -165,8 +165,8 @@
             processData: false,
             success: function (response) {
                 alert("تم توزيع البيانات بنجاح");
-                $('#AlhajjGrid').data('kendoGrid').dataSource.read();
-                $('#AlhajjGrid').data('kendoGrid').refresh();
+                if($.fn.DataTable.isDataTable('#AlhajjGrid')){ $('#AlhajjGrid').DataTable().ajax.reload(); }
+                
 
 
             },
@@ -191,7 +191,7 @@
         }
 
         function GetEditModel() {
-            var grid = $("#AlhajjGrid").data("kendoGrid");
+            var grid = $.fn.DataTable.isDataTable("#AlhajjGrid") ? $("#AlhajjGrid").DataTable() : null;
             var editRow = grid.tbody.find("tr:has(.k-edit-cell)");
             return grid.dataItem(editRow)
         }  

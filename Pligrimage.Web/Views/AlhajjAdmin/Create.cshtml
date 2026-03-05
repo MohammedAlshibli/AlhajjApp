@@ -76,7 +76,7 @@
 
     <script>
 
-    var popUpNotification = $("#WSNotification").data("kendoNotification");
+    
 
     $(document).ready(function () {
         GetServiceCount();
@@ -100,7 +100,7 @@
 
                 $("#spinner").hide();
                 $("#EmployeeDetailsView").html(data);
-                 popUpNotification.show(kendo.toString("تم جلب البيانات بنجاح"), "info");
+                 toastr.success("تم جلب البيانات بنجاح");
                  $("#getServiceNumber").val("");
             },
 

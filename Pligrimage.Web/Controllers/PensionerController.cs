@@ -281,13 +281,24 @@ namespace Pligrimage.Web.Controllers
 
         public IActionResult PensionerRead()
         {
-
-            var result = _alhajjService.Query().Include(c => c.Parameter).Include(c => c.Unit).Where(c => c.EmployeeStatus !=0).SelectAsync();
-
-
-            return View(result);
-
-
+            var result = _alhajjService.Queryable()
+                .Include(c => c.Unit)
+                .Where(c => c.EmployeeStatus != 0)
+                .Select(c => new
+                {
+                    c.PligrimageId,
+                    c.FullName,
+                    c.ServcieNumber,
+                    c.NIC,
+                    c.Region,
+                    c.EmployeeStatus,
+                    UnitNameAr = c.Unit != null ? c.Unit.UnitNameAr : "",
+                    c.ReletiveName1,
+                    c.RelativeGsm1,
+                    c.ReletiveName2,
+                    c.RelativeGsm2
+                }).ToList();
+            return Json(result);
         }
 
 

@@ -62,15 +62,11 @@ namespace Pligrimage.Web.Controllers
             try
             {
                 var userList = await _adminService.GetAllUsersAsync();
-
                 var result = _mapper.Map<IEnumerable<UserViewModel>>(userList);
-
-                return View(result);
-
+                return Json(result);
             }
             catch (Exception)
             {
-
                 throw;
             }
 
@@ -396,14 +392,11 @@ namespace Pligrimage.Web.Controllers
             try
             {
                 var RoleList = _roleService.Queryable().ToList();
-
                 var result = _mapper.Map<IEnumerable<RoleViewModel>>(RoleList);
-                return View(result);
-
+                return Json(result);
             }
             catch (Exception)
             {
-
                 throw;
             }
 

@@ -88,8 +88,8 @@
 
         if (e.type == "update") {
             alert("تم تحديث البيانات بنجاح");
-            $('#ConfirmAlhajj').data('kendoGrid').dataSource.read();
-            $('#ConfirmAlhajj').data('kendoGrid').refresh();
+            if($.fn.DataTable.isDataTable('#ConfirmAlhajj')){ $('#ConfirmAlhajj').DataTable().ajax.reload(); }
+            
         }
         if (e.type == "create") {
             alert("تم حفظ البيانات بنجاح");

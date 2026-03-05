@@ -52,6 +52,9 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 builder.Services.AddAuthorization();
 
 // ── MVC + Razor Views ─────────────────────────────────────────────────────────
+builder.Services.Configure<HajjSettings>(
+    builder.Configuration.GetSection("HajjSettings"));
+
 builder.Services.AddControllersWithViews()
     .AddNewtonsoftJson(options =>
     {

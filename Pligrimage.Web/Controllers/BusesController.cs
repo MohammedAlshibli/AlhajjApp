@@ -49,7 +49,7 @@ namespace Pligrimage.Web.Controllers
 
 
         }
-        public IActionResult BusRead()
+        public async Task<IActionResult> BusRead()
         {
 
             return Json(_busServcie.Queryable().ToList());
@@ -57,7 +57,7 @@ namespace Pligrimage.Web.Controllers
         }
 
         [HttpPost]
-        public ActionResult CreateBus(Buses buses)
+        public async Task<IActionResult> CreateBus(Buses buses)
         {
 
             buses.CreateOn = DateTime.Now;
@@ -66,7 +66,7 @@ namespace Pligrimage.Web.Controllers
             if (buses != null && ModelState.IsValid)
             {
                 _busServcie.Insert(buses);
-                _unitOfWork.SaveChangesAsync();
+                await _unitOfWork.SaveChangesAsync();
             }
             return RedirectToAction("Index", "Buses");
 
@@ -74,26 +74,26 @@ namespace Pligrimage.Web.Controllers
 
 
         [HttpPost]
-        public ActionResult UpdateBus(Buses buses)
+        public async Task<IActionResult> UpdateBus(Buses buses)
         {
             buses.UpdatedBy = LoggedUserName();
             buses.UpdatedOn = DateTime.Now;
             if (buses != null && ModelState.IsValid)
             {
                 _busServcie.Update(buses);
-                _unitOfWork.SaveChangesAsync();
+                await _unitOfWork.SaveChangesAsync();
             }
             return RedirectToAction("Index", "Buses");
         }
 
 
         [HttpPost]
-        public ActionResult DeleteBus(Buses buses)
+        public async Task<IActionResult> DeleteBus(Buses buses)
         {
             if (buses != null && ModelState.IsValid)
             {
                 _busServcie.Delete(buses);
-                _unitOfWork.SaveChangesAsync();
+                await _unitOfWork.SaveChangesAsync();
             }
 
             return RedirectToAction("Index", "Buses");

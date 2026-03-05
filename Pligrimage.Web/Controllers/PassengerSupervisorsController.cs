@@ -45,7 +45,7 @@ namespace Pligrimage.Web.Controllers
         }
 
 
-        public IActionResult PassSupRead()
+        public async Task<IActionResult> PassSupRead()
         {
 
             return View(_SupervisorRepository.Queryable());
@@ -53,7 +53,7 @@ namespace Pligrimage.Web.Controllers
 
 
         [HttpPost]
-        public ActionResult CreatePassSup(PassengerSupervisors supervisors)
+        public async Task<IActionResult> CreatePassSup(PassengerSupervisors supervisors)
         {
             if (supervisors != null && ModelState.IsValid)
             {
@@ -62,7 +62,7 @@ namespace Pligrimage.Web.Controllers
                     var alahaj = _alhajjRepository.FindAsync(supervisors.PligrimageId);
                     supervisors.AlhajjMaster = alahaj.Result;
                     _SupervisorRepository.Insert(supervisors);
-                    _unitOfWork.SaveChangesAsync();
+                    await _unitOfWork.SaveChangesAsync();
                 }
                 catch (Exception ex)
                 {
@@ -76,24 +76,24 @@ namespace Pligrimage.Web.Controllers
 
 
         [HttpPost]
-        public ActionResult UpdatePassSup(PassengerSupervisors supervisors)
+        public async Task<IActionResult> UpdatePassSup(PassengerSupervisors supervisors)
         {
             if (supervisors != null && ModelState.IsValid)
             {
                 _SupervisorRepository.Update(supervisors);
-                _unitOfWork.SaveChangesAsync();
+                await _unitOfWork.SaveChangesAsync();
             }
             return RedirectToAction("Index", "PassengerSupervisors");
 
         }
 
         [HttpPost]
-        public ActionResult DeletePassSup(PassengerSupervisors supervisors)
+        public async Task<IActionResult> DeletePassSup(PassengerSupervisors supervisors)
         {
             if (supervisors != null && ModelState.IsValid)
             {
                 _SupervisorRepository.Delete(supervisors);
-                _unitOfWork.SaveChangesAsync();
+                await _unitOfWork.SaveChangesAsync();
             }
             return RedirectToAction("Index", "PassengerSupervisors");
         }

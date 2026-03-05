@@ -1,25 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using ITS.Core.Abstractions;
-
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
-using Pligrimage.Data;
 using Pligrimage.Entities;
 using Pligrimage.Services.Interface;
 using Pligrimage.Web.Extensions;
+using Pligrimage.Web.Infrastructure;
 using Pligrimage.Web.Models;
-
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Pligrimage.Web.Controllers
 {
     public class PassengersController : BaseController
     {
-
         private readonly IPassengerService _passengerRepository;
         private readonly IFlightServcie _flightRepository;
         private readonly IBusServcie _busRepository;
@@ -27,258 +24,526 @@ namespace Pligrimage.Web.Controllers
         private readonly IUnitOfWork _unitOfWork;
         private readonly IParameterService _parameterRepository;
         private readonly IResidenceService _residenceRepository;
+        private readonly HajjSettings _settings;
 
-
-
-        public PassengersController(IPassengerService passengerRepository, IParameterService parameterRepository, IAlHajjMasterServcie alHajjMasterRepository, IFlightServcie flightRepository, IBusServcie busRepository, IUnitOfWork unitOfWork, IResidenceService residenceRepository)
+        public PassengersController(
+            IPassengerService passengerRepository,
+            IParameterService parameterRepository,
+            IAlHajjMasterServcie alHajjMasterRepository,
+            IFlightServcie flightRepository,
+            IBusServcie busRepository,
+            IUnitOfWork unitOfWork,
+            IResidenceService residenceRepository,
+            IOptions<HajjSettings> settings)
         {
             _passengerRepository = passengerRepository;
-            _alHajjRepository = alHajjMasterRepository;
-            _busRepository = busRepository;
-            _flightRepository = flightRepository;
-            _unitOfWork = unitOfWork;
+            _alHajjRepository    = alHajjMasterRepository;
+            _busRepository       = busRepository;
+            _flightRepository    = flightRepository;
+            _unitOfWork          = unitOfWork;
             _parameterRepository = parameterRepository;
             _residenceRepository = residenceRepository;
-
+            _settings            = settings.Value;
         }
 
         [PligrimageFiltter]
         public IActionResult Index()
         {
-            
-
             ViewData["FlightType"] = _flightRepository.Queryable()
-                 .Select(c => new
-                 {
-                     c.FlightId,
-                     c.FlightNo
-                 }).ToList();
+                .Select(c => new { c.FlightId, c.FlightNo }).ToList();
 
             ViewData["BusList"] = _busRepository.Queryable()
-               .Select(c => new
-               {
-                   c.BusId,
-                   c.BusNo
-               }).ToList();
-
+                .Select(c => new { c.BusId, c.BusNo }).ToList();
 
             return View();
         }
-
-     
 
         [PligrimageFiltter]
-        public IActionResult SwapFlight()
-        {
-          
-            return View();
+        public IActionResult SwapFlight() => View();
 
-        }
-
-        public IActionResult UpdatePassenger(Passenger passenger)
+        // ────────────────────────────────────────────────────────────────────
+        // FLIGHT AUTO-ASSIGNMENT (DEPARTURE)
+        // BUG-FIX #3: no more hardcoded flight/bus IDs – uses year + ParameterId
+        // BUG-FIX #7: fixed bus overflow index crash
+        // BUG-FIX #23: single transaction wrapping entire assignment
+        // BUG-FIX #13: capacity enforcement
+        // ────────────────────────────────────────────────────────────────────
+        public async Task<ActionResult> AlhajjFlightDepart()
         {
-            if (passenger != null && ModelState.IsValid)
+            int activeYear = _settings.ActiveHajjYear;
+
+            // Eligible pilgrims: regular or admin type, doctor-approved, not deleted, not yet assigned
+            int[] eligibleTypes = { HajjConstants.PilgrimType.Regular, HajjConstants.PilgrimType.Admin };
+
+            var eligiblePilgrims = _alHajjRepository.Queryable()
+                .Where(c => eligibleTypes.Contains(c.ParameterId) &&
+                             c.FitResult == HajjConstants.FitResult.DoctorApproved &&
+                             c.AlhajYear == activeYear &&
+                             !c.IsDeleted)
+                .ToList();
+
+            if (!eligiblePilgrims.Any())
+                return BadRequest("لا يوجد حجاج مؤهلون للتسجيل في الرحلات");
+
+            // Departure flights for the active year - BUG-FIX #3: no hardcoded IDs
+            var departureFlights = _flightRepository.Queryable()
+                .Include(c => c.buses)
+                .Where(c => c.ParameterId == HajjConstants.FlightDirection.Departure &&
+                             c.FlightYear == activeYear)
+                .OrderBy(c => c.FlightDate)
+                .ToList();
+
+            if (!departureFlights.Any())
+                return BadRequest($"لا توجد رحلات ذهاب مسجلة لعام {activeYear}");
+
+            // Already-assigned pilgrim IDs for departure flights
+            var alreadyAssignedIds = _passengerRepository.Queryable()
+                .Include(c => c.Flight)
+                .Where(c => c.Flight.ParameterId == HajjConstants.FlightDirection.Departure &&
+                             c.Flight.FlightYear == activeYear)
+                .Select(c => c.PligrimageId)
+                .ToHashSet();
+
+            var unassigned = eligiblePilgrims
+                .Where(c => !alreadyAssignedIds.Contains(c.PligrimageId))
+                .OrderBy(_ => Guid.NewGuid()) // random assignment
+                .ToList();
+
+            if (!unassigned.Any())
+                return Ok("جميع الحجاج المؤهلين تم تعيينهم مسبقاً");
+
+            using var tx = await _unitOfWork.BeginTransactionAsync();
+            try
             {
-                _passengerRepository.Update(passenger);
-                _unitOfWork.SaveChangesAsync();
-            }
-            return RedirectToAction("Index", "Passengers");
+                int pilgrimIndex = 0;
 
+                foreach (var flight in departureFlights)
+                {
+                    if (pilgrimIndex >= unassigned.Count) break;
+
+                    var buses = flight.buses?.OrderBy(b => b.BusNo).ToList() ?? new List<Buses>();
+                    if (!buses.Any())
+                        continue;
+
+                    // Count how many seats this flight still has
+                    int flightSeatsUsed = _passengerRepository.Queryable()
+                        .Count(c => c.FlightId == flight.FlightId);
+
+                    int flightSeatsAvail = flight.FlightCapacity - flightSeatsUsed;
+                    if (flightSeatsAvail <= 0) continue;
+
+                    int busIndex = 0;
+
+                    while (pilgrimIndex < unassigned.Count && flightSeatsAvail > 0)
+                    {
+                        // BUG-FIX #7: proper bounds check before array access
+                        if (busIndex >= buses.Count)
+                            break; // all buses on this flight are full
+
+                        var currentBus = buses[busIndex];
+
+                        int busSeatsUsed = _passengerRepository.Queryable()
+                            .Count(c => c.BusId == currentBus.BusId);
+
+                        if (busSeatsUsed >= currentBus.BusCapacity)
+                        {
+                            busIndex++;
+                            continue;
+                        }
+
+                        var pilgrim = unassigned[pilgrimIndex];
+
+                        var passenger = new Passenger
+                        {
+                            CreateBy     = LoggedUserName(),
+                            CreateOn     = DateTime.Now,
+                            PligrimageId = pilgrim.PligrimageId,
+                            FlightId     = flight.FlightId,
+                            BusId        = currentBus.BusId,
+                            ResidencesId = 1, // TODO: replace with real accommodation assignment screen
+                            AlhajYear    = activeYear
+                        };
+
+                        _passengerRepository.Insert(passenger);
+                        pilgrimIndex++;
+                        flightSeatsAvail--;
+                    }
+                }
+
+                // BUG-FIX #1 + #23: single awaited save inside transaction
+                await _unitOfWork.SaveChangesAsync();
+                await tx.CommitAsync();
+
+                return Ok($"تم تعيين {pilgrimIndex} حاج على رحلات الذهاب");
+            }
+            catch (Exception ex)
+            {
+                await tx.RollbackAsync();
+                return BadRequest($"فشل التعيين: {ex.Message}");
+            }
         }
 
+        // ────────────────────────────────────────────────────────────────────
+        // FLIGHT AUTO-ASSIGNMENT (RETURN)
+        // BUG-FIX #3, #8: same fixes as departure, bus assignment now works
+        // ────────────────────────────────────────────────────────────────────
+        public async Task<ActionResult> AlhajjFlightReturn()
+        {
+            int activeYear = _settings.ActiveHajjYear;
 
+            int[] eligibleTypes = { HajjConstants.PilgrimType.Regular, HajjConstants.PilgrimType.Admin };
+
+            var eligiblePilgrims = _alHajjRepository.Queryable()
+                .Where(c => eligibleTypes.Contains(c.ParameterId) &&
+                             c.FitResult == HajjConstants.FitResult.DoctorApproved &&
+                             c.AlhajYear == activeYear &&
+                             !c.IsDeleted)
+                .ToList();
+
+            var returnFlights = _flightRepository.Queryable()
+                .Include(c => c.buses)
+                .Where(c => c.ParameterId == HajjConstants.FlightDirection.Return &&
+                             c.FlightYear == activeYear)
+                .OrderBy(c => c.FlightDate)
+                .ToList();
+
+            if (!returnFlights.Any())
+                return BadRequest($"لا توجد رحلات عودة مسجلة لعام {activeYear}");
+
+            var alreadyAssignedIds = _passengerRepository.Queryable()
+                .Include(c => c.Flight)
+                .Where(c => c.Flight.ParameterId == HajjConstants.FlightDirection.Return &&
+                             c.Flight.FlightYear == activeYear)
+                .Select(c => c.PligrimageId)
+                .ToHashSet();
+
+            var unassigned = eligiblePilgrims
+                .Where(c => !alreadyAssignedIds.Contains(c.PligrimageId))
+                .OrderBy(_ => Guid.NewGuid())
+                .ToList();
+
+            if (!unassigned.Any())
+                return Ok("جميع الحجاج المؤهلين تم تعيينهم على رحلات العودة");
+
+            using var tx = await _unitOfWork.BeginTransactionAsync();
+            try
+            {
+                int pilgrimIndex = 0;
+
+                foreach (var flight in returnFlights)
+                {
+                    if (pilgrimIndex >= unassigned.Count) break;
+
+                    var buses = flight.buses?.OrderBy(b => b.BusNo).ToList() ?? new List<Buses>();
+                    if (!buses.Any()) continue;
+
+                    int flightSeatsUsed  = _passengerRepository.Queryable().Count(c => c.FlightId == flight.FlightId);
+                    int flightSeatsAvail = flight.FlightCapacity - flightSeatsUsed;
+                    if (flightSeatsAvail <= 0) continue;
+
+                    int busIndex = 0;
+
+                    while (pilgrimIndex < unassigned.Count && flightSeatsAvail > 0)
+                    {
+                        if (busIndex >= buses.Count) break;
+
+                        var currentBus   = buses[busIndex];
+                        int busSeatsUsed = _passengerRepository.Queryable().Count(c => c.BusId == currentBus.BusId);
+
+                        if (busSeatsUsed >= currentBus.BusCapacity) { busIndex++; continue; }
+
+                        var passenger = new Passenger
+                        {
+                            CreateBy     = LoggedUserName(),
+                            CreateOn     = DateTime.Now,
+                            PligrimageId = unassigned[pilgrimIndex].PligrimageId,
+                            FlightId     = flight.FlightId,
+                            BusId        = currentBus.BusId,
+                            ResidencesId = 1,
+                            AlhajYear    = activeYear
+                        };
+
+                        _passengerRepository.Insert(passenger);
+                        pilgrimIndex++;
+                        flightSeatsAvail--;
+                    }
+                }
+
+                await _unitOfWork.SaveChangesAsync();
+                await tx.CommitAsync();
+                return Ok($"تم تعيين {pilgrimIndex} حاج على رحلات العودة");
+            }
+            catch (Exception ex)
+            {
+                await tx.RollbackAsync();
+                return BadRequest($"فشل التعيين: {ex.Message}");
+            }
+        }
+
+        // ────────────────────────────────────────────────────────────────────
+        // MANUAL ASSIGNMENT – BUG-FIX #13: enforce capacity
+        // ────────────────────────────────────────────────────────────────────
+        [HttpPost]
+        public async Task<ActionResult> PassengerPost(PassengerViewModel passengerViewModel)
+        {
+            var alhajjMasterList = JsonConvert.DeserializeObject<List<AlhajjMaster>>(
+                Request.Form["AlhajjsList"]);
+
+            passengerViewModel.AlhajjsList = alhajjMasterList;
+
+            // BUG-FIX #13: check flight capacity before inserting
+            var flight = _flightRepository.Queryable()
+                .FirstOrDefault(f => f.FlightId == passengerViewModel.FlightId);
+
+            if (flight == null)
+                return BadRequest("الرحلة غير موجودة");
+
+            int currentCount = _passengerRepository.Queryable()
+                .Count(p => p.FlightId == passengerViewModel.FlightId);
+
+            int newCount = alhajjMasterList?.Count ?? 0;
+
+            if (currentCount + newCount > flight.FlightCapacity)
+                return BadRequest($"الرحلة ممتلئة. السعة: {flight.FlightCapacity}, المسجلون: {currentCount}, الإضافة المطلوبة: {newCount}");
+
+            using var tx = await _unitOfWork.BeginTransactionAsync();
+            try
+            {
+                foreach (var item in passengerViewModel.AlhajjsList)
+                {
+                    _passengerRepository.Insert(new Passenger
+                    {
+                        PligrimageId = item.PligrimageId,
+                        BusId        = passengerViewModel.BusId,
+                        FlightId     = passengerViewModel.FlightId,
+                        ResidencesId = passengerViewModel.ResidencesId,
+                        CreateBy     = LoggedUserName(),
+                        CreateOn     = DateTime.Now,
+                        AlhajYear    = _settings.ActiveHajjYear
+                    });
+                }
+
+                await _unitOfWork.SaveChangesAsync(); // BUG-FIX #1
+                await tx.CommitAsync();
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                await tx.RollbackAsync();
+                return BadRequest(ex.Message);
+            }
+        }
+
+        // ────────────────────────────────────────────────────────────────────
+        // SWAP – BUG-FIX #9: was returning null
+        // ────────────────────────────────────────────────────────────────────
+        [HttpPost]
+        public async Task<IActionResult> PassengerUpdateSwap(string swapListParam)
+        {
+            var swapList = JsonConvert.DeserializeObject<List<SwapVM>>(swapListParam);
+
+            if (swapList == null || !swapList.Any())
+                return BadRequest("بيانات الإبدال فارغة");
+
+            using var tx = await _unitOfWork.BeginTransactionAsync();
+            try
+            {
+                foreach (var item in swapList)
+                {
+                    var passenger = _passengerRepository.Queryable()
+                        .FirstOrDefault(p => p.PassengerId == item.PassengerId);
+
+                    if (passenger == null) continue;
+
+                    passenger.FlightId  = item.FlightId;
+                    passenger.UpdatedBy = LoggedUserName();
+                    passenger.UpdatedOn = DateTime.Now;
+                    _passengerRepository.Update(passenger);
+                }
+
+                await _unitOfWork.SaveChangesAsync(); // BUG-FIX #1
+                await tx.CommitAsync();
+                return Ok(new { success = true }); // BUG-FIX #9: no longer null
+            }
+            catch (Exception ex)
+            {
+                await tx.RollbackAsync();
+                return BadRequest(ex.Message);
+            }
+        }
 
         [HttpPost]
-        public JsonResult PassengerUpdateSwap(string swapListParam)
+        public async Task<ActionResult> UpdateSwap(SwapVM p1, SwapVM p2)
         {
-            IList<SwapVM> swapVMsList = JsonConvert.DeserializeObject<List<SwapVM>>(swapListParam);
-            //IList<Passenger> passengersList = new List <Passenger>() ;
+            if (!ModelState.IsValid)
+                return BadRequest("بيانات الإبدال غير صحيحة");
 
-            foreach (var item in swapVMsList)
+            using var tx = await _unitOfWork.BeginTransactionAsync();
+            try
             {
-                var passanger = new Passenger()
-                {
+                var person1 = _passengerRepository.Queryable()
+                    .FirstOrDefault(c => c.PassengerId == p1.PassengerId);
+                var person2 = _passengerRepository.Queryable()
+                    .FirstOrDefault(c => c.PassengerId == p2.PassengerId);
 
-                    PassengerId = item.PassengerId,
-                    PligrimageId = item.PligrimageId,
-                    FlightId = item.FlightId,
-                      
-                };
-                
-                try
-                {
+                if (person1 == null || person2 == null)
+                    return NotFound("أحد المسافرين غير موجود");
 
-                    _passengerRepository.Update(passanger);
-                    var result = _unitOfWork.SaveChangesAsync();
-                }
-                catch (Exception ex)
-                {
+                (person1.FlightId, person2.FlightId) = (person2.FlightId, person1.FlightId);
+                (person1.BusId,    person2.BusId)    = (person2.BusId,    person1.BusId);
 
-                    throw;
-                }
-                
-            };
+                person1.UpdatedBy = person2.UpdatedBy = LoggedUserName();
+                person1.UpdatedOn = person2.UpdatedOn = DateTime.Now;
 
-            return null;
+                _passengerRepository.Update(person1);
+                _passengerRepository.Update(person2);
 
+                await _unitOfWork.SaveChangesAsync(); // BUG-FIX #1
+                await tx.CommitAsync();
+
+                // Reflect swapped values back for client
+                (p1.FlightNo, p2.FlightNo) = (p2.FlightNo, p1.FlightNo);
+                (p1.BusNo,    p2.BusNo)    = (p2.BusNo,    p1.BusNo);
+
+                return Ok(new { p1, p2 });
+            }
+            catch (Exception ex)
+            {
+                await tx.RollbackAsync();
+                return BadRequest(ex.Message);
+            }
+        }
+
+        public async Task<IActionResult> UpdatePassenger(Passenger passenger)
+        {
+            if (passenger == null || !ModelState.IsValid)
+                return BadRequest();
+            passenger.UpdatedBy = LoggedUserName();
+            passenger.UpdatedOn = DateTime.Now;
+            _passengerRepository.Update(passenger);
+            await _unitOfWork.SaveChangesAsync(); // BUG-FIX #1
+            return RedirectToAction("Index");
+        }
+
+        // ── Read endpoints ─────────────────────────────────────────────────
+        public IActionResult PassengerRead()
+        {
+            int activeYear = _settings.ActiveHajjYear;
+            var result = _passengerRepository.Queryable()
+                .Include(c => c.AlhajjMaster)
+                .Include(c => c.Flight.Parameter)
+                .Include(c => c.Buses)
+                .Where(c => c.AlhajYear == activeYear) // BUG-FIX #11
+                .Select(c => new {
+                    c.PassengerId,
+                    c.PligrimageId,
+                    FullName       = c.AlhajjMaster.FullName,
+                    ServcieNumber  = c.AlhajjMaster.ServcieNumber,
+                    FlightNo       = c.Flight.FlightNo,
+                    FlightType     = c.Flight.Parameter.DescArabic,
+                    BusNo          = c.Buses.BusNo,
+                    c.FlightId,
+                    c.BusId
+                })
+                .ToList();
+            return Json(result);
+        }
+
+        public IActionResult PassengerReadSwap(int flightID)
+        {
+            var result = _passengerRepository.Queryable()
+                .Include(c => c.AlhajjMaster)
+                .Include(c => c.Flight.Parameter)
+                .Include(c => c.Buses)
+                .Where(c => c.FlightId == flightID)
+                .Select(c => new SwapVM {
+                    PassengerId   = c.PassengerId,
+                    PligrimageId  = c.PligrimageId,
+                    ServcieNumber = c.AlhajjMaster.ServcieNumber,
+                    FullName      = c.AlhajjMaster.FullName,
+                    FlightId      = c.FlightId,
+                    FlightNo      = c.Flight.FlightNo
+                }).ToList();
+            return Json(result);
+        }
+
+        public IActionResult FlightList()
+        {
+            int activeYear = _settings.ActiveHajjYear;
+            var list = _passengerRepository.Queryable()
+                .Include(c => c.Flight)
+                .Where(c => c.Flight.ParameterId == HajjConstants.FlightDirection.Departure &&
+                             c.Flight.FlightYear == activeYear)
+                .Select(c => new { c.Flight.FlightNo, c.Flight.FlightId })
+                .Distinct().ToList();
+            return Json(list);
+        }
+
+        public IActionResult CascadingFlightList(int flightID)
+        {
+            int activeYear = _settings.ActiveHajjYear;
+            var list = _passengerRepository.Queryable()
+                .Include(c => c.Flight)
+                .Where(c => c.Flight.ParameterId == HajjConstants.FlightDirection.Departure &&
+                             c.Flight.FlightYear == activeYear &&
+                             c.FlightId != flightID)
+                .Select(c => new { c.Flight.FlightNo, c.Flight.FlightId })
+                .Distinct().ToList();
+            return Json(list);
+        }
+
+        public IActionResult FlightCategory()
+        {
+            var list = _flightRepository.Queryable()
+                .Select(c => new { flightId = c.FlightId, FlightType = c.FlightNo.TrimStart() })
+                .OrderBy(x => x.FlightType).ToList();
+            return Json(list);
         }
 
         public IActionResult SwapFlightBus()
         {
-            var flightList = _passengerRepository.Queryable().ToList();
-
-            var type = flightList.Select(c => new
-            {
-                passangerId = c.PassengerId,
-                flightNo = c.Flight.FlightNo,
-
-            });
-
-            return Json(type.OrderBy(x => x.flightNo).ToList());
+            var list = _passengerRepository.Queryable()
+                .Include(c => c.Flight)
+                .Select(c => new { passangerId = c.PassengerId, flightNo = c.Flight.FlightNo })
+                .OrderBy(x => x.flightNo).ToList();
+            return Json(list);
         }
-        public IActionResult FlightList()
+
+        public async Task<IActionResult> SwapTransfer(int passId)
         {
-            var flightList = _passengerRepository.Queryable().Include(c=>c.Flight).Where(c=>c.Flight.ParameterId==34).Select(c=>new {
-                c.Flight.FlightNo,
-                c.Flight.FlightId
-
-            }).Distinct().ToList();
-
-
-            return Json(flightList);
+            var details = await _passengerRepository.Queryable()
+                .Where(c => c.PassengerId == passId)
+                .Select(c => new SwapVM {
+                    PassengerId   = passId,
+                    FullName      = c.AlhajjMaster.FullName,
+                    ServcieNumber = c.AlhajjMaster.ServcieNumber,
+                    NIC           = c.AlhajjMaster.NIC,
+                    FlightNo      = c.Flight.FlightNo,
+                    BusNo         = c.Buses.BusNo,
+                    FlightId      = c.Flight.FlightId,
+                    BusId         = c.Buses.BusId
+                }).SingleOrDefaultAsync();
+            return View(details);
         }
-        public IActionResult CascadingFlightList(int flightID)
+
+        public async Task<IActionResult> SwapTransfer2(int passId)
         {
-            var flightList = _passengerRepository.Queryable().Include(c => c.Flight).Where(c => c.Flight.ParameterId == 34 && c.FlightId !=flightID).Select(c => new {
-                c.Flight.FlightNo,
-                c.Flight.FlightId
-
-            }).Distinct().ToList();
-
-
-            return Json(flightList);
+            var details = await _passengerRepository.Queryable()
+                .Where(c => c.PassengerId == passId)
+                .Select(c => new SwapVM {
+                    PassengerId   = passId,
+                    FullName      = c.AlhajjMaster.FullName,
+                    ServcieNumber = c.AlhajjMaster.ServcieNumber,
+                    NIC           = c.AlhajjMaster.NIC,
+                    FlightNo      = c.Flight.FlightNo,
+                    BusNo         = c.Buses.BusNo,
+                    FlightId      = c.Flight.FlightId,
+                    BusId         = c.Buses.BusId
+                }).SingleOrDefaultAsync();
+            return Json(details);
         }
 
-
-        public async Task<ActionResult> AlhajjFlightDepart()
-        {
-
-            int[] alhajjList = new int[] { 1, 3 }; //list from alhajj type 
-            int[] fitresultList = new int[] { 9 }; // Doctor Approve from alhajj master
-            int[] flightList = new int[] { 12, 13, 14 }; // list from  flight Diparture 
-            var alhajjDipartureList = _alHajjRepository.Queryable().Where(c => alhajjList.Contains(c.ParameterId) && fitresultList.Contains(c.FitResult));
-            var flightListDiparture = _flightRepository.Queryable().Include(c=>c.buses).Where(c => flightList.Contains(c.FlightId)&& c.ParameterId==34);
-
-
-            var random = new Random();
-
-            foreach (var Flight in flightListDiparture)
-            {
-                var  PassengerList = _passengerRepository.Queryable().Include(c=>c.Flight).Where(c=>c.Flight.ParameterId==34).Select(c =>c.PligrimageId);
-                var list = alhajjDipartureList.Where(c=>!PassengerList.Contains(c.PligrimageId)).OrderBy(c => random.Next()).Take(Flight.FlightCapacity).ToList();
-                var BusList = Flight.buses.OrderBy(c=>c.BusNo).ToList();
-                var Index = 0;
-
-                foreach (var item in list)
-                {
-                    var currentBus = BusList[Index];
-                    var BusCapacity = _passengerRepository.Queryable().Include(c => c.Flight).Where(c => c.Flight.ParameterId == 34 && c.BusId==currentBus.BusId).Count();
-                    if (BusCapacity>=currentBus.BusCapacity)
-                    {
-                        if (Index==BusList.Count())
-                        {
-                            return BadRequest("All Busses are full");
-                        }
-                        Index++;
-                        currentBus= BusList[Index];
-
-
-                    }
-                    var passanger = new Passenger()
-                    {
-                        CreateBy = LoggedUserName(),
-                        CreateOn = DateTime.Now,
-                        AlhajjMaster = item,
-                        PligrimageId = item.PligrimageId,
-                        BusId = currentBus.BusId,
-                        Buses= currentBus, 
-                        FlightId = Flight.FlightId,
-                        ResidencesId = 1,
-
-                    };
-                    try
-                    {
-                        _passengerRepository.Insert(passanger);
-                        var result = await _unitOfWork.SaveChangesAsync();
-                    }
-                    catch (Exception ex)
-                    {
-
-                        throw;
-                    }
-             
-                    
-                }
-            }
-
-
-            return Ok();
-        }
-
-        public async Task<int> AlhajjFlightReturn()
-        {
-
-            int[] alhajjList = new int[] { 1, 3 };
-            int[] fitresultList = new int[] { 9 };
-            int[] flightList = new int[] { 15, 16, 17 };
-            var alhajjDipartureList = _alHajjRepository.Queryable().Where(c => alhajjList.Contains(c.ParameterId) && fitresultList.Contains(c.FitResult));
-            var flightListReturn = _flightRepository.Queryable().Include(c => c.buses).Where(c => flightList.Contains(c.FlightId)&& c.ParameterId==35);
-
-
-            var random = new Random();
-
-            foreach (var Flight in flightListReturn)
-            {
-                var PassengerList = _passengerRepository.Queryable().Include(c => c.Flight).Where(c => c.Flight.Parameter.ParameterId == 35).Select(c => c.PligrimageId);
-                var list = alhajjDipartureList.Where(c => !PassengerList.Contains(c.PligrimageId)).OrderBy(c => random.Next()).Take(Flight.FlightCapacity).ToList();
-
-                foreach (var item in list)
-                {
-                    var passanger = new Passenger()
-                    {
-                        CreateBy = LoggedUserName(),
-                        CreateOn=DateTime.Now,
-                    
-                        AlhajjMaster = item,
-
-                        PligrimageId = item.PligrimageId,
-
-                        BusId =44 /*Flight.buses.FirstOrDefault().BusId*/,
-                        Buses = Flight.buses.FirstOrDefault(),
-                        FlightId = Flight.FlightId,
-                        ResidencesId = 1,
-
-                    };
-                    try
-                    {
-                        _passengerRepository.Insert(passanger);
-                        var result = await _unitOfWork.SaveChangesAsync();
-                    }
-                    catch (Exception ex)
-                    {
-
-                        throw;
-                    }
-
-
-                }
-            }
-
-
-            return 0;
-        }
-
-
+        public IActionResult Swap1() => View();
 
         [HttpPost]
         public ActionResult PDFExportSave(string contentType, string base64, string fileName)
@@ -293,367 +558,16 @@ namespace Pligrimage.Web.Controllers
             var fileContent = Convert.FromBase64String(base64);
             return File(fileContent, contentType, fileName);
         }
-        
-  
-
-
-
-        public IActionResult PassengerRead()
-        {
-            var result = _passengerRepository.Queryable().Include(c =>c.AlhajjMaster).Include(c=>c.Flight.Parameter).Include(c =>c.Buses); //inclue.bus is not working 
-            //var result = _passengerRepository.Query().Include(c =>c.AlhajjMaster).Include(c=>c.Flight.Parameter).Include(c=>c.Buses).SelectAsync().Result;
-            return Ok(result);
-
-        }
-
-        public IActionResult PassengerReadSwap(int flightID)
-        {
-            var result = _passengerRepository.Queryable().Include(c => c.AlhajjMaster).Include(c => c.Flight.Parameter).Include(c => c.Buses).Where(c=>c.FlightId==flightID).Select(c => new SwapVM
-            {
-                PassengerId = c.PassengerId,
-                PligrimageId = c.PligrimageId,
-                ServcieNumber = c.AlhajjMaster.ServcieNumber,
-                FullName = c.AlhajjMaster.FullName,
-                FlightId = c.FlightId,
-                FlightNo = c.Flight.FlightNo
-
-
-
-            }).ToList();
-            
-
-            return Json(result);
-
-        }
-
-        #region SwapData
-
-        public IActionResult Swap1()
-        {
-            return View();
-        }
-
-        public IActionResult FlightCategory()
-        {
-            var FlightType = _flightRepository.Queryable().ToList();
-
-            var type = FlightType.Select(c => new
-            {
-                flightId = c.FlightId,
-                FlightType = c.FlightNo.TrimStart(),
-
-            });
-
-            return Json(type.OrderBy(x => x.FlightType).ToList());
-        }
-
-        public async Task <IActionResult> SwapTransfer(int passId)
-        {
-            var _details = await _passengerRepository.Queryable().Where(c => c.PassengerId == passId).Select
-             (c => new SwapVM()
-             {
-                 PassengerId=passId,
-                 FullName = c.AlhajjMaster.FullName,
-                 ServcieNumber = c.AlhajjMaster.ServcieNumber,
-                 NIC = c.AlhajjMaster.NIC,
-                 FlightNo = c.Flight.FlightNo,
-                 BusNo=c.Buses.BusNo,
-                 FlightId=c.Flight.FlightId,
-                 BusId=c.Buses.BusId
-
-             }).SingleOrDefaultAsync(); 
-
-            return View(_details);
-        }
-
-
-
-        public async Task<IActionResult> SwapTransfer2(int passId)
-        {
-            var _details = await _passengerRepository.Queryable().Where(c => c.PassengerId == passId).Select
-             (c => new SwapVM()
-             {
-                 PassengerId=passId,
-                 FullName = c.AlhajjMaster.FullName,
-                 ServcieNumber = c.AlhajjMaster.ServcieNumber,
-                 NIC = c.AlhajjMaster.NIC,
-                 FlightNo = c.Flight.FlightNo,
-                 BusNo = c.Buses.BusNo,
-                 FlightId=c.Flight.FlightId,
-                 BusId=c.Buses.BusId
-
-             }).SingleOrDefaultAsync();
-
-            return Json(_details);
-        }
-
-
-        [HttpPost]
-        public async Task <ActionResult> UpdateSwap(SwapVM p1, SwapVM p2)           
-        {
-            try
-            {
-                if (ModelState.IsValid)
-                {
-                    var person1 = _passengerRepository.Queryable().Where(c => c.PassengerId == p1.PassengerId).FirstOrDefault();
-
-                    var person2 = _passengerRepository.Queryable().Where(c => c.PassengerId == p2.PassengerId).FirstOrDefault();
-
-
-                    var person1BusId = person1.BusId;
-                    var person1FlightId = person1.FlightId;
-                 
-
-                    var person2BusId = person2.BusId;
-                    var person2FlightId = person2.FlightId;
-
-                    person1.FlightId = person2.FlightId;
-                    person1.BusId = person2.BusId;
-
-                    person1.UpdatedBy = LoggedUserName();
-                    person1.UpdatedOn = DateTime.Now;
-                    _passengerRepository.Update(person1);
-                    await _unitOfWork.SaveChangesAsync();
-
-
-                    person2.BusId = person1BusId;
-                    person2.FlightId = person1FlightId;
-
-                    person2.UpdatedBy = LoggedUserName();
-                    person2.UpdatedOn = DateTime.Now;
-                    _passengerRepository.Update(person2);
-
-
-
-                    var BusNo2 = p2.BusNo;
-                    var FlightNo2 = p2.FlightNo;
-
-                
-
-                    var BusNo1 = p1.BusNo;
-                    var FlightNo1 = p1.FlightNo;
-
-                    p1.BusNo = BusNo2;
-                    p1.FlightNo = FlightNo2;
-                    p2.BusNo = BusNo1;
-                    p2.FlightNo = FlightNo1;
-
-                    await _unitOfWork.SaveChangesAsync();
-
-                    return Ok(new {p1,p2});
-
-                    //return View();
-
-                }
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
-
-            return RedirectToAction("Swap1");
-        }
-
-        #endregion
-
-
-
-
-        //p1flight=p1.FlightId  ;
-        //        p1bus=p1.BusId  ;
-        //        p2flight=p2.FlightId ;
-        //        p2bus=p2.BusId;
-
-        //        p1.FlightId = p2flight;
-        //        p1.BusId = p2bus;
-        //        p2.FlightId = p1flight;
-        //        p2.BusId = p1bus;
-
-        //        passenger.BusId=
-
-
-
-
-
-
-
-
-
-
-        //----------------------Not Used------------------------
-        public IActionResult IndexWithList()
-        {
-            //AlhajjList();
-            //BusList();
-            //RoomList();
-            //FlightList();
-
-            //  AlhajjFlightAsync();
-
-            return View();
-        }
-
-
-
-        [HttpPost]
-        public ActionResult PassengerPost(PassengerViewModel passengerViewModel)
-        {
-            var alhajjMasterList = JsonConvert.DeserializeObject<List<AlhajjMaster>>(Request.Form["AlhajjsList"]);
-
-            passengerViewModel.AlhajjsList = alhajjMasterList;
-
-            try
-            {
-                foreach (var item in passengerViewModel.AlhajjsList)
-                {
-
-                    Passenger passenger = new Passenger()
-                    {
-                        AlhajjMaster = item,
-
-                        PligrimageId = item.PligrimageId,
-
-                        BusId = passengerViewModel.BusId,
-                        FlightId = passengerViewModel.FlightId,
-                        ResidencesId = passengerViewModel.ResidencesId,
-                        //PassengerSuppId = item.PligrimageId,
-
-                    };
-
-
-                    _passengerRepository.Insert(passenger);
-
-                }
-                var result = _unitOfWork.SaveChangesAsync();
-            }
-            catch (Exception es)
-            {
-
-                throw;
-            }
-
-
-            return Ok();
-
-            //return this.Content(sb.ToString());
-            //return Json(alhajjMasterList);
-        }
-
-
-        [HttpPost]
-        public ActionResult PassengerProcess()
-        {
-            var Alhajjlist = _alHajjRepository.Queryable().Where(x => x.FitResult != 9).ToList();
-            var FlightList = _flightRepository.Queryable().Where(x => x.FlightYear == DateTime.Now.Year).ToList();
-            var BusList = _busRepository.Queryable().Where(x => x.Year == DateTime.Now.Year).ToList();
-
-
-            int countFlight = 0;
-            int countBus = 0;
-
-            var FlightCapacity = Enumerable.Empty<object>().Select(r => new { flightId = 0, flightCapacity = 0 }).ToList();
-
-            foreach (var item in FlightList)
-            {
-                FlightCapacity.Add(new
-                {
-                    flightId = item.FlightId,
-                    flightCapacity = item.FlightCapacity,
-                });
-
-            }
-
-
-
-            List<Passenger> passenger = new List<Passenger>();
-
-            Passenger pass = new Passenger();
-
-
-
-            foreach (var hajj in Alhajjlist.Where(x => x.WilayaCode == 5))
-            {
-                var s = FlightList.Where(c => c.Direction == "Makah").OrderByDescending(x => x.FlightId).SingleOrDefault().FlightCapacity;
-
-                pass.PassengerId = hajj.PligrimageId;
-
-                pass.FlightId = FlightList.Where(c => c.Direction == "Makah").OrderByDescending(x => x.FlightId).SingleOrDefault().FlightId;
-
-                pass.BusId = BusList.Where(x => x.FlightId == pass.FlightId).SingleOrDefault().BusId;
-
-                passenger.Add(pass);
-
-            }
-
-
-
-
-
-
-            return Ok();
-        }
-
-        public void RoomList()
-        {
-
-            var RoomList = _residenceRepository.Queryable()
-              .Select(c => new
-              {
-                  c.ResidencesId,
-                  c.Room,
-                  c.RoomCapacity,
-              }).ToList();
-            ViewData["RoomList"] = RoomList;
-        }
-
-        //public void CategoryList()
-        //{
-        //    ViewData["ClassTypeList"] = _parameterRepository.GetClassTypeListAsync()
-        //      .Select(c => new
-        //      {
-        //          c.ParameterId,
-        //          c.DescArabic
-        //      }).ToList();
-        //}
-
-        //public void FlightList()
-        //{
-        //    var FlightList = _flightRepository.Queryable()
-        //        .Select(c => new
-        //        {
-        //            c.FlightId,
-        //            FlightNo = string.Format("{0} رقم الرحلة", c.FlightNo)
-        //        }).ToList();
-        //    ViewBag.Flights = FlightList;
-        //}
 
         public JsonResult BusList(int FlightId)
         {
-            var BusList = _busRepository.Queryable().Where(c => c.FlightId == FlightId)
-                .Select(c => new
-                {
-                    c.BusId,
-                    BusNo = string.Format("{0} رقم الباص", c.BusNo)
-                }).ToList();
-
-
-            return Json(BusList);
+            var list = _busRepository.Queryable()
+                .Where(c => c.FlightId == FlightId)
+                .Select(c => new { c.BusId, BusNo = $"{c.BusNo} رقم الباص" })
+                .ToList();
+            return Json(list);
         }
 
-        public void AlhajjList()
-        {
-            var HajjList = _alHajjRepository.Queryable().Where(c => c.ParameterId == 3)
-                .Select(c => new
-                {
-                    c.PligrimageId,
-                    c.FullName,
-                    //FullName=string.Format("ServiceNo:{0},Fullname:{1}", c.ServcieNumber,c.FullName)
-
-                }).ToList();
-            ViewData["AlhajjList"] = HajjList;
-        }
-
-
+        public IActionResult IndexWithList() => View();
     }
 }

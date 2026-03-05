@@ -1,290 +1,261 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using AutoMapper;
 using ITS.Core.Abstractions;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using Pligrimage.Entities;
 using Pligrimage.Entities.Enum;
 using Pligrimage.Services.Interface;
-using Pligrimage.Web.Common.ViewModel;
+using Pligrimage.Web.Infrastructure;
 using Pligrimage.Web.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Pligrimage.Web.Controllers
 {
     public class StatisticsController : BaseController
     {
-        public readonly IAlHajjMasterServcie _alhajjRepository;
-        public readonly IUnitOfWork _unitOfWork;
-        public readonly IUnitServcie _unitRepository;
-        public readonly ICategoryService _categoryRepository;
-        private readonly IDocumentServcie _documentRepository;
-        private readonly IParameterService _parameterRepository;
-        public readonly IAdminService _adminService;
-        private readonly IMapper _mapper;
+        private readonly IAlHajjMasterServcie _alhajjRepository;
+        private readonly IUnitServcie _unitRepository;
+        private readonly IAdminService _adminService;
+        private readonly HajjSettings _settings;
 
-
-        public StatisticsController(IAlHajjMasterServcie alhajjRepository,
-                                        IUnitOfWork unitOfWork,
-                                        IUnitServcie unitRepository,
-                                        ICategoryService categoryRepository,
-                                        IDocumentServcie documentRepository,
-                                        IParameterService parameterRepository,
-                                         IAdminService adminService,
-                                          IMapper mapper)
+        public StatisticsController(
+            IAlHajjMasterServcie alhajjRepository,
+            IUnitOfWork unitOfWork,
+            IUnitServcie unitRepository,
+            ICategoryService categoryRepository,
+            IDocumentServcie documentRepository,
+            IParameterService parameterRepository,
+            IAdminService adminService,
+            IMapper mapper,
+            IOptions<HajjSettings> settings)
         {
             _alhajjRepository = alhajjRepository;
-            _unitOfWork = unitOfWork;
-            _unitRepository = unitRepository;
-            _categoryRepository = categoryRepository;
-            _documentRepository = documentRepository;
-            _parameterRepository = parameterRepository;
-            _adminService = adminService;
-            _mapper = mapper;
+            _unitRepository   = unitRepository;
+            _adminService     = adminService;
+            _settings         = settings.Value;
         }
 
+        public IActionResult Index() => View();
 
-        public IActionResult Index()
-        {
-            return View();
-        }
+        // ── Cancelled ────────────────────────────────────────────────────────
+        public IActionResult IndexCanceledStatus() => View();
 
-
-        public IActionResult IndexCanceledStatus()
-        {
-          
-            return View();
-        }
-
+        // BUG-FIX #18: was referencing undefined variable x
         public IActionResult ReadCanceledStatus()
         {
-            //var CanceledStatus = _alhajjRepository.Queryable().Where(c => c.ParameterId == 4).Select(c => new MedicalViewModel()
-            //{
-            //    Name = c.FullName,
-            //    ServcieNumber = c.ServcieNumber,
-            //    NationalID = c.NIC,
-            //    DoctorNote = c.DoctorNote,
-            //    UnitNameAr = c.Unit.UnitNameAr,
-            //    AlhajjCancelNote=c.CancelNote
-                
-            //}).ToList().ToDataSourceResult(request);
-
-            var xx = _alhajjRepository.Query().Where(c => c.ParameterId == 4);
-
-            var x = _mapper.Map<MedicalViewModel>(xx);
-
-            return Json(x);
+            int activeYear = _settings.ActiveHajjYear;
+            var result = _alhajjRepository.Queryable()
+                .Include(c => c.Unit)
+                .Where(c => c.ConfirmCode == HajjConstants.ConfirmCode.Cancelled &&
+                             c.AlhajYear == activeYear) // BUG-FIX #11: year filter
+                .Select(c => new MedicalViewModel
+                {
+                    Name              = c.FullName,
+                    ServcieNumber     = c.ServcieNumber,
+                    NationalID        = c.NIC,
+                    DoctorNote        = c.DoctorNote,
+                    UnitNameAr        = c.Unit != null ? c.Unit.UnitNameAr : "",
+                    AlhajjCancelNote  = c.CancelNote
+                })
+                .ToList();
+            return Json(result);
         }
 
-        public async Task<MedicalViewModel> CancelView()
-        {
-            try
-            {
-                var xx = _alhajjRepository.Query().Where(c => c.ParameterId == 4);
-
-               return _mapper.Map<MedicalViewModel>(xx);
-                
-            }
-            catch (Exception xe)
-            {
-
-                throw;
-            }
-        }
-
-        public IActionResult IndexStandByStatus()
-        {
-            
-            return View();
-        }
+        // ── Standby ──────────────────────────────────────────────────────────
+        public IActionResult IndexStandByStatus() => View();
 
         public IActionResult StandByStatusRead()
         {
-            var StandByStatus = _alhajjRepository.Queryable().Where(c => c.ParameterId == 2).Select(c => new MedicalViewModel()
-            {
-                Name = c.FullName,
-                ServcieNumber = c.ServcieNumber,
-                NationalID = c.NIC,
-                DoctorNote = c.DoctorNote,
-                UnitNameAr = c.Unit.UnitNameAr
-            }).ToList();
-            return Json(StandByStatus);
+            int activeYear = _settings.ActiveHajjYear;
+            var result = _alhajjRepository.Queryable()
+                .Include(c => c.Unit)
+                .Where(c => c.ParameterId == HajjConstants.PilgrimType.StandBy &&
+                             c.AlhajYear == activeYear && !c.IsDeleted) // BUG-FIX #11
+                .Select(c => new MedicalViewModel
+                {
+                    Name          = c.FullName,
+                    ServcieNumber = c.ServcieNumber,
+                    NationalID    = c.NIC,
+                    DoctorNote    = c.DoctorNote,
+                    UnitNameAr    = c.Unit != null ? c.Unit.UnitNameAr : ""
+                }).ToList();
+            return Json(result);
         }
-        public IActionResult IndexAlhajjNonFit()
-        {
-            return View();
-        }
+
+        // ── Non-Fit ─────────────────────────────────────────────────────────
+        public IActionResult IndexAlhajjNonFit() => View();
+
         public IActionResult ReadAlhajjNonFit()
         {
-            var alhajjNonfit = _alhajjRepository.Queryable().Where(c => c.FitResult == 6).Select(c => new MedicalViewModel()
-            {
-                Name = c.FullName,
-                ServcieNumber = c.ServcieNumber,
-                NationalID = c.NIC,
-                DoctorNote = c.DoctorNote,
-                UnitNameAr = c.Unit.UnitNameAr
-            }).ToList();
-            return Json(alhajjNonfit);
+            int activeYear = _settings.ActiveHajjYear;
+            var result = _alhajjRepository.Queryable()
+                .Include(c => c.Unit)
+                .Where(c => c.FitResult == HajjConstants.FitResult.NotFit &&
+                             c.AlhajYear == activeYear && !c.IsDeleted)
+                .Select(c => new MedicalViewModel
+                {
+                    Name          = c.FullName,
+                    ServcieNumber = c.ServcieNumber,
+                    NationalID    = c.NIC,
+                    DoctorNote    = c.DoctorNote,
+                    UnitNameAr    = c.Unit != null ? c.Unit.UnitNameAr : ""
+                }).ToList();
+            return Json(result);
         }
 
-        public IActionResult IndexAlhajjFitResult()
+        // ── Fit results ──────────────────────────────────────────────────────
+        public IActionResult IndexAlhajjFitResult() => View();
+
+        public IActionResult ReadAlhajjFitResult()
         {
-            return View();
+            int activeYear = _settings.ActiveHajjYear;
+            var result = _alhajjRepository.Queryable()
+                .Include(c => c.Unit)
+                .Include(c => c.Category)
+                .Where(c => c.FitResult == HajjConstants.FitResult.Fit &&
+                             c.ParameterId != HajjConstants.PilgrimType.StandBy &&
+                             c.AlhajYear == activeYear && !c.IsDeleted)
+                .Select(c => new MedicalViewModel
+                {
+                    Name             = c.FullName,
+                    ServcieNumber    = c.ServcieNumber,
+                    NationalID       = c.NIC,
+                    DoctorNote       = c.DoctorNote,
+                    UnitNameAr       = c.Unit != null ? c.Unit.UnitNameAr : "",
+                    AdminType        = c.Category != null ? c.Category.DescArabic : "",
+                    EmployeePension  = c.EmployeeStatus.ToString()
+                }).ToList();
+            return Json(result);
         }
 
-        public IActionResult AlhajjFitResult()
-        {
-            var alhajjfitResult = _alhajjRepository.Queryable().Where(c => c.FitResult == 5 && c.ParameterId !=2 ).Select(c => new MedicalViewModel()
-            {
-                Name = c.FullName,
-                ServcieNumber = c.ServcieNumber,
-                NationalID = c.NIC,
-                DoctorNote = c.DoctorNote,
-                UnitNameAr = c.Unit.UnitNameAr,
-                AdminType=c.Category.DescArabic,
-                EmployeePension=c.EmployeeStatus.ToString()
-
-                
-            }).ToList();
-            return Json(alhajjfitResult);
-
-
-        }
-        public IActionResult IndexAdminList()
-        {
-            return View();
-        }
+        // ── Admin list ───────────────────────────────────────────────────────
+        public IActionResult IndexAdminList() => View();
 
         public IActionResult ReadAdminList()
         {
-
-            var alhajjAdminlist = _alhajjRepository.Queryable().Where(c => c.FitResult == 7 && c.ParameterId == 3).Select(c => new MedicalViewModel()
-            {
-                Name = c.FullName,
-                ServcieNumber = c.ServcieNumber,
-                NationalID = c.NIC,
-                DoctorNote = c.DoctorNote,
-                UnitNameAr = c.Unit.UnitNameAr
-
-            }).ToList();
-            return Json(alhajjAdminlist);
-
-
+            int activeYear = _settings.ActiveHajjYear;
+            var result = _alhajjRepository.Queryable()
+                .Include(c => c.Unit)
+                .Where(c => c.FitResult == HajjConstants.FitResult.Pending &&
+                             c.ParameterId == HajjConstants.PilgrimType.Admin &&
+                             c.AlhajYear == activeYear && !c.IsDeleted)
+                .Select(c => new MedicalViewModel
+                {
+                    Name          = c.FullName,
+                    ServcieNumber = c.ServcieNumber,
+                    NationalID    = c.NIC,
+                    DoctorNote    = c.DoctorNote,
+                    UnitNameAr    = c.Unit != null ? c.Unit.UnitNameAr : ""
+                }).ToList();
+            return Json(result);
         }
 
-        public IActionResult IndexPensions()
-        {
-            return View();
-        }
+        // ── Pensions ─────────────────────────────────────────────────────────
+        public IActionResult IndexPensions() => View();
 
         public IActionResult ReadPensionsList()
         {
-
-            var PensionList = _alhajjRepository.Queryable().Where(c =>c.EmployeeStatus !=0)
-                .Select(c => new MedicalViewModel()
-            {
-                Name = c.FullName,
-                ServcieNumber = c.ServcieNumber,
-                NationalID = c.NIC,
-                DoctorNote = c.DoctorNote,
-                UnitNameAr = c.Unit.UnitNameAr
-
-            }).ToList();
-            return Json(PensionList);
-
-
+            int activeYear = _settings.ActiveHajjYear;
+            var result = _alhajjRepository.Queryable()
+                .Include(c => c.Unit)
+                .Where(c => c.EmployeeStatus != EmployeeStatus.Employee &&
+                             c.AlhajYear == activeYear && !c.IsDeleted)
+                .Select(c => new MedicalViewModel
+                {
+                    Name          = c.FullName,
+                    ServcieNumber = c.ServcieNumber,
+                    NationalID    = c.NIC,
+                    DoctorNote    = c.DoctorNote,
+                    UnitNameAr    = c.Unit != null ? c.Unit.UnitNameAr : ""
+                }).ToList();
+            return Json(result);
         }
 
-
-
+        // ── Charts & totals ──────────────────────────────────────────────────
         public IActionResult ByService()
         {
-            var data = _unitRepository.Queryable().Select(c => new StaticServiceViewModel()
-            {
-                ServiceName = c.UnitNameAr,
-                AllowNumber = c.AllowNumber,
-                StandBy = c.StandBy,
-                Count = c.AlhajjMasters.Where(m => m.UnitId == c.UnitId).Count(),
-                AllowNumberRemming = c.AllowNumber - c.AlhajjMasters.Where(m => m.UnitId == c.UnitId).Where(cx => cx.ParameterId == 1).Count(),
-                StandByRemming = c.StandBy - c.AlhajjMasters.Where(m => m.UnitId == c.UnitId).Where(cx => cx.ParameterId == 2).Count()
-
-            }).ToList();
+            int activeYear = _settings.ActiveHajjYear;
+            var data = _unitRepository.Queryable()
+                .Select(c => new
+                {
+                    ServiceName        = c.UnitNameAr,
+                    AllowNumber        = c.AllowNumber,
+                    StandBy            = c.StandBy,
+                    Count              = c.AlhajjMasters.Count(m => m.AlhajYear == activeYear && !m.IsDeleted),
+                    AllowNumberRemming = c.AllowNumber - c.AlhajjMasters.Count(m => m.AlhajYear == activeYear && !m.IsDeleted && m.ParameterId == HajjConstants.PilgrimType.Regular),
+                    StandByRemming     = c.StandBy    - c.AlhajjMasters.Count(m => m.AlhajYear == activeYear && !m.IsDeleted && m.ParameterId == HajjConstants.PilgrimType.StandBy)
+                }).ToList();
             return View(data);
-
         }
+
         public IActionResult ChartByServicesData()
         {
-            var xdata = _unitRepository.Queryable()
-                .Select(c => new ServiceStatisticsCountVm
+            int activeYear = _settings.ActiveHajjYear;
+            var data = _unitRepository.Queryable()
+                .Select(c => new
                 {
                     Status = c.UnitNameAr,
-                    Count = c.AllowNumber - c.AlhajjMasters.Where(m => m.UnitId == c.UnitId).Where(cx => cx.ParameterId == 1).Count(),
-                    Total = c.AllowNumber
+                    Count  = c.AllowNumber - c.AlhajjMasters.Count(m => m.AlhajYear == activeYear && !m.IsDeleted && m.ParameterId == HajjConstants.PilgrimType.Regular),
+                    Total  = c.AllowNumber
                 });
-
-            return Json(xdata);
+            return Json(data);
         }
-
-
 
         public IActionResult AlhajjTotal()
         {
-            var alhajjTotal = _alhajjRepository.Queryable()/*.Where(c => c.ParameterId == 1)*/.Select(c => new ServiceStatisticsCountVm()
+            int activeYear = _settings.ActiveHajjYear;
+            var total = _alhajjRepository.Queryable()
+                .Count(c => c.AlhajYear == activeYear && !c.IsDeleted);
+            return View(total);
+        }
+
+        public IActionResult StaticService()
+        {
+            int activeYear = _settings.ActiveHajjYear;
+            List<int> userServiceList = _adminService.GetUserServiceListByUnitCode(LoggedUserName()).ToList();
+            var units = _unitRepository.Queryable().Where(x => userServiceList.Contains(x.UnitCode)).ToList();
+            var statList = new List<ServiceStatcisVM>();
+
+            foreach (var unit in units)
             {
-                Count = c.ParameterId
-            }).Count();
-            return View(alhajjTotal);
+                statList.Add(new ServiceStatcisVM
+                {
+                    ServiceName       = unit.UnitNameAr,
+                    AllowNumber       = _alhajjRepository.Queryable().Count(c =>
+                                            c.UnitId == unit.UnitId &&
+                                            c.ParameterId == HajjConstants.PilgrimType.Regular &&
+                                            c.EmployeeStatus == EmployeeStatus.Employee &&
+                                            c.FitResult != HajjConstants.FitResult.NotFit &&
+                                            c.AlhajYear == activeYear && !c.IsDeleted),
+                    FromAllowNumber   = unit.AllowNumber,
+                    SatndByNumber     = _alhajjRepository.Queryable().Count(c =>
+                                            c.UnitId == unit.UnitId &&
+                                            c.ParameterId == HajjConstants.PilgrimType.StandBy &&
+                                            c.AlhajYear == activeYear && !c.IsDeleted),
+                    FromSatndByNumber = unit.StandBy
+                });
+            }
+
+            return PartialView("_staticService", statList);
         }
 
         public IActionResult StaticALlService()
         {
+            int activeYear = _settings.ActiveHajjYear;
+            int[] activeTypes    = { HajjConstants.PilgrimType.Regular, HajjConstants.PilgrimType.StandBy, HajjConstants.PilgrimType.Admin };
+            int[] activeFitCodes = { HajjConstants.FitResult.Fit, HajjConstants.FitResult.NotFit, HajjConstants.FitResult.Pending };
 
-            int[] parmList = new int[] { 1,2,3 };
-            int[] fitresultList = new int[] { 5,6,7 };
-            var ConsumedAllowedNumberService = _alhajjRepository.Queryable().Where(c => parmList.Contains(c.ParameterId) && fitresultList.Contains(c.FitResult)).Count();
-            var statcisStatusList = Enumerable.Empty<object>().Select(r => new { total = 0, }).ToList();
-            var items = new[]{
-                new { Type = "total", Consumed=ConsumedAllowedNumberService },
-            };
-            return Json(items);
+            int total = _alhajjRepository.Queryable()
+                .Count(c => activeTypes.Contains(c.ParameterId) &&
+                             activeFitCodes.Contains(c.FitResult) &&
+                             c.AlhajYear == activeYear && !c.IsDeleted);
 
+            return Json(new[] { new { Type = "total", Consumed = total } });
         }
 
-
-
-
-        public IActionResult NotFoundPage()
-        {
-            return View();
-        }
-
-
-
-        public IActionResult StaticService()
-        {
-            List<int> userServiceList = _adminService.GetUserServiceListByUnitCode(LoggedUserName()).ToList();
-
-            var StaticService = _unitRepository.Queryable().Where(x => userServiceList.Contains(x.UnitCode)).ToList();
-
-            List<ServiceStatcisVM> serviceStatcis = new List<ServiceStatcisVM>();
-
-            foreach (var item in StaticService)
-            {
-                var statcisVM = new ServiceStatcisVM();
-
-                statcisVM.ServiceName = item.UnitNameAr.ToString();
-                statcisVM.AllowNumber = _alhajjRepository.Queryable().Where(c => c.Unit.UnitCode == item.UnitCode && c.ParameterId == 1 && c.EmployeeStatus == EmployeeStatus.Employee && c.FitResult != 6).Count();
-                statcisVM.FromAllowNumber = item.AllowNumber;
-                statcisVM.SatndByNumber = _alhajjRepository.Queryable().Where(c => c.Unit.UnitCode == item.UnitCode && c.ParameterId == 2).Count();
-                statcisVM.FromSatndByNumber = item.StandBy;
-                serviceStatcis.Add(statcisVM);
-
-            }
-
-            return PartialView("_staticService", serviceStatcis);
-        }
-
-
+        public IActionResult NotFoundPage() => View();
     }
 }

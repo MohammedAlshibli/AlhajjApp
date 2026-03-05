@@ -27,24 +27,24 @@ namespace Pligrimage.Web.Controllers
 
 
         [PligrimageFiltter]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             return View();
         }
 
-        public IActionResult ResidenceRead()
+        public async Task<IActionResult> ResidenceRead()
         {
             return View(_residenceRepository.Queryable());
         }
 
 
         [HttpPost]
-        public IActionResult CreateResidence(Residences residences)
+        public async Task<IActionResult> CreateResidence(Residences residences)
         {
             if (residences != null && ModelState.IsValid) { }
             {
                 _residenceRepository.Insert(residences);
-                _unitOfWork.SaveChangesAsync();
+                await _unitOfWork.SaveChangesAsync();
             }
 
             return RedirectToAction("Index", "Residences");
@@ -52,24 +52,24 @@ namespace Pligrimage.Web.Controllers
         }
 
         [HttpPost]
-        public ActionResult UpdateResidence(Residences residences)
+        public async Task<IActionResult> UpdateResidence(Residences residences)
         {
             if (residences != null && ModelState.IsValid)
             {
                 _residenceRepository.Update(residences);
-                _unitOfWork.SaveChangesAsync();
+                await _unitOfWork.SaveChangesAsync();
             }
             return View(residences);
         }
 
 
         [HttpPost]
-        public ActionResult DeleteResidence(Residences residences)
+        public async Task<IActionResult> DeleteResidence(Residences residences)
         {
             if (residences != null && ModelState.IsValid)
             {
                 _residenceRepository.Delete(residences);
-                _unitOfWork.SaveChangesAsync();
+                await _unitOfWork.SaveChangesAsync();
             }
             return RedirectToAction("Index", "Residences");
 

@@ -1,3 +1,4 @@
+using Pligrimage.Entities;
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +12,9 @@ using Pligrimage.Entities;
 using Pligrimage.Services.Interface;
 using Pligrimage.Web.Extensions;
 using Pligrimage.Web.Models;
+
+// Magic number constants
+using HC = Pligrimage.Entities.HajjConstants;
 
 namespace Pligrimage.Web.Controllers
 {
@@ -45,8 +49,9 @@ namespace Pligrimage.Web.Controllers
             return View();
         }
 
-        public IActionResult ReadMedical()
+        public async Task<IActionResult> ReadMedical()
         {
+            int medYear = DateTime.Now.Year; // TODO: inject HajjSettings
             var list = _alHajjRepostory.Queryable().Include(c => c.Unit)
                 .Select(c => new
                 {
@@ -65,14 +70,14 @@ namespace Pligrimage.Web.Controllers
 
 
         [HttpPost]
-        public IActionResult UpdateMedical( AlhajjMaster alhajjMaster)
+        public async Task<IActionResult> UpdateMedical( AlhajjMaster alhajjMaster)
         {
             if (alhajjMaster != null && ModelState.IsValid)
             {
                 alhajjMaster.UpdatedBy = LoggedUserName();
                 alhajjMaster.UpdatedOn= DateTime.Now;
                 _alHajjRepostory.Update(alhajjMaster);
-                _unitOfWork.SaveChangesAsync();
+                await _unitOfWork.SaveChangesAsync();
             }
             return RedirectToAction("Index", "Medical");
 
@@ -98,7 +103,7 @@ namespace Pligrimage.Web.Controllers
         public IActionResult DoctorRead()
         {
            
-            var alhajjAdminlist = _alHajjRepostory.Queryable().Where(c => c.FitResult == 7 ).Select(c => new DoctorNoteModel()
+            var alhajjAdminlist = _alHajjRepostory.Queryable().Where(c => c.FitResult == HajjConstants.FitResult.Pending ).Select(c => new DoctorNoteModel()
             {
                 Name = c.FullName,
                 ServcieNumber = c.ServcieNumber,
@@ -121,7 +126,7 @@ namespace Pligrimage.Web.Controllers
 
 
         [HttpPost]
-        public IActionResult UpdateDoctorNOte( DoctorNoteModel doctorNoteModel )
+        public async Task<IActionResult> UpdateDoctorNOte( DoctorNoteModel doctorNoteModel )
         {
             try
             {
@@ -137,7 +142,7 @@ namespace Pligrimage.Web.Controllers
                      alhajjDetails.UpdatedBy = LoggedUserName();
                      alhajjDetails.UpdatedOn = DateTime.Now;
                     _alHajjRepostory.Update(alhajjDetails);
-                    _unitOfWork.SaveChangesAsync();
+                    await _unitOfWork.SaveChangesAsync();
                 }
                 return View(alhajjDetails);
             }
@@ -150,13 +155,13 @@ namespace Pligrimage.Web.Controllers
     
         }
 
-        public IActionResult IndexMedical()
+        public async Task<IActionResult> IndexMedical()
         {
             var x = _alHajjRepostory.Queryable().Include(c => c.Parameter).ToList();
             return View(x);
         }
 
-        public IActionResult UpdateDoctorNote(int PligrimageId)
+        public async Task<IActionResult> UpdateDoctorNote(int PligrimageId)
         {
             if(PligrimageId == null)
             {
@@ -172,12 +177,12 @@ namespace Pligrimage.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult UpdateDoctorNote(AlhajjMaster alhajjMaster)
+        public async Task<IActionResult> UpdateDoctorNote(AlhajjMaster alhajjMaster)
         {
             if (ModelState.IsValid)
             {
                 _alHajjRepostory.Update(alhajjMaster);
-                _unitOfWork.SaveChangesAsync();
+                await _unitOfWork.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             return View(alhajjMaster);

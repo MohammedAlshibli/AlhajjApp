@@ -99,7 +99,7 @@ namespace Pligrimage.Web.Controllers
         }
 
         [HttpPost]
-        public ActionResult Pdf_Export_Save(string contentType, string bese64, string Filename)
+        public async Task<IActionResult> Pdf_Export_Save(string contentType, string bese64, string Filename)
         {
             var fileContents = Convert.FromBase64String(bese64);
             return File(fileContents, contentType, Filename);
@@ -108,25 +108,25 @@ namespace Pligrimage.Web.Controllers
 
 
         [HttpPost]
-        public IActionResult UpdateAlhajjType( AlhajjMaster alhajjMaster)
+        public async Task<IActionResult> UpdateAlhajjType( AlhajjMaster alhajjMaster)
         {
             if (alhajjMaster != null && ModelState.IsValid)
             {
                 alhajjMaster.UpdatedBy = LoggedUserName();
                 alhajjMaster.UpdatedOn = DateTime.Now;
                 _alhajjRepository.Update(alhajjMaster);
-                _unitOfWork.SaveChangesAsync();
+                await _unitOfWork.SaveChangesAsync();
             }
             return RedirectToAction("Index", "AlhajjList");
         }
 
         [HttpPost]
-        public ActionResult DeleteAlhajj(AlhajjMaster alhajjMaster)
+        public async Task<IActionResult> DeleteAlhajj(AlhajjMaster alhajjMaster)
         {
             if (alhajjMaster != null && ModelState.IsValid)
             {
                 _alhajjRepository.Delete(alhajjMaster);
-                _unitOfWork.SaveChangesAsync();
+                await _unitOfWork.SaveChangesAsync();
             }
             return RedirectToAction("Index", "AlhajjList");
 

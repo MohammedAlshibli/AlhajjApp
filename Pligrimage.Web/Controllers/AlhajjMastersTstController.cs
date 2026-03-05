@@ -10,6 +10,10 @@ using Pligrimage.Entities;
 
 namespace Pligrimage.Web.Controllers
 {
+    /// <summary>
+    /// DEPRECATED: Duplicate test controller. Do not use. Use AlhajjMastersController instead.
+    /// </summary>
+    [Obsolete("Use AlhajjMastersController")]
     public class AlhajjMastersTstController : Controller
     {
         private readonly AppDbContext _context;

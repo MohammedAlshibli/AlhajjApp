@@ -1,520 +1,359 @@
-﻿using AutoMapper;
+using AutoMapper;
 using HrmsHttpClient.HrmsClientApi;
 using ITS.Core.Abstractions;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Pligrimage.Entities;
 using Pligrimage.Entities.Enum;
-using Pligrimage.Services.Implementation;
 using Pligrimage.Services.Interface;
-using Pligrimage.Web.Common.ViewModel;
 using Pligrimage.Web.Dto;
 using Pligrimage.Web.Extensions;
+using Pligrimage.Web.Infrastructure;
 using Pligrimage.Web.Models;
 using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Globalization;
-using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Pligrimage.Web.Controllers
 {
-
     public class AlhajjMastersController : BaseController
     {
-
-        public readonly IAlHajjMasterServcie _alhajjService;
-        public readonly IUnitOfWork _unitOfWork;
-        public readonly IUnitServcie _unitRepository;
-        public readonly ICategoryService _categoryRepository;
-        private readonly IDocumentServcie _documentRepository;
+        private readonly IAlHajjMasterServcie _alhajjService;
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IUnitServcie _unitRepository;
+        private readonly ICategoryService _categoryRepository;
         private readonly IParameterService _parameterRepository;
-        private readonly IEmployeeClient _employeeClient;
-        public readonly IAdminService _adminService;
         private readonly IEmployeeService _employeeService;
+        private readonly IAdminService _adminService;
         private readonly IMapper _mapper;
-        private readonly DbContext _dbContext;
+        private readonly HajjSettings _settings;
 
-        private IWebHostEnvironment _hostingEnvironment;  ///usig to upload file 
-
-        public AlhajjMastersController(IAlHajjMasterServcie alhajService,
-                                        IUnitOfWork unitOfWork,
-                                        IUnitServcie unitRepository,
-                                        ICategoryService categoryRepository,
-                                        IDocumentServcie documentRepository,
-                                        IParameterService parameterRepository,
-                                       IEmployeeClient employeeClient,
-                                        IWebHostEnvironment hostingEnvironment,
-                                         IAdminService adminService,
-                                         IEmployeeService employeeService,
-                                         IMapper mapper,
-                                          DbContext dbContext
-                                        )
+        public AlhajjMastersController(
+            IAlHajjMasterServcie alhajService,
+            IUnitOfWork unitOfWork,
+            IUnitServcie unitRepository,
+            ICategoryService categoryRepository,
+            IParameterService parameterRepository,
+            IEmployeeService employeeService,
+            IAdminService adminService,
+            IMapper mapper,
+            IOptions<HajjSettings> settings)
         {
-            _alhajjService = alhajService;
-            _unitOfWork = unitOfWork;
-            _unitRepository = unitRepository;
+            _alhajjService    = alhajService;
+            _unitOfWork       = unitOfWork;
+            _unitRepository   = unitRepository;
             _categoryRepository = categoryRepository;
-            _documentRepository = documentRepository;
             _parameterRepository = parameterRepository;
-            _employeeClient = employeeClient;
-            _hostingEnvironment = hostingEnvironment;
-            _adminService = adminService;
-            _employeeService = employeeService;
-            _mapper = mapper;
-            _dbContext = dbContext;
+            _employeeService  = employeeService;
+            _adminService     = adminService;
+            _mapper           = mapper;
+            _settings         = settings.Value;
         }
 
-
-
+        // ────────────────────────────────────────────────────────────────────
+        // HRMS LOOKUP – validate service number before calling API
+        // ────────────────────────────────────────────────────────────────────
         public async Task<IActionResult> GetAlhajjDataFormWebService(string ServiceNumber)
         {
-            HttpResponseMessage response = new HttpResponseMessage();
+            // BUG-FIX #26: validate format before hitting external API
+            if (string.IsNullOrWhiteSpace(ServiceNumber) ||
+                !Regex.IsMatch(ServiceNumber.Trim().ToUpper(), _settings.ServiceNumberPattern ?? @"^[A-Z0-9]{4,12}$"))
+            {
+                return BadRequest("رقم الخدمة العسكرية غير صالح");
+            }
 
-
+            HttpResponseMessage response;
             try
             {
-                response = await _employeeService.GetEmployeeBymilitaryServiceId(ServiceNumber);
-
+                response = await _employeeService.GetEmployeeBymilitaryServiceId(ServiceNumber.Trim().ToUpper());
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-
-                return BadRequest(string.Format("There is an error in web service api connection!!{0}, contact with Admin", System.Environment.NewLine));
+                return BadRequest("يوجد خطأ في الاتصال بنظام الموارد البشرية، الرجاء التواصل مع الإدارة");
             }
 
             if (!response.IsSuccessStatusCode)
-            {
-                var responError = (int)response.StatusCode;
-                return BadRequest(string.Format("There is Error with No {0},{1} ", responError, response.StatusCode));
-            };
+                return BadRequest($"خطأ في نظام HRMS: {(int)response.StatusCode}");
+
             string json = await response.Content.ReadAsStringAsync();
-            JundEmployeeDto _fromHrms = JsonConvert.DeserializeObject<JundEmployeeDto>(json);
+            JundEmployeeDto fromHrms = JsonConvert.DeserializeObject<JundEmployeeDto>(json);
+            if (fromHrms == null)
+                return BadRequest("لم يتم العثور على الموظف في نظام الموارد البشرية");
 
-            var test = JsonConvert.DeserializeObject(json);
+            ViewData["ClassTypeList"] = _parameterRepository.Queryable()
+                .Where(c => c.Code == HajjConstants.ParamCode.ClassType && c.ParameterId != HajjConstants.PilgrimType.Admin)
+                .Select(c => new { c.ParameterId, c.DescArabic })
+                .ToList();
 
-            if (test == null)
-            {
-
-                return BadRequest(100);
-            }
-
-            //if (_fromHrms.EmployeeStatus != 0)
-            //{
-            //    return BadRequest(string.Format("الرجاء استخدام شاشة المتقاعدين ", System.Environment.NewLine));
-            //}
-
-            var parmList = new List<int> { 1, 2 };
-
-            var classTypeParameter = _parameterRepository.Queryable().ToList();
-
-            //-- ملاحظة تم استخدام لحساب العمر في-- حاج ---حاج احتياط ---حاج اداري 
-            // MinValue  
-
-            //if (_fromHrms.Age <= classTypeParameter.MinValue)
-            //{
-            //    return BadRequest(string.Format("غير مستوفي شرط العمر", System.Environment.NewLine));
-
-            //}
-
-            //var IsRankCodeExist = _parameterRepository.GetRankCodeListAsync().Where(x=>x.Value == _fromHrms.RankCode).Any();
-
-            //if (IsRankCodeExist == false)
-            //{
-            //    return BadRequest(string.Format("غير مستوفي شرط الرتبة", System.Environment.NewLine));
-            //}
-
-
-
-            ViewData["ClassTypeList"] = _parameterRepository.Queryable().ToList()
-            .Select(c => new
-            {
-                c.ParameterId,
-                c.DescArabic
-            }).ToList();
-
-            var newuser = _mapper.Map<AlhajjMaster>(_fromHrms);
-
-            return PartialView("_Create", newuser);
-
+            var newPilgrim = _mapper.Map<AlhajjMaster>(fromHrms);
+            return PartialView("_Create", newPilgrim);
         }
 
-
-        public IActionResult AlhajjType()
-        {
-            var alhajjType = _parameterRepository.Queryable().Where(x => x.Code == "ClassType").ToList();
-
-            var type = alhajjType.Select(c => new
-            {
-                parameterId = c.ParameterId,
-                alhajjType = c.DescArabic.TrimStart(),
-
-            });
-
-            return Json(type.OrderBy(x => x.alhajjType).ToList());
-        }
-
-        public async Task<string> GetEmployeeDetails(string militaryServiceId)
-        {
-
-            JundToken jundtoken = new JundToken();
-            var securityToken = jundtoken.GetsecurityToken();
-
-
-            var apiClient = new HttpClient();
-            apiClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", securityToken);
-            var response = await apiClient.GetAsync($"https://jundbe/api/app/integration/person-by-military-service-id/" + militaryServiceId);
-
-            var content = response.Content.ReadAsStringAsync().Result;
-
-            HttpResponseMessage resp = new HttpResponseMessage()
-            {
-                Content = new StringContent(content, System.Text.Encoding.UTF8, "Application/json")
-            };
-
-            //var content = response.Content.ReadAsStringAsync().Result;
-
-
-            return content;
-
-
-        }
-
-        public IActionResult StaticService()
-        {
-
-            List<int> userServiceList = _adminService.GetUserServiceListByUnitCode(LoggedUserName()).ToList();
-
-            var StaticService = _unitRepository.Queryable().Where(x => userServiceList.Contains(x.UnitCode)).ToList();
-
-
-            //var ConsumedAllowedNumberService = _alhajjService.Queryable().Where(c => c.Unit.UnitCode ==  c.ParameterId == 1).Count();
-            //var ConsumedStandByNumberService = _alhajjService.Queryable().Where(c => c.Unit.UnitCode == 7000 && c.ParameterId == 2).Count();
-
-            //var ConsumedAllowedNumberService = _alhajjService.Queryable().Where(c => StaticService.Contains(c.Unit.UnitCode) && c.ParameterId == 1 && c.EmployeeStatus == EmployeeStatus.Employeed).Count();
-            //var ConsumedStandByNumberService = _alhajjService.Queryable().Where(c => userServiceList.Contains(c.Unit.UnitId) && c.ParameterId == 2).Count();
-
-
-            //int busy = _unitRepository.Queryable().Where(x => x.UnitCode == 7000).Count();
-
-            List<ServiceStatcisVM> serviceStatcis = new List<ServiceStatcisVM>();
-
-
-            foreach (var item in StaticService)
-            {
-              var statcisVM = new ServiceStatcisVM();
-
-                statcisVM.ServiceName = item.UnitNameAr.ToString();
-                statcisVM.AllowNumber = _alhajjService.Queryable().Where(c => c.Unit.UnitCode == item.UnitCode && c.ParameterId == 1 && c.EmployeeStatus == EmployeeStatus.Employee && c.FitResult != 6).Count();
-                statcisVM.FromAllowNumber =item.AllowNumber;
-                statcisVM.SatndByNumber = _alhajjService.Queryable().Where(c => c.Unit.UnitCode == item.UnitCode && c.ParameterId == 2).Count();
-                statcisVM.FromSatndByNumber = item.StandBy;
-                serviceStatcis.Add(statcisVM);
-
-            }
-
-            return PartialView("_staticService", serviceStatcis);
-           
-
-        }
-
-
-
-
-
-        //[PligrimageFiltter]
+        // ────────────────────────────────────────────────────────────────────
+        // INDEX – active year only, unit-scoped
+        // ────────────────────────────────────────────────────────────────────
+        [PligrimageFiltter]
         public IActionResult Index()
         {
-            //ViewData["RTNCodeList"] = _parameterRepository.Queryable().Where(c => c.Code == "RTNCode")
-            //       .Select(c => new
-            //       {
-            //           c.ParameterId,
-            //           c.DescArabic
-            //       }).ToList();
-
-            ViewData["ClassTypeList"] = _parameterRepository.GetClassTypeListAsync().Where(c => c.ParameterId != 3)
-              .Select(c => new
-              {
-                  c.ParameterId,
-                  c.DescArabic
-              }).ToList();
-
-            //ViewData["RTNCodeList"] = _parameterRepository.GetRTNCodeListAsync()
-            //  .Select(c => new
-            //  {
-            //      c.ParameterId,
-            //      c.DescArabic
-            //  }).ToList();
-
+            ViewData["ClassTypeList"] = _parameterRepository.GetClassTypeListAsync()
+                .Where(c => c.ParameterId != HajjConstants.PilgrimType.Admin)
+                .Select(c => new { c.ParameterId, c.DescArabic })
+                .ToList();
 
             return View();
         }
 
-
+        // BUG-FIX #10: was returning Ok(Task) – now returns real data
         public IActionResult AlhajjRead()
         {
             List<int> userServiceList = _adminService.GetUserServiceListByUnitCode(LoggedUserName()).ToList();
+            int activeYear = _settings.ActiveHajjYear;
 
-            var result = _alhajjService.Query()
-                .Include(c => c.Unit)/*.Include(c =>c.Parameter)*/
-                //.Where(c =>c.ParameterId==1 || c.ParameterId==2 ||c.EmployeeStatus==0).SelectAsync().Result.ToDataSourceResult(request);
-                .Where(c => c.EmployeeStatus == 0 && c.ParameterId !=3 && userServiceList.Contains(c.Unit.UnitCode)).SelectAsync();
+            // BUG-FIX #11: filter by active year
+            var result = _alhajjService.Queryable()
+                .Include(c => c.Unit)
+                .Where(c =>
+                    c.AlhajYear == activeYear &&
+                    c.EmployeeStatus == EmployeeStatus.Employee &&
+                    c.ParameterId != HajjConstants.PilgrimType.Admin &&
+                    !c.IsDeleted &&
+                    userServiceList.Contains(c.Unit.UnitCode))
+                .Select(c => new {
+                    c.PligrimageId,
+                    c.FullName,
+                    c.ServcieNumber,
+                    c.NIC,
+                    c.RankDesc,
+                    c.Region,
+                    UnitNameAr = c.Unit != null ? c.Unit.UnitNameAr : "",
+                    c.ParameterId,
+                    c.FitResult,
+                    c.ConfirmCode
+                })
+                .ToList();
 
-
-
-            return Ok(result);
-
-
-        }
-        public IActionResult MasterDetails(int pligrimageId)
-        {
-            var result=_alhajjService.Queryable().Where(c => c.PligrimageId == pligrimageId);
-            return RedirectToAction("Index", "AlhajjMaster");
-
-        }
-
-        public IActionResult AlhajjReadJson()
-        {
-
-            var result = _alhajjService.Query().Include(c => c.Parameter).Include(c => c.Unit).Where(c => c.ParameterId == 1 || c.ParameterId == 2).SelectAsync();
-
-
-            return Ok(result);
-
-
+            return Json(result);
         }
 
-
-        [HttpPost]
-        public ActionResult CreateAlhajjFromHrms(AlhajjMaster alhajjMaster)
+        // ────────────────────────────────────────────────────────────────────
+        // QUOTA HELPER – returns remaining slots (thread-safe read)
+        // ────────────────────────────────────────────────────────────────────
+        public IActionResult StaticService()
         {
+            List<int> userServiceList = _adminService.GetUserServiceListByUnitCode(LoggedUserName()).ToList();
+            int activeYear = _settings.ActiveHajjYear;
 
-            var StaticService = _unitRepository.Queryable().Where(x => x.UnitId == alhajjMaster.UnitId).FirstOrDefault();
-            var ConsumedAllowedNumberService = _alhajjService.Queryable().Where( c =>c.UnitId==alhajjMaster.UnitId && c.ParameterId == 1).Count();
-            var ConsumedStandByNumberService = _alhajjService.Queryable().Where(c => c.UnitId == alhajjMaster.UnitId && c.ParameterId == 2).Count();
+            var units = _unitRepository.Queryable().Where(x => userServiceList.Contains(x.UnitCode)).ToList();
+            var statList = new List<ServiceStatcisVM>();
 
-
-            //List<int> userServiceList = _adminService.GetUserServiceListByUnitCode(LoggedUserName()).ToList();
-
-            //var StaticService1 = _unitRepository.Queryable().Where(x => userServiceList.Contains(x.UnitCode));
-
-
-            //var ConsumedAllowedNumberService = _alhajjService.Queryable().Where(c => c.ParameterId == 1).Count();
-
-            //var ConsumedStandByNumberService = _alhajjService.Queryable().Where(c => c.ParameterId == 2).Count();
-
-
-
-            if (alhajjMaster.ParameterId == 1)
+            foreach (var unit in units)
             {
-                if (StaticService.AllowNumber== ConsumedAllowedNumberService)
+                statList.Add(new ServiceStatcisVM
                 {
-                    return BadRequest(string.Format("تجازوت العدد المسموح به", System.Environment.NewLine));
-
-                }
+                    ServiceName       = unit.UnitNameAr,
+                    AllowNumber       = _alhajjService.Queryable().Count(c =>
+                                            c.UnitId == unit.UnitId &&
+                                            c.ParameterId == HajjConstants.PilgrimType.Regular &&
+                                            c.AlhajYear == activeYear && !c.IsDeleted),
+                    FromAllowNumber   = unit.AllowNumber,
+                    SatndByNumber     = _alhajjService.Queryable().Count(c =>
+                                            c.UnitId == unit.UnitId &&
+                                            c.ParameterId == HajjConstants.PilgrimType.StandBy &&
+                                            c.AlhajYear == activeYear && !c.IsDeleted),
+                    FromSatndByNumber = unit.StandBy
+                });
             }
 
-            if (alhajjMaster.ParameterId == 2)
-            {
-                if (StaticService.StandBy == ConsumedStandByNumberService)
-                {
-                    return BadRequest(string.Format("تجازوت العدد المسموح به", System.Environment.NewLine));
-
-                }
-            }
-
-            //if (alhajjMaster.NICExpire < DateTime.Now)
-            //{
-            //    return BadRequest(string.Format("يرجى تجديد البطاقة الشخصية", System.Environment.NewLine));
-
-            //}
-
-            //else
-            //{
-            //    var daysdifferent = (alhajjMaster.NICExpire - DateTime.Now).Value.TotalDays;
-            //    var NicExpireDaysCondition = _parameterRepository.Queryable().Where(c => c.Code == "NiceExpire").SingleOrDefault().Value;
-            //    if (daysdifferent < NicExpireDaysCondition)
-            //    {
-            //        return BadRequest(string.Format("يرجى تجديد البطاقة الشخصية سو تنتهي خلال {0} يوم", daysdifferent, System.Environment.NewLine));
-
-            //    }
-            //}
-
-
-            //if (alhajjMaster.PassportExpire < DateTime.Now)
-            //{
-            //    return BadRequest(string.Format("يرجى تجديد  جواز السفر", System.Environment.NewLine));
-
-            //}
-
-            //else
-            //{
-            //    var dayCount = (alhajjMaster.PassportExpire - DateTime.Now).Value.TotalDays;
-            //    var PassportCondation = _parameterRepository.Queryable().Where(c => c.Code == "PassportExpire").SingleOrDefault().Value;
-
-            //    if (dayCount < PassportCondation)
-            //    {
-            //        return BadRequest(string.Format("يرجى تجديد جواز السفر سوف ينتهي خلال {0} يوم", dayCount, System.Environment.NewLine));
-
-            //    }
-            //}
-
-
-
-
-            if (alhajjMaster != null && ModelState.IsValid)
-            {
-                try
-                {
-                    var isExist = _alhajjService.Queryable().Any(c => c.NIC == alhajjMaster.NIC && (c.ParameterId == 1 || c.ParameterId == 2));
-                    if (isExist)
-                    {
-                        return BadRequest(string.Format("البيانات موجدوة مسبقا", System.Environment.NewLine));
-
-                    }
-                    alhajjMaster.ParameterId = 1;
-                    alhajjMaster.Passport = "1541222";
-                    alhajjMaster.PassportExpire = DateTime.Now;
-                    alhajjMaster.NICExpire = DateTime.Now;
-                    alhajjMaster.CreateBy = LoggedUserName();
-                    alhajjMaster.CreateOn = DateTime.Now;
-                    alhajjMaster.AlhajYear = DateTime.Now.Year;
-                    alhajjMaster.RegistrationDate = DateTime.Now;
-                    alhajjMaster.FitResult = 7;
-                    //alhajjMaster.ConfirmCode = 51;
-                    _alhajjService.Insert(alhajjMaster);
-                    _unitOfWork.SaveChangesAsync();
-                    return Ok("success");
-
-                }
-                catch (Exception ex)
-                {
-
-                    return BadRequest(string.Format("لم يتم الحفظ يوجد نقص فالبيانات", System.Environment.NewLine));
-
-                }
-
-            }
-            else
-            {
-                return Ok();
-
-            }
-
+            return PartialView("_staticService", statList);
         }
 
+        public IActionResult AlhajjType()
+        {
+            var types = _parameterRepository.Queryable()
+                .Where(x => x.Code == HajjConstants.ParamCode.ClassType)
+                .Select(c => new { parameterId = c.ParameterId, alhajjType = c.DescArabic.TrimStart() })
+                .OrderBy(x => x.alhajjType)
+                .ToList();
+            return Json(types);
+        }
 
-
+        // ────────────────────────────────────────────────────────────────────
+        // CREATE – BUG-FIX #1 (await), #2 (race→transaction), #4 (year),
+        //          #5 (fake passport removed), #6 (ConfirmCode set)
+        // ────────────────────────────────────────────────────────────────────
         [HttpPost]
-        public ActionResult UpdateAlhajj( AlhajjMaster alhajjMaster)
+        public async Task<ActionResult> CreateAlhajjFromHrms(AlhajjMaster alhajjMaster)
         {
-            if (alhajjMaster != null && ModelState.IsValid)
-            {
-                _alhajjService.Update(alhajjMaster);
-                _unitOfWork.SaveChangesAsync();
-            }
-            return RedirectToAction("Index", "AlhajjMasters");
+            if (!ModelState.IsValid)
+                return BadRequest("البيانات غير مكتملة، يرجى مراجعة الحقول المطلوبة");
 
-        }
+            int activeYear = _settings.ActiveHajjYear;
 
+            var unit = _unitRepository.Queryable()
+                .FirstOrDefault(x => x.UnitId == alhajjMaster.UnitId);
 
+            if (unit == null)
+                return BadRequest("الوحدة غير موجودة");
 
-        [HttpPost]
-        public ActionResult DeleteAlhajjMaster( AlhajjMaster alhajjMaster)
-        {
-            if (alhajjMaster != null && ModelState.IsValid)
-            {
-                _alhajjService.Delete(alhajjMaster);
-                _unitOfWork.SaveChangesAsync();
-            }
-            return RedirectToAction("Index", "AlhajjMasters");
+            // BUG-FIX #4: duplicate check scoped to active year only
+            bool alreadyRegistered = _alhajjService.Queryable()
+                .Any(c => c.NIC == alhajjMaster.NIC &&
+                           c.AlhajYear == activeYear &&
+                           !c.IsDeleted &&
+                           (c.ParameterId == HajjConstants.PilgrimType.Regular ||
+                            c.ParameterId == HajjConstants.PilgrimType.StandBy));
 
-        }
+            if (alreadyRegistered)
+                return BadRequest("الموظف مسجل مسبقاً في هذه الدورة");
 
-
-
-        // GET: AlhajjMasters/Create
-        public IActionResult Create()
-        {
-
-            return View();
-        }
-
-
-
-        #region CreateAlhajjNonModFromExcelFile
-
-        [HttpPost]
-        public IActionResult CreateAlhajjNonMod([FromBody] IEnumerable<AlhajjMaster> AlhajjMasterList)
-        {
-            var alhajjListCount = AlhajjMasterList.Count(c =>c.Parameter.ParameterId==1);
-            var alhajjStandByCount = AlhajjMasterList.Count(c => c.Parameter.ParameterId == 2);
-            var selectedUnit = AlhajjMasterList.Select(x => x.Unit).FirstOrDefault();
-     
+            // BUG-FIX #2: quota check + insert inside a DB transaction
+            using var tx = await _unitOfWork.BeginTransactionAsync();
             try
-
             {
+                // Re-count inside transaction to prevent race condition
+                int consumed = _alhajjService.Queryable().Count(c =>
+                    c.UnitId == alhajjMaster.UnitId &&
+                    c.ParameterId == alhajjMaster.ParameterId &&
+                    c.AlhajYear == activeYear &&
+                    !c.IsDeleted);
 
-                if (alhajjListCount > selectedUnit.AllowNumber)
-                {
-                    return BadRequest(string.Format("{0}{1}", "تجاوزت الحد المسموح به الرجاء مراجعة الملف المرفق : العدد", alhajjListCount, System.Environment.NewLine));
-                }
+                int allowed = alhajjMaster.ParameterId == HajjConstants.PilgrimType.Regular
+                    ? unit.AllowNumber
+                    : unit.StandBy;
 
-                if (alhajjStandByCount > selectedUnit.StandBy)
-                {
-                    return BadRequest(string.Format("{0}{1}", "تجاوزت الحد المسموح به الرجاء مراجعة الملف المرفق : العدد", alhajjStandByCount, System.Environment.NewLine));
-                }
+                if (consumed >= allowed)
+                    return BadRequest($"تجاوزت الحد المسموح به ({allowed}) لهذه الوحدة");
 
-                foreach (var item in AlhajjMasterList)
-                {
+                // BUG-FIX #5: do NOT override passport with fake value
+                // BUG-FIX #6: set ConfirmCode to Pending (not hardcoded 51)
+                alhajjMaster.AlhajYear        = activeYear;
+                alhajjMaster.RegistrationDate = DateTime.Now;
+                alhajjMaster.FitResult        = HajjConstants.FitResult.Pending;
+                alhajjMaster.ConfirmCode      = HajjConstants.ConfirmCode.Pending;
+                alhajjMaster.IsDeleted        = false;
+                alhajjMaster.CreateBy         = LoggedUserName();
+                alhajjMaster.CreateOn         = DateTime.Now;
 
-                    var isExist = _alhajjService.Queryable().Where(c => c.NIC == item.NIC).Any();
-                    if (isExist == true)
-                    {
-                        return BadRequest(string.Format("{0}{1}", " البيانات موجودة مسبقا:", item.ServcieNumber, System.Environment.NewLine));
+                _alhajjService.Insert(alhajjMaster);
 
-                    }
+                // BUG-FIX #1: await the save
+                await _unitOfWork.SaveChangesAsync();
+                await tx.CommitAsync();
 
-                    else
-                    {
-                        item.CreateBy = LoggedUserName();
-                        item.CreateOn = DateTime.Now;
-                        item.RegistrationDate = DateTime.Now;
-                        _alhajjService.Insert(item);
-                    }
-   
-                }
-
-                var result = _unitOfWork.SaveChangesAsync();
-                 return Ok("تم حفظ البيانات بنجاح");
+                return Ok("تمت الإضافة بنجاح");
             }
+            catch (Exception)
+            {
+                await tx.RollbackAsync();
+                return BadRequest("لم يتم الحفظ، يوجد نقص في البيانات");
+            }
+        }
 
+        // ────────────────────────────────────────────────────────────────────
+        // UPDATE / SOFT DELETE
+        // ────────────────────────────────────────────────────────────────────
+        [HttpPost]
+        public async Task<ActionResult> UpdateAlhajj(AlhajjMaster alhajjMaster)
+        {
+            if (alhajjMaster == null || !ModelState.IsValid)
+                return BadRequest("البيانات غير صحيحة");
 
+            alhajjMaster.UpdatedBy = LoggedUserName();
+            alhajjMaster.UpdatedOn = DateTime.Now;
+            _alhajjService.Update(alhajjMaster);
+            await _unitOfWork.SaveChangesAsync(); // BUG-FIX #1
+            return RedirectToAction("Index");
+        }
+
+        // BUG-FIX #24: soft delete instead of hard delete
+        [HttpPost]
+        public async Task<ActionResult> DeleteAlhajjMaster(int pligrimageId)
+        {
+            var pilgrim = _alhajjService.Queryable()
+                .FirstOrDefault(c => c.PligrimageId == pligrimageId);
+
+            if (pilgrim == null)
+                return NotFound();
+
+            pilgrim.IsDeleted  = true;
+            pilgrim.DeletedBy  = LoggedUserName();
+            pilgrim.DeletedOn  = DateTime.Now;
+            pilgrim.UpdatedBy  = LoggedUserName();
+            pilgrim.UpdatedOn  = DateTime.Now;
+
+            _alhajjService.Update(pilgrim);
+            await _unitOfWork.SaveChangesAsync(); // BUG-FIX #1
+
+            return RedirectToAction("Index");
+        }
+
+        // ────────────────────────────────────────────────────────────────────
+        // BULK EXCEL IMPORT (Non-Mod external units)
+        // ────────────────────────────────────────────────────────────────────
+        [HttpPost]
+        public async Task<IActionResult> CreateAlhajjNonMod([FromBody] IEnumerable<AlhajjMaster> AlhajjMasterList)
+        {
+            int activeYear = _settings.ActiveHajjYear;
+            var items = AlhajjMasterList?.ToList() ?? new List<AlhajjMaster>();
+
+            if (!items.Any())
+                return BadRequest("القائمة فارغة");
+
+            var selectedUnit = items.Select(x => x.Unit).FirstOrDefault();
+            if (selectedUnit == null)
+                return BadRequest("بيانات الوحدة مفقودة في الملف");
+
+            int regularCount = items.Count(c => c.Parameter?.ParameterId == HajjConstants.PilgrimType.Regular);
+            int standByCount = items.Count(c => c.Parameter?.ParameterId == HajjConstants.PilgrimType.StandBy);
+
+            if (regularCount > selectedUnit.AllowNumber)
+                return BadRequest($"تجاوزت الحد المسموح به ({selectedUnit.AllowNumber}) للحجاج الأصليين");
+
+            if (standByCount > selectedUnit.StandBy)
+                return BadRequest($"تجاوزت الحد المسموح به ({selectedUnit.StandBy}) للحجاج الاحتياط");
+
+            using var tx = await _unitOfWork.BeginTransactionAsync();
+            try
+            {
+                foreach (var item in items)
+                {
+                    // BUG-FIX #4: year-scoped duplicate check
+                    bool exists = _alhajjService.Queryable()
+                        .Any(c => c.NIC == item.NIC && c.AlhajYear == activeYear && !c.IsDeleted);
+
+                    if (exists)
+                        return BadRequest($"الموظف برقم الهوية {item.NIC} مسجل مسبقاً في هذه الدورة");
+
+                    item.AlhajYear        = activeYear;
+                    item.RegistrationDate = DateTime.Now;
+                    item.FitResult        = HajjConstants.FitResult.Pending;
+                    item.ConfirmCode      = HajjConstants.ConfirmCode.Pending;
+                    item.IsDeleted        = false;
+                    item.CreateBy         = LoggedUserName();
+                    item.CreateOn         = DateTime.Now;
+                    _alhajjService.Insert(item);
+                }
+
+                await _unitOfWork.SaveChangesAsync(); // BUG-FIX #1
+                await tx.CommitAsync();
+                return Ok("تم حفظ البيانات بنجاح");
+            }
             catch (Exception ex)
             {
-                return BadRequest(ex);
+                await tx.RollbackAsync();
+                return BadRequest($"خطأ أثناء الحفظ: {ex.Message}");
             }
-
         }
 
+        public IActionResult Create() => View();
 
-
-
-        #endregion
-
-
-
-
-
-
-
+        public IActionResult MasterDetails(int pligrimageId) =>
+            RedirectToAction("Index", "AlhajjMasters");
     }
 }

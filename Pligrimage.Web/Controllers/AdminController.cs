@@ -266,23 +266,23 @@ namespace Pligrimage.Web.Controllers
 
 
         [HttpPost]
-        public ActionResult UpdatePermission(Permission permission)
+        public async Task<IActionResult> UpdatePermission(Permission permission)
         {
             if (permission != null && ModelState.IsValid)
             {
                 _permissionServcie.Update(permission);
-                _unitOfWork.SaveChangesAsync();
+                await _unitOfWork.SaveChangesAsync();
             }
             return View(permission);
         }
 
         [HttpPost]
-        public ActionResult DeletePermission(Permission permission)
+        public async Task<IActionResult> DeletePermission(Permission permission)
         {
             if (permission != null && ModelState.IsValid)
             {
                 _permissionServcie.Delete(permission);
-                _unitOfWork.SaveChangesAsync();
+                await _unitOfWork.SaveChangesAsync();
             }
             return RedirectToAction("UserIndex", "Admin");
 

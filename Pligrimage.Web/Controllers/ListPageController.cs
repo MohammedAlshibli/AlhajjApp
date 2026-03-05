@@ -71,7 +71,7 @@ namespace Pligrimage.Web.Controllers
                 .Include(c => c.Category)
                 .Include(c => c.Parameter)
                 //.Where(c =>paramList.Contains(c.ParameterId)).SelectAsync().Result.ToDataSourceResult(request);
-                .Where(c => c.FitResult == 5);
+                .Where(c => c.FitResult == HajjConstants.FitResult.Fit);
             return Ok(result);
         }
 

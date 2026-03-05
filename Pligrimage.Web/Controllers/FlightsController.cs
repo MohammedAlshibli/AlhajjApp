@@ -42,7 +42,7 @@ namespace Pligrimage.Web.Controllers
             return View();
         }
 
-        public IActionResult FlightRead()
+        public async Task<IActionResult> FlightRead()
         {
             var result = _flightService.Queryable()
                 .Select(c => new
@@ -59,7 +59,7 @@ namespace Pligrimage.Web.Controllers
         }
 
         [HttpPost]
-        public ActionResult CreateFlight( Flight flight)
+        public async Task<IActionResult> CreateFlight( Flight flight)
         {
             if (flight != null && ModelState.IsValid)
             {
@@ -67,20 +67,20 @@ namespace Pligrimage.Web.Controllers
                 flight.CreateOn = DateTime.Now;          
                 flight.FlightYear = DateTime.Now.Year;
                 _flightService.Insert(flight);
-                _unitOfWork.SaveChangesAsync();
+                await _unitOfWork.SaveChangesAsync();
             }
             return RedirectToAction("Index", "Flights");
         }
 
         [HttpPost]
-        public ActionResult UpdateFlight(Flight flight)
+        public async Task<IActionResult> UpdateFlight(Flight flight)
         {
             if (flight != null && ModelState.IsValid)
             {
                 flight.UpdatedBy = LoggedUserName();
                 flight.UpdatedOn = DateTime.Now;
                 _flightService.Update(flight);
-                _unitOfWork.SaveChangesAsync();
+                await _unitOfWork.SaveChangesAsync();
             }
             return RedirectToAction("Index", "Categories");
         }
@@ -88,12 +88,12 @@ namespace Pligrimage.Web.Controllers
 
 
         [HttpPost]
-        public ActionResult DeleteFlight(Flight flight)
+        public async Task<IActionResult> DeleteFlight(Flight flight)
         {
             if (flight != null && ModelState.IsValid)
             {
                 _flightService.Delete(flight);
-                _unitOfWork.SaveChangesAsync();
+                await _unitOfWork.SaveChangesAsync();
             }
             return RedirectToAction("Index", "Flights");
         }

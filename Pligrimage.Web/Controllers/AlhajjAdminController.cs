@@ -18,6 +18,9 @@ using Pligrimage.Web.Dto;
 using Pligrimage.Web.Extensions;
 using Pligrimage.Web.Models;
 
+// Magic number constants
+using HC = Pligrimage.Entities.HajjConstants;
+
 namespace Pligrimage.Web.Controllers
 {
 
@@ -175,7 +178,7 @@ namespace Pligrimage.Web.Controllers
             // Important Note
             // parameter table descption (value for (years)) (maxValue for (allowNumber)) (minValue for Standby))
 
-            var StaticService = _parameterRepository.Queryable().Where(c => c.ParameterId == 1).SingleOrDefault();
+            var StaticService = _parameterRepository.Queryable().Where(c => c.ParameterId == HajjConstants.PilgrimType.Regular).SingleOrDefault();
             var ConsumedAllowedNumberService = _alhajjRepository.Queryable().Count();
             var ConsumedStandByNumberService = _alhajjRepository.Queryable().Count();
 
@@ -238,7 +241,7 @@ namespace Pligrimage.Web.Controllers
         public IActionResult Index()
         {
 
-            ViewData["ClassTypeList"] = _parameterRepository.GetClassTypeListAsync().Where(c => c.ParameterId == 3)
+            ViewData["ClassTypeList"] = _parameterRepository.GetClassTypeListAsync().Where(c => c.ParameterId == HajjConstants.PilgrimType.Admin)
             .Select(c => new
             {
                 c.ParameterId,
@@ -266,7 +269,7 @@ namespace Pligrimage.Web.Controllers
 
         public IActionResult AlhajjRead()
         {
-            var result = _alhajjRepository.Query().Include(c => c.Parameter).Include(c => c.Unit).Where(c => c.ParameterId == 3).SelectAsync();
+            var result = _alhajjRepository.Query().Include(c => c.Parameter).Include(c => c.Unit).Where(c => c.ParameterId == HajjConstants.PilgrimType.Admin).SelectAsync();
             return Ok(result);
         }
 
@@ -284,9 +287,9 @@ namespace Pligrimage.Web.Controllers
 
              
 
-            var StaticService = _parameterRepository.Queryable().Where(c => c.ParameterId == 1).SingleOrDefault();
-            var ConsumedAllowedNumberService = _alhajjRepository.Queryable().Where(c => c.ParameterId == 3).Count();
-            var ConsumedStandByNumberService = _alhajjRepository.Queryable().Where(c => c.ParameterId == 2).Count();
+            var StaticService = _parameterRepository.Queryable().Where(c => c.ParameterId == HajjConstants.PilgrimType.Regular).SingleOrDefault();
+            var ConsumedAllowedNumberService = _alhajjRepository.Queryable().Where(c => c.ParameterId == HajjConstants.PilgrimType.Admin).Count();
+            var ConsumedStandByNumberService = _alhajjRepository.Queryable().Where(c => c.ParameterId == HajjConstants.PilgrimType.StandBy).Count();
 
             // Important Note
             // parameter table descption (value for (years)) (maxValue for (allowNumber)) (minValue for Standby))
@@ -343,8 +346,8 @@ namespace Pligrimage.Web.Controllers
 
             //    }
             //}
-            alhajjMaster.ParameterId = 1;
-            alhajjMaster.Passport = "1541222";
+            alhajjMaster.ParameterId = HajjConstants.PilgrimType.Regular;
+            // Passport entered directly from the form - do not override with fake value
             alhajjMaster.PassportExpire = DateTime.Now;
             alhajjMaster.NICExpire = DateTime.Now;
 
@@ -353,7 +356,7 @@ namespace Pligrimage.Web.Controllers
                 try
                 {
 
-                    var isExist = _alhajjRepository.Queryable().Any(c => c.NIC == alhajjMaster.NIC && c.ParameterId == 3);
+                    var isExist = _alhajjRepository.Queryable().Any(c => c.NIC == alhajjMaster.NIC && c.ParameterId == HajjConstants.PilgrimType.Admin && c.AlhajYear == DateTime.Now.Year && !c.IsDeleted);
                     if (isExist)
                     {
                         return BadRequest(string.Format("البيانات موجدوة مسبقا", System.Environment.NewLine));
@@ -363,6 +366,8 @@ namespace Pligrimage.Web.Controllers
                     alhajjMaster.CreateBy = LoggedUserName();
                     alhajjMaster.CreateOn = DateTime.Now;
                     alhajjMaster.AlhajYear = DateTime.Now.Year;
+                    alhajjMaster.ConfirmCode = HajjConstants.ConfirmCode.Pending;
+                    alhajjMaster.IsDeleted = false;
                     alhajjMaster.FitResult = 1;
                     alhajjMaster.RegistrationDate = DateTime.Now;
                     _alhajjRepository.Insert(alhajjMaster);
@@ -391,12 +396,12 @@ namespace Pligrimage.Web.Controllers
 
 
         [HttpPost]
-        public ActionResult UpdateAlhajj( AlhajjMaster alhajjMaster)
+        public async Task<IActionResult> UpdateAlhajj( AlhajjMaster alhajjMaster)
         {
             if (alhajjMaster != null && ModelState.IsValid)
             {
                 _alhajjRepository.Update(alhajjMaster);
-                _unitOfWork.SaveChangesAsync();
+                await _unitOfWork.SaveChangesAsync();
             }
             return RedirectToAction("Index", "AlhajjAdmin");
         }
@@ -404,12 +409,12 @@ namespace Pligrimage.Web.Controllers
 
 
         [HttpPost]
-        public ActionResult DeleteAlhajj( AlhajjMaster alhajjMaster)
+        public async Task<IActionResult> DeleteAlhajj( AlhajjMaster alhajjMaster)
         {
             if (alhajjMaster != null && ModelState.IsValid)
             {
                 _alhajjRepository.Delete(alhajjMaster);
-                _unitOfWork.SaveChangesAsync();
+                await _unitOfWork.SaveChangesAsync();
             }
             return RedirectToAction("Index", "AlhajjAdmin");
     

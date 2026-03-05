@@ -27,13 +27,13 @@ namespace Pligrimage.Web.Controllers
 
         // GET: Units
         [PligrimageFiltter]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             return View();
         }
 
 
-        public IActionResult UnitRead()
+        public async Task<IActionResult> UnitRead()
         {
 
             return Json(_unitService.Queryable().ToList());
@@ -42,28 +42,28 @@ namespace Pligrimage.Web.Controllers
 
 
         [HttpPost]
-        public ActionResult CreateUnit(Unit unit)
+        public async Task<IActionResult> CreateUnit(Unit unit)
         {
             if (unit != null && ModelState.IsValid)
             {
                 unit.CreateBy = LoggedUserName();
                 unit.CreateOn = DateTime.Now;
                 _unitService.Insert(unit);
-                _unitOfWork.SaveChangesAsync();
+                await _unitOfWork.SaveChangesAsync();
             }
             return Json(unit);
         }
 
 
         [HttpPost]
-        public ActionResult UpdateUnit(Unit unit)
+        public async Task<IActionResult> UpdateUnit(Unit unit)
         {
             if (unit != null && ModelState.IsValid)
             {
                 unit.CreateBy = LoggedUserName();
                 unit.CreateOn = DateTime.Now;
                 _unitService.Update(unit);
-                _unitOfWork.SaveChangesAsync();
+                await _unitOfWork.SaveChangesAsync();
             }
             return RedirectToAction("Index", "Units");
 
@@ -71,12 +71,12 @@ namespace Pligrimage.Web.Controllers
 
 
         [HttpPost]
-        public ActionResult DeleteUnit(Unit unit)
+        public async Task<IActionResult> DeleteUnit(Unit unit)
         {
             if (unit != null && ModelState.IsValid)
             {
                 _unitService.Delete(unit);
-                _unitOfWork.SaveChangesAsync();
+                await _unitOfWork.SaveChangesAsync();
             }
             return RedirectToAction("Index", "Units");
         }

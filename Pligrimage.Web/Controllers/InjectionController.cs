@@ -41,23 +41,23 @@ namespace Pligrimage.Web.Controllers
             return View();
         }
 
-        public IActionResult Read()
+        public async Task<IActionResult> Read()
         {
 
-            var list = _alhajjService.Queryable().Include(c => c.Unit).Where(c =>c.FitResult==7);
+            var list = _alhajjService.Queryable().Include(c => c.Unit).Where(c => c.FitResult == HajjConstants.FitResult.Pending && !c.IsDeleted);
             return View(list);
            
         }
 
         [HttpPost]
-        public IActionResult Update(AlhajjMaster alhajjMaster)
+        public async Task<IActionResult> Update(AlhajjMaster alhajjMaster)
         {
             if (alhajjMaster != null && ModelState.IsValid)
             {
                 alhajjMaster.UpdatedBy = LoggedUserName();
                 alhajjMaster.UpdatedOn = DateTime.Now;
                 _alhajjService.Update(alhajjMaster);
-                _unitOfWork.SaveChangesAsync();
+                await _unitOfWork.SaveChangesAsync();
             }
             return RedirectToAction("Index", "Injection");
 

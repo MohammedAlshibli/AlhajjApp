@@ -12,6 +12,7 @@ using Pligrimage.Entities.Enum;
 using Pligrimage.Services.Interface;
 using Pligrimage.Web.Extensions;
 using Pligrimage.Web.Models;
+
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -26,6 +27,7 @@ namespace Pligrimage.Web.Controllers
     public class PensionerController : BaseController
     {
         public readonly IAlHajjMasterServcie _alhajjService;
+        
         public readonly IUnitOfWork _unitOfWork;
         public readonly IUnitServcie _unitRepository;
         public readonly ICategoryService _categoryRepository;
@@ -153,8 +155,8 @@ namespace Pligrimage.Web.Controllers
 
             //var ConsumedStandByNumberService = _alhajjService.Queryable().Where(c => c.Unit.UnitCode == 7000 && c.ParameterId == 2).Count();
 
-            var ConsumedAllowedNumberService = _alhajjService.Queryable().Where(c => c.ParameterId == 1 && c.EmployeeStatus == EmployeeStatus.Pension).Count();
-            var ConsumedStandByNumberService = _alhajjService.Queryable().Where(c => c.ParameterId == 2 && c.EmployeeStatus == EmployeeStatus.Pension).Count();
+            var ConsumedAllowedNumberService = _alhajjService.Queryable().Count(c => c.ParameterId == HajjConstants.PilgrimType.Regular && c.EmployeeStatus == EmployeeStatus.Pension && c.AlhajYear == DateTime.Now.Year && !c.IsDeleted);
+            var ConsumedStandByNumberService = _alhajjService.Queryable().Count(c => c.ParameterId == HajjConstants.PilgrimType.StandBy && c.EmployeeStatus == EmployeeStatus.Pension && c.AlhajYear == DateTime.Now.Year && !c.IsDeleted);
 
 
 
@@ -232,7 +234,8 @@ namespace Pligrimage.Web.Controllers
             {
                 try
                 {
-                    var isExist = _alhajjService.Queryable().Any(c => c.NIC == alhajjMaster.NIC && (c.ParameterId == 1 || c.ParameterId == 2));
+                    var activeYear = DateTime.Now.Year; // TODO: inject HajjSettings
+                    var isExist = _alhajjService.Queryable().Any(c => c.NIC == alhajjMaster.NIC && c.AlhajYear == activeYear && !c.IsDeleted && (c.ParameterId == HajjConstants.PilgrimType.Regular || c.ParameterId == HajjConstants.PilgrimType.StandBy));
                     if (isExist)
                     {
                         return BadRequest(string.Format("البيانات موجدوة مسبقا", System.Environment.NewLine));
@@ -241,11 +244,13 @@ namespace Pligrimage.Web.Controllers
 
                      alhajjMaster.CreateBy = LoggedUserName();
                      alhajjMaster.AlhajYear = DateTime.Now.Year;
+                     alhajjMaster.IsDeleted = false;
+                     alhajjMaster.ConfirmCode = HajjConstants.ConfirmCode.Pending;
                      alhajjMaster.RegistrationDate = DateTime.Now;
-                     alhajjMaster.FitResult = 7;
+                     alhajjMaster.FitResult = HajjConstants.FitResult.Pending;
                      //alhajjMaster.ConfirmCode = 51;
                     _alhajjService.Insert(alhajjMaster);
-                    _unitOfWork.SaveChangesAsync();
+                    await _unitOfWork.SaveChangesAsync();
                     return Ok("success");
 
                 }
@@ -268,7 +273,7 @@ namespace Pligrimage.Web.Controllers
         [PligrimageFiltter]
         public IActionResult Index()
         {
-            ViewData["ClassTypeList"] = _parameterRepository.GetClassTypeListAsync().Where(c => c.ParameterId == 1)
+            ViewData["ClassTypeList"] = _parameterRepository.GetClassTypeListAsync().Where(c => c.ParameterId == HajjConstants.PilgrimType.Regular)
           .Select(c => new
           {
               c.ParameterId,
@@ -284,7 +289,7 @@ namespace Pligrimage.Web.Controllers
         {
             var result = _alhajjService.Queryable()
                 .Include(c => c.Unit)
-                .Where(c => c.EmployeeStatus != 0)
+                .Where(c => c.EmployeeStatus != 0 && c.AlhajYear == DateTime.Now.Year && !c.IsDeleted)
                 .Select(c => new
                 {
                     c.PligrimageId,
@@ -306,9 +311,9 @@ namespace Pligrimage.Web.Controllers
         public IActionResult StaticService()
         {
 
-            var Static = _parameterRepository.Queryable().Where(c => c.ParameterId == 19 && c.Code == "EmpStatus").FirstOrDefault();
-            var ConsumedAllowedNumberService = _alhajjService.Queryable().Where(c =>c.ParameterId == 1 && c.EmployeeStatus == EmployeeStatus.Pension).Count();
-            var ConsumedStandByNumberService = _alhajjService.Queryable().Where(c => c.ParameterId == 2 && c.EmployeeStatus == EmployeeStatus.Pension).Count();
+            var Static = _parameterRepository.Queryable().Where(c => c.ParameterId == HajjConstants.PilgrimType.Regular9 && c.Code == "EmpStatus").FirstOrDefault();
+            var ConsumedAllowedNumberService = _alhajjService.Queryable().Where(c =>c.ParameterId == HajjConstants.PilgrimType.Regular && c.EmployeeStatus == EmployeeStatus.Pension).Count();
+            var ConsumedStandByNumberService = _alhajjService.Queryable().Count(c => c.ParameterId == HajjConstants.PilgrimType.StandBy && c.EmployeeStatus == EmployeeStatus.Pension && c.AlhajYear == DateTime.Now.Year && !c.IsDeleted);
 
 
             var statcisStatusList = Enumerable.Empty<object>().Select(r => new { UnitName = 0, allowNumber = 0, standBy = 0, total = 0, remining = 0 }).ToList();

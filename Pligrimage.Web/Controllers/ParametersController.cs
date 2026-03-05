@@ -25,12 +25,12 @@ namespace Pligrimage.Web.Controllers
         }
 
         ///[PligrimageFiltter]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             return View();
         }
 
-        public IActionResult ParameterRead()
+        public async Task<IActionResult> ParameterRead()
         {
             
             return View(_parameterRepo.Queryable());
@@ -39,40 +39,40 @@ namespace Pligrimage.Web.Controllers
       
 
         [HttpPost]
-        public ActionResult CreateParameter(Parameter parameter)
+        public async Task<IActionResult> CreateParameter(Parameter parameter)
         {
             if(parameter !=null && ModelState.IsValid)
             {
                 parameter.CreateBy = LoggedUserName();
                 parameter.CreateOn = DateTime.Now;
                 _parameterRepo.Insert(parameter);
-                _unitOfWork.SaveChangesAsync();
+                await _unitOfWork.SaveChangesAsync();
             }
             return RedirectToAction("Index", "Parameters");
         }
 
 
         [HttpPost]
-        public ActionResult UpdateParameter(Parameter parameter)
+        public async Task<IActionResult> UpdateParameter(Parameter parameter)
         {
             if (parameter != null && ModelState.IsValid)
             {
                 parameter.UpdatedBy = LoggedUserName();
                 parameter.UpdatedOn = DateTime.Now;
                 _parameterRepo.Update(parameter);
-                _unitOfWork.SaveChangesAsync();
+                await _unitOfWork.SaveChangesAsync();
             }
             return RedirectToAction("Index", "Parameters");
 
         }
 
         [HttpPost]
-        public ActionResult DeleteParameter(Parameter parameter)
+        public async Task<IActionResult> DeleteParameter(Parameter parameter)
         {
             if (parameter != null && ModelState.IsValid)
             {
                 _parameterRepo.Delete(parameter);
-                _unitOfWork.SaveChangesAsync();
+                await _unitOfWork.SaveChangesAsync();
             }
             return RedirectToAction("Index", "Parameters");
         }

@@ -18,6 +18,9 @@ using Pligrimage.Services.Interface;
 using Pligrimage.Web.Extensions;
 using Pligrimage.Web.Models;
 
+// Magic number constants
+using HC = Pligrimage.Entities.HajjConstants;
+
 namespace Pligrimage.Web.Controllers
 {
     public class NonModAdminController : BaseController
@@ -117,7 +120,7 @@ namespace Pligrimage.Web.Controllers
             var result = _alhajjRepository.Queryable()
                 .Include(c => c.Unit)
                 .Include(c => c.Category)
-                .Where(c => c.ParameterId == 3 && c.Unit.ModFlag == false)
+                .Where(c => c.ParameterId == HajjConstants.PilgrimType.Admin && c.Unit.ModFlag == false)
                 .Select(c => new
                 {
                     c.PligrimageId,
@@ -163,7 +166,7 @@ namespace Pligrimage.Web.Controllers
             // parameter table descption (value for (years)) (maxValue for (allowNumber)) (minValue for Standby))
 
 
-            var AdminCount = _alhajjRepository.Queryable().Where(c => c.ParameterId == 3).Count();
+            var AdminCount = _alhajjRepository.Queryable().Where(c => c.ParameterId == HajjConstants.PilgrimType.Admin).Count();
             var allowNumberCount = _parameterRepository.Queryable().Where(c =>c.ParameterId==3).SingleOrDefault();
 
             try
@@ -183,12 +186,12 @@ namespace Pligrimage.Web.Controllers
                     alhajjMaster.CreateBy = LoggedUserName();
                     alhajjMaster.CreateOn = DateTime.Now;
 
-                    alhajjMaster.ParameterId = 3;
+                    alhajjMaster.ParameterId = HajjConstants.PilgrimType.Admin;
                     alhajjMaster.AlhajYear = DateTime.Now.Year;
                     alhajjMaster.FitResult = 9;
                     //alhajjMaster.ConfirmCode = 51;
                     _alhajjRepository.Insert(alhajjMaster);
-                    _unitOfWork.SaveChangesAsync();
+                    await _unitOfWork.SaveChangesAsync();
                     return Ok("success");
                 }
                 return RedirectToAction("Index", "NonModAdmin");
@@ -202,12 +205,12 @@ namespace Pligrimage.Web.Controllers
 
 
         [HttpPost]
-        public ActionResult UpdateNonModAdmin(AlhajjMaster alhajjMaster)
+        public async Task<IActionResult> UpdateNonModAdmin(AlhajjMaster alhajjMaster)
         {
             if (alhajjMaster != null && ModelState.IsValid)
             {
                 _alhajjRepository.Update(alhajjMaster);
-                _unitOfWork.SaveChangesAsync();
+                await _unitOfWork.SaveChangesAsync();
             }
             //return Json(new[] { alhajjMaster }.ToDataSourceResult(request, ModelState));
             return View(alhajjMaster);
@@ -215,12 +218,12 @@ namespace Pligrimage.Web.Controllers
 
 
         [HttpPost]
-        public ActionResult DeleteNonModAdmin(AlhajjMaster alhajjMaster)
+        public async Task<IActionResult> DeleteNonModAdmin(AlhajjMaster alhajjMaster)
         {
             if ( alhajjMaster != null && ModelState.IsValid)
             {
                 _alhajjRepository.Delete(alhajjMaster);
-                _unitOfWork.SaveChangesAsync();
+                await _unitOfWork.SaveChangesAsync();
             }
             return RedirectToAction("Index", "NonModAdmin");
         }

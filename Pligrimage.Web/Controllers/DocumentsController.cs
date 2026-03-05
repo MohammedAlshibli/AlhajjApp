@@ -25,18 +25,18 @@ namespace Pligrimage.Web.Controllers
         }
 
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             return View();
         }
 
-        public IActionResult DocumentRead()
+        public async Task<IActionResult> DocumentRead()
         {
 
             return View(_docuemntServcie.Queryable().ToList());
         }
 
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
          
             return View();
@@ -49,35 +49,35 @@ namespace Pligrimage.Web.Controllers
                 .Replace("PM", "Evening");
         }
         [HttpPost]
-        public ActionResult CreateDocument(Document document)
+        public async Task<IActionResult> CreateDocument(Document document)
         {
             if (document != null && ModelState.IsValid)
             {
                 _docuemntServcie.Insert(document);
-                _unitOfWork.SaveChangesAsync();
+                await _unitOfWork.SaveChangesAsync();
             }
             return RedirectToAction("Index", "Documents");
         }
 
         [HttpPost]
-        public ActionResult UpdateDocument(Document document)
+        public async Task<IActionResult> UpdateDocument(Document document)
         {
             if (document != null && ModelState.IsValid)
             {
                 _docuemntServcie.Update(document);
-                _unitOfWork.SaveChangesAsync();
+                await _unitOfWork.SaveChangesAsync();
             }
             return RedirectToAction("Index", "Documents");
         }
 
 
         [HttpPost]
-        public ActionResult DeleteDocument(Document document)
+        public async Task<IActionResult> DeleteDocument(Document document)
         {
             if (document != null && ModelState.IsValid)
             {
                 _docuemntServcie.Delete(document);
-                _unitOfWork.SaveChangesAsync();
+                await _unitOfWork.SaveChangesAsync();
             }
             return RedirectToAction("Index", "Documents");
         }

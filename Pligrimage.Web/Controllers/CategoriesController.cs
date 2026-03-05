@@ -23,13 +23,13 @@ namespace Pligrimage.Web.Controllers
 
         // GET: Categories
         [PligrimageFiltter]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             return View();
         }
 
 
-        public IActionResult CategoryRead()
+        public async Task<IActionResult> CategoryRead()
         {
 
             return View(_categoryServcie.Queryable().ToList());
@@ -38,14 +38,14 @@ namespace Pligrimage.Web.Controllers
 
 
         [HttpPost]
-        public ActionResult CreateCategory( Category category )
+        public async Task<IActionResult> CreateCategory( Category category )
         {
             if (category != null && ModelState.IsValid)
             {
                 category.CreateBy = LoggedUserName();
                 category.CreateOn = DateTime.Now;
                 _categoryServcie.Insert(category);
-                _unitOfWork.SaveChangesAsync();
+                await _unitOfWork.SaveChangesAsync();
             }
             return RedirectToAction("Index", "Categories");
 
@@ -53,26 +53,26 @@ namespace Pligrimage.Web.Controllers
 
 
         [HttpPost]
-        public ActionResult UpdateCategory(Category category)
+        public async Task<IActionResult> UpdateCategory(Category category)
         {
             if (category != null && ModelState.IsValid)
             {
                 category.UpdatedBy = LoggedUserName();
                 category.UpdatedOn = DateTime.Now;
                 _categoryServcie.Update(category);
-                _unitOfWork.SaveChangesAsync();
+                await _unitOfWork.SaveChangesAsync();
             }
             return RedirectToAction("Index", "Categories");
         }
 
 
         [HttpPost]
-        public ActionResult DeleteParameter(Category category)
+        public async Task<IActionResult> DeleteParameter(Category category)
         {
             if (category != null && ModelState.IsValid)
             {
                 _categoryServcie.Delete(category);
-                _unitOfWork.SaveChangesAsync();
+                await _unitOfWork.SaveChangesAsync();
             }
             return RedirectToAction("Index", "Categories");
         }

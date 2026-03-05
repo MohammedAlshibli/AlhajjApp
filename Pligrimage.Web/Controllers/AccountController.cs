@@ -1,4 +1,3 @@
-﻿
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
@@ -10,25 +9,19 @@ using Pligrimage.Services.Interface;
 using Pligrimage.Entities;
 using Novell.Directory.Ldap;
 
-
 namespace Pligrimage.Web.Controllers
 {
     public class AccountController : Controller
     {
-
-
         private readonly IAdminService _userService;
-
 
         public AccountController(IAdminService userService)
         {
             _userService = userService;
-
         }
 
         public IActionResult Login()
         {
-
             return View();
         }
 
@@ -36,205 +29,102 @@ namespace Pligrimage.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginModel model, string ReturnUrl)
         {
-            model.UserName = model.UserName.ToUpper();
+            if (!ModelState.IsValid)
+                return View(model);
 
-            if (model.UserName.Contains("'") || model.UserName.Contains("/") || model.UserName.Contains("select") == true)
+            model.UserName = model.UserName?.Trim().ToUpper();
+
+            // Basic injection-attempt guard
+            if (string.IsNullOrEmpty(model.UserName) ||
+                model.UserName.Contains("'") ||
+                model.UserName.Contains("/") ||
+                model.UserName.ToLower().Contains("select"))
             {
-                ModelState.AddModelError("", "Incorrect UserName :) ");
+                ModelState.AddModelError("", "اسم المستخدم غير صالح");
                 return View(model);
             }
 
             bool isAuthenticated = false;
-            if (ModelState.IsValid)
+
+            // Local admin bypass (development / emergency access)
+            if (model.UserName == "ADMIN" && model.Password == "Oman")
             {
-                model.UserName = model.UserName.Trim().ToUpper();
-
-                if (model.UserName == "ADMIN" && model.Password=="Oman")
+                isAuthenticated = true;
+            }
+            else
+            {
+                // LDAP authentication against Active Directory
+                using var ldap = new LdapConnection();
+                try
                 {
-
-                    bool authenticated = true;
-                    if (!authenticated)
-                    {
-                        ModelState.AddModelError("", "اسم المستخدم أو كلمة المرور غير صحيح");
-                        return View(model);
-                    }
-
-
+                    ldap.Connect("10.22.8.8", 389);
+                    ldap.Bind("ITS\\" + model.UserName, model.Password);
                     isAuthenticated = true;
                 }
-                else
+                catch (LdapException)
                 {
-                    using var cn = new LdapConnection();
-                    try
-                    {
-                        cn.Connect("10.22.8.8", 389);
-                        cn.Bind("ITS\\" + model.UserName, model.Password);
-                        isAuthenticated = true;
-
-                    }
-                    catch (LdapException)
-                    {
-                        ModelState.AddModelError("", "اسم المستخدم أو كلمة المرور غير صحيح");
-                    }
+                    ModelState.AddModelError("", "اسم المستخدم أو كلمة المرور غير صحيح");
+                    return View(model);
                 }
-
-
-
-                if (isAuthenticated)
-                {
-
-
-
-                    var user = await _userService.GetUserByUserName(model.UserName);
-                    user.UserName = "ADMIN";
-                    user.Active= true;
-
-
-                    //
-
-                    if (user == null)
-                    {
-
-                        ModelState.AddModelError("", " لم يتم تسجيل هذا المستخدم يرجى التواصل مع المستخدم المحلي ");                       
-                        return View(model);
-                    }
-                  
-                    else if (!user.Active)
-                    {
-                        ModelState.AddModelError("", " تم إيقاف دخولك في النظام ،  يرجى التواصل مع مسؤول المستخدمين ");
-                        return View(model);
-                    }
-
-
-                    PligrimageConstants.UserName = model.UserName;
-
-                  
-
-                    var claims = new List<Claim>()
-                    {
-
-                        new Claim(ClaimTypes.Name, user.UserName ),
-                        new Claim("UserId",  user.UserId.ToString()),
-                        //new Claim("UserName",  user.UserName.ToString()),
-                        new Claim("FullName",  user.FullName.ToString()),
-                                            
-                    };
-
-                    var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-                    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
-
-  
-
-                   return RedirectToLocal(ReturnUrl);
-                   
-
-
-
-
-
-                    //var existUser = await _userService.GetUserByUserNameAsync(model.UserName);
-
-                    //if (existUser != null)
-                    //{
-
-
-                    //    if (!existUser.IsActive)
-                    //    {
-                    //        ModelState.AddModelError("", " تم أيقاف دخولك في النظام ،  يرجى التواصل مع مسؤول المستخدمين ");
-                    //        return View(model);
-                    //    }
-
-                    //    await _userService.UpdateUsersLastLoginDate(existUser.UserId);
-                    //    await _userService.PostApplicationAuditorUser(model.UserName.ToUpper(), "LogOnSystem", "Log On the System successfully");
-                    //    await AddToClaimsIdentityAsync(existUser.UserName);
-
-
-                    //    return RedirectToLocal(ReturnUrl);
-
-                    //}
-                    //else
-                    //{
-                    //    ModelState.AddModelError("", " ليس لديك صلاحية للدخول الى النظام   ");
-                    //    return View(model);
-                    //}
-
-
-                }
-
             }
 
-            return View(model);
-        }
+            if (!isAuthenticated)
+                return View(model);
 
-        //private async Task AddToClaimsIdentityAsync(string userName)
-        //{
-        //    var claims = new List<Claim>()
-        //      {
-        //           new Claim(ClaimTypes.Surname, userName ),
+            // ── User must exist in the application database ──────────────────
+            var user = await _userService.GetUserByUserName(model.UserName);
 
-        //    };
-
-
-        //    var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-        //    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
-
-        //}
-
-
-
-        public async Task<IActionResult> Logout(string userName)
-        {
-
-            //try
-            //{
-            //    var postAuditorUser = await _userService.PostApplicationAuditorUser(userName.ToUpper(), "LogoutSystem", "Logout successfully");
-            //}
-            //catch (Exception)
-            //{
-
-            //    throw;
-            //}
-
-            return RedirectToAction(nameof(LogoutOfSystem));
-
-
-        }
-
-
-
-        private IActionResult RedirectToLocal(string returnUrl)
-        {
-
-
-            if (Url.IsLocalUrl(returnUrl))
+            if (user == null)
             {
-                Redirect(returnUrl);
-
+                ModelState.AddModelError("", " لم يتم تسجيل هذا المستخدم يرجى التواصل مع المستخدم المحلي ");
+                return View(model);
             }
 
-            return RedirectToAction("Index", "Home");
+            if (!user.Active)
+            {
+                ModelState.AddModelError("", " تم إيقاف دخولك في النظام ،  يرجى التواصل مع مسؤول المستخدمين ");
+                return View(model);
+            }
 
+            // Store username in the global constant (used by BaseEntity.CreateBy)
+            PligrimageConstants.UserName = model.UserName;
+
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Name, user.UserName),
+                new Claim("UserId",    user.UserId.ToString()),
+                new Claim("FullName",  user.FullName ?? string.Empty),
+            };
+
+            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            await HttpContext.SignInAsync(
+                CookieAuthenticationDefaults.AuthenticationScheme,
+                new ClaimsPrincipal(identity));
+
+            return RedirectToLocal(ReturnUrl);
+        }
+
+        public async Task<IActionResult> Logout()
+        {
+            return RedirectToAction(nameof(LogoutOfSystem));
         }
 
         [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
-        public async Task<IActionResult> LogoutOfSystem(string userName)
+        public async Task<IActionResult> LogoutOfSystem()
         {
-
-
-
-            foreach (var cookies in Request.Cookies.Keys)
-            {
-                Response.Cookies.Delete(cookies);
-
-            }
-
+            foreach (var cookie in Request.Cookies.Keys)
+                Response.Cookies.Delete(cookie);
 
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-
             return RedirectToAction("Login", "Account");
         }
 
+        private IActionResult RedirectToLocal(string returnUrl)
+        {
+            if (Url.IsLocalUrl(returnUrl))
+                return Redirect(returnUrl);
 
-
+            return RedirectToAction("Index", "Home");
+        }
     }
 }

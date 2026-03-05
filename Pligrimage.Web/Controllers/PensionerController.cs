@@ -2,6 +2,7 @@
 using ITS.Core.Abstractions;
 
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
@@ -30,7 +31,7 @@ namespace Pligrimage.Web.Controllers
         private readonly IDocumentServcie _documentRepository;
         private readonly IParameterService _parameterRepository;
         private readonly IEmployeeClient _employeeClient;
-        private IHostingEnvironment _hostingEnvironment;  ///usig to upload file 
+        private IWebHostEnvironment _hostingEnvironment;  ///usig to upload file 
 
         public PensionerController(IAlHajjMasterServcie alhajService,
                                         IUnitOfWork unitOfWork,
@@ -39,7 +40,7 @@ namespace Pligrimage.Web.Controllers
                                         IDocumentServcie documentRepository,
                                         IParameterService parameterRepository,
                                         IEmployeeClient employeeClient,
-                                        IHostingEnvironment hostingEnvironment)
+                                        IWebHostEnvironment hostingEnvironment)
         {
             _alhajjService = alhajService;
             _unitOfWork = unitOfWork;

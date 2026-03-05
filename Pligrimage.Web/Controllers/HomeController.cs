@@ -26,7 +26,7 @@ namespace Hajj.Web.Controllers
         private readonly IParameterService _parameterRepository;
         //private readonly IEmployeeClient _employeeClient;
 
-        //private IHostingEnvironment _hostingEnvironment;  ///usig to upload file 
+        //private IWebHostEnvironment _hostingEnvironment;  ///usig to upload file 
 
         public HomeController(IAlHajjMasterServcie alhajjRepository,
                                         IUnitOfWork unitOfWork,

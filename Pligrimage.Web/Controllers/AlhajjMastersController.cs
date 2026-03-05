@@ -2,6 +2,7 @@
 using HrmsHttpClient.HrmsClientApi;
 using ITS.Core.Abstractions;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -42,7 +43,7 @@ namespace Pligrimage.Web.Controllers
         private readonly IMapper _mapper;
         private readonly DbContext _dbContext;
 
-        private IHostingEnvironment _hostingEnvironment;  ///usig to upload file 
+        private IWebHostEnvironment _hostingEnvironment;  ///usig to upload file 
 
         public AlhajjMastersController(IAlHajjMasterServcie alhajService,
                                         IUnitOfWork unitOfWork,
@@ -51,7 +52,7 @@ namespace Pligrimage.Web.Controllers
                                         IDocumentServcie documentRepository,
                                         IParameterService parameterRepository,
                                        IEmployeeClient employeeClient,
-                                        IHostingEnvironment hostingEnvironment,
+                                        IWebHostEnvironment hostingEnvironment,
                                          IAdminService adminService,
                                          IEmployeeService employeeService,
                                          IMapper mapper,

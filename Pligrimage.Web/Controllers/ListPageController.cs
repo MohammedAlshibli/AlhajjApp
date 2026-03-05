@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using HrmsHttpClient.HrmsClientApi;
 using ITS.Core.Abstractions;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Mvc;
 
 using Pligrimage.Services.Interface;
@@ -22,7 +23,7 @@ namespace Pligrimage.Web.Controllers
         private readonly IEmployeeClient _employeeClient;
         public readonly IAdminService _adminService;
 
-        private IHostingEnvironment _hostingEnvironment;  ///usig to upload file 
+        private IWebHostEnvironment _hostingEnvironment;  ///usig to upload file 
 
         public ListPageController(IAlHajjMasterServcie alhajService,
                                         IUnitOfWork unitOfWork,
@@ -31,7 +32,7 @@ namespace Pligrimage.Web.Controllers
                                         IDocumentServcie documentRepository,
                                         IParameterService parameterRepository,
                                        IEmployeeClient employeeClient,
-                                        IHostingEnvironment hostingEnvironment,
+                                        IWebHostEnvironment hostingEnvironment,
                                          IAdminService adminService
                                         )
         {

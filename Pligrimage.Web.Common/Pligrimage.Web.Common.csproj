@@ -5,13 +5,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\HrmsHttpClient\HrmsHttpClient.csproj" />
-    <ProjectReference Include="..\Pligrimage.Entities\Pligrimage.Entities.csproj" />
+    <PackageReference Include="AutoMapper" Version="12.0.1" />
+    <!-- SelectListItem lives in Microsoft.AspNetCore.Mvc.ViewFeatures.
+         For netstandard2.1 targets this NuGet reference is required. -->
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.ViewFeatures" Version="2.2.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="AutoMapper" Version="7.0.1" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.ViewFeatures" Version="2.2.0" />
+    <ProjectReference Include="..\HrmsHttpClient\HrmsHttpClient.csproj" />
+    <ProjectReference Include="..\Pligrimage.Entities\Pligrimage.Entities.csproj" />
   </ItemGroup>
 
 </Project>

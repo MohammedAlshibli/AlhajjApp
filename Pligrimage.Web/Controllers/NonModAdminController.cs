@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using HrmsHttpClient.HrmsClientApi;
 using ITS.Core.Abstractions;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -27,7 +28,7 @@ namespace Pligrimage.Web.Controllers
         public readonly ICategoryService _categoryRepository;
         private readonly IDocumentServcie _documentRepository;
         private readonly IParameterService _parameterRepository;
-        private IHostingEnvironment _hostingEnvironment;  ///usig to upload file 
+        private IWebHostEnvironment _hostingEnvironment;  ///usig to upload file 
 
 
 
@@ -38,7 +39,7 @@ namespace Pligrimage.Web.Controllers
                                            ICategoryService categoryRepository,
                                            IDocumentServcie documentRepository,
                                            IParameterService parameterRepository,
-                                           IHostingEnvironment hostingEnvironment
+                                           IWebHostEnvironment hostingEnvironment
                                           )
         {
             _alhajjRepository = alhajjRepository;

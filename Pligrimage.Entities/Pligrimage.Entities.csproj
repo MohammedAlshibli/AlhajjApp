@@ -5,23 +5,16 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.ViewFeatures" Version="2.2.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.32">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.0.1">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
+    <!--
+      Microsoft.AspNetCore.Mvc.ViewFeatures is needed for [UIHint] attribute,
+      which comes from System.ComponentModel.DataAnnotations (built-in).
+      Microsoft.AspNetCore.Http.Abstractions is NOT used by any entity -
+      the unused 'using' in BaseEntity.cs has been removed.
+    -->
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\ITS.Core.EF.Trackable\ITS.Core.EF.Trackable.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
   </ItemGroup>
 
 </Project>

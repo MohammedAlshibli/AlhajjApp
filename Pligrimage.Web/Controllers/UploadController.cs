@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ITS.Core.Abstractions;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Pligrimage.Entities;
@@ -18,7 +19,7 @@ namespace Pligrimage.Web.Controllers
     public class UploadController : BaseController
     {
 
-        IHostingEnvironment _hostingEnvironment;
+        IWebHostEnvironment _hostingEnvironment;
         public readonly IUnitServcie _unitRepository;
         public readonly IAlHajjMasterServcie _alHajjRepostory;
         public readonly IUnitOfWork _unitOfWork;
@@ -28,7 +29,7 @@ namespace Pligrimage.Web.Controllers
 
 
 
-        public UploadController(IHostingEnvironment env, IUnitServcie unitRepository,IAlHajjMasterServcie alHajjRepostory,IUnitOfWork unitOfWork,
+        public UploadController(IWebHostEnvironment env, IUnitServcie unitRepository,IAlHajjMasterServcie alHajjRepostory,IUnitOfWork unitOfWork,
             IParameterService parameterRepository, ICategoryService categoryRepository, IDocumentServcie documentRepository)
 
         {

@@ -1,6 +1,6 @@
 language: csharp
 mono: none
-dotnet: 2.1.300
+dotnet: 8.0
 script:
-  - dotnet build
-  - dotnet test URF.Core.EF.Tests --no-build --no-restore
+  - dotnet restore ITS.Pligrimage.sln
+  - dotnet build ITS.Pligrimage.sln --configuration Release --no-restore

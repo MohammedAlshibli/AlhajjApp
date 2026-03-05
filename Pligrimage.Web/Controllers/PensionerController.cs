@@ -1,4 +1,5 @@
 ﻿using HrmsHttpClient.HrmsClientApi;
+using Microsoft.EntityFrameworkCore;
 using ITS.Core.Abstractions;
 
 using Microsoft.AspNetCore.Hosting;

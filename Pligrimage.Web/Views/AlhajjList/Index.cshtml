@@ -85,17 +85,10 @@
 
     <script type="text/javascript">
 
-        function TypeChange() {
-
-            var typeName = this.value(),
-
-                grid = $.fn.DataTable.isDataTable("#AlhajjMasterGrid") ? $("#AlhajjMasterGrid").DataTable() : null;
-            if (typeName) {
-                grid.dataSource.filter({ field: "Unit.UnitNameAr", operator: "eq", value: typeName });
-            }
-            else {
-                grid.dataSource.filter({});
-            }
+        function TypeChange(typeName) {
+            if (!$.fn.DataTable.isDataTable('#AlhajjMasterGrid')) return;
+            var grid = $('#AlhajjMasterGrid').DataTable();
+            grid.search(typeName || '').draw();
         }
 
     </script>

@@ -50,7 +50,7 @@ namespace Pligrimage.Web.Controllers
                     c.FlightId,
                     c.FlightNo,
                     FlightDate = c.FlightDate.ToString("dd/MM/yyyy"),
-                    ArriveDate = c.ArriveDate.HasValue ? c.ArriveDate.Value.ToString("dd/MM/yyyy") : "",
+                    ArriveDate = c.ArriveDate.ToString("dd/MM/yyyy"),
                     c.FlightCapacity,
                     c.Direction,
                     FlightType = c.Parameter != null ? c.Parameter.DescArabic : ""

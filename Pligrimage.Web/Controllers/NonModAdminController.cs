@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using HrmsHttpClient.HrmsClientApi;
+using Microsoft.EntityFrameworkCore;
 using ITS.Core.Abstractions;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
@@ -113,10 +114,21 @@ namespace Pligrimage.Web.Controllers
 
         public IActionResult ReadNonModAdmin()
         {
-            //var result = _alhajjRepository.Queryable();
-            var result = _alhajjRepository.Query().Include(c => c.Parameter).Include(c => c.Unit).Where(c => c.ParameterId == 3 && c.Unit.ModFlag==false).SelectAsync();
-
-
+            var result = _alhajjRepository.Queryable()
+                .Include(c => c.Unit)
+                .Include(c => c.Category)
+                .Where(c => c.ParameterId == 3 && c.Unit.ModFlag == false)
+                .Select(c => new
+                {
+                    c.PligrimageId,
+                    c.FullName,
+                    c.ServcieNumber,
+                    c.NIC,
+                    c.Passport,
+                    c.Region,
+                    UnitNameAr = c.Unit != null ? c.Unit.UnitNameAr : "",
+                    CategoryDesc = c.Category != null ? c.Category.DescArabic : ""
+                }).ToList();
             return Json(result);
         }
 

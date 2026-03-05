@@ -57,7 +57,7 @@ namespace Pligrimage.Web.Controllers
                     UnitNameAr = c.Unit != null ? c.Unit.UnitNameAr : "",
                     c.BloodGroup,
                     c.FitResult,
-                    InjectionDate = c.InjectionDate.HasValue ? c.InjectionDate.Value.ToString("dd/MM/yyyy") : "",
+                    InjectionDate = c.InjectionDate.ToString("dd/MM/yyyy"),
                     c.DoctorNote
                 }).ToList();
             return Json(list);

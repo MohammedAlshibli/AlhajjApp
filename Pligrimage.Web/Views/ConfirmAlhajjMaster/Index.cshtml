@@ -1,125 +1,610 @@
-﻿<div class="card card-cascade wider">
-    <div class="view view-cascade gradient-card-header blue-gradient-rgba">
-        <h2 class="card-header-title mb-3">تاكيد طلبات الاسلحة</h2>
+@{
+    ViewData["Title"] = "تدقيق وتأكيد الحجاج";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    :root {
+        --navy:   #0f2942;
+        --blue:   #1a3a5c;
+        --gold:   #c9a227;
+        --green:  #059669;
+        --red:    #dc2626;
+        --orange: #ea580c;
+        --amber:  #d97706;
+    }
+
+    /* ── Page header ───────────────────────────────────────── */
+    .audit-header {
+        background: linear-gradient(135deg, var(--navy) 0%, var(--blue) 100%);
+        border-radius: 14px;
+        padding: 24px 28px;
+        color: #fff;
+        margin-bottom: 22px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        box-shadow: 0 4px 20px rgba(15,41,66,.35);
+    }
+    .audit-header h4  { margin: 0; font-size: 20px; font-weight: 800; letter-spacing: .3px; }
+    .audit-header span.sub { font-size: 13px; opacity: .75; margin-top: 3px; display: block; }
+
+    /* ── Stats row ─────────────────────────────────────────── */
+    .stat-grid { display: grid; grid-template-columns: repeat(5,1fr); gap: 14px; margin-bottom: 22px; }
+    .stat-card {
+        background: #fff;
+        border-radius: 12px;
+        padding: 18px 16px;
+        text-align: center;
+        box-shadow: 0 1px 8px rgba(0,0,0,.07);
+        border: 1px solid #e2e8f0;
+        transition: transform .2s;
+    }
+    .stat-card:hover { transform: translateY(-2px); }
+    .stat-card .num  { font-size: 30px; font-weight: 800; line-height: 1; }
+    .stat-card .lbl  { font-size: 12px; color: #64748b; margin-top: 5px; }
+    .stat-card .bar  { height: 4px; border-radius: 99px; margin-top: 10px; background: #e2e8f0; }
+    .stat-card .bar-fill { height: 100%; border-radius: 99px; transition: width .6s ease; }
+
+    /* ── Filter tabs ───────────────────────────────────────── */
+    .filter-tabs { display: flex; gap: 6px; margin-bottom: 18px; flex-wrap: wrap; }
+    .filter-tab {
+        padding: 7px 18px; border-radius: 20px; font-size: 13px; font-weight: 600;
+        cursor: pointer; border: 1.5px solid #e2e8f0; background: #f8fafc;
+        color: #475569; transition: all .2s;
+    }
+    .filter-tab.active { background: var(--blue); color: #fff; border-color: var(--blue); }
+    .filter-tab:hover:not(.active) { border-color: var(--blue); color: var(--blue); }
+
+    /* ── Toolbar ───────────────────────────────────────────── */
+    .audit-toolbar {
+        background: #fff; border-radius: 12px; padding: 14px 18px;
+        margin-bottom: 16px; display: flex; align-items: center; gap: 10px;
+        box-shadow: 0 1px 6px rgba(0,0,0,.06); border: 1px solid #e2e8f0; flex-wrap: wrap;
+    }
+    .selected-count {
+        background: var(--blue); color: #fff; border-radius: 20px;
+        padding: 4px 14px; font-size: 13px; font-weight: 700; display: none;
+    }
+    .selected-count.show { display: inline-block; }
+
+    /* ── Table badge styles ────────────────────────────────── */
+    .badge-pending   { background:#f1f5f9; color:#475569; border:1px solid #cbd5e1; }
+    .badge-confirmed { background:#d1fae5; color:#065f46; border:1px solid #6ee7b7; }
+    .badge-cancelled { background:#fee2e2; color:#991b1b; border:1px solid #fca5a5; }
+    .badge-fit       { background:#d1fae5; color:#065f46; border:1px solid #6ee7b7; }
+    .badge-notfit    { background:#fee2e2; color:#991b1b; border:1px solid #fca5a5; }
+    .badge-waiting   { background:#fef9c3; color:#854d0e; border:1px solid #fde047; }
+    .badge-passport-warn  { background:#fff7ed; color:#9a3412; border:1px solid #fdba74; font-size:11px; }
+    .badge-passport-ok    { background:#f0fdf4; color:#166534; border:1px solid #86efac; font-size:11px; }
+
+    span.badge-pill {
+        padding: 3px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; white-space: nowrap;
+    }
+
+    /* ── Passport expiry column ────────────────────────────── */
+    .passport-danger { color: var(--red);    font-weight: 700; }
+    .passport-warn   { color: var(--orange); font-weight: 600; }
+    .passport-ok     { color: var(--green);  }
+
+    /* ── Row highlight ─────────────────────────────────────── */
+    tr.row-cancelled td { background: #fff5f5 !important; }
+    tr.row-confirmed td { background: #f0fdf4 !important; }
+
+    /* ── Cancel modal ──────────────────────────────────────── */
+    #cancelModal .modal-header { background: var(--red); color: #fff; border-radius: 8px 8px 0 0; }
+    #cancelModal .modal-title  { font-weight: 700; }
+
+    /* ── Confirm all banner ────────────────────────────────── */
+    .confirm-all-bar {
+        background: linear-gradient(135deg,#ecfdf5,#d1fae5);
+        border: 1.5px solid #6ee7b7; border-radius: 10px;
+        padding: 12px 18px; margin-bottom: 16px;
+        display: none; align-items: center; gap: 12px;
+    }
+    .confirm-all-bar.show { display: flex; }
+
+    /* ── Audit log badge ───────────────────────────────────── */
+    .audit-log-btn { font-size:11px; padding:2px 8px; }
+
+    @media (max-width: 768px) {
+        .stat-grid { grid-template-columns: repeat(2,1fr); }
+        .audit-header { flex-direction: column; gap: 12px; }
+    }
+</style>
+
+<!-- ── PAGE HEADER ──────────────────────────────────────────────────── -->
+<div class="audit-header">
+    <div>
+        <h4><i class="fa fa-check-circle ml-2"></i> شاشة التدقيق والتأكيد</h4>
+        <span class="sub" id="unitLabel">جاري التحميل…</span>
     </div>
-    <div class="card-body card-body-cascade">
-        <div class="k-rtl">
-            <div>
-               @*  @(Html.Kendo().Grid<Pligrimage.Entities.AlhajjMaster>
-                                                    ()
-                                                    .Name("ConfirmAlhajj")
-                                                    .Columns(column =>
-                                                    {
-                                                        column.Bound(c => c.FullName).Title("الاسم").Width(150);
-                                                        //column.Bound(c => c.ConfirmCode).ClientTemplate("#=confirm").Title("hdd").Width(150);
-                                                        column.Bound(c => c.ServcieNumber).Title(" الرقم العسكري").Width(70);
-                                                        column.Bound(c => c.NIC).Title("الرقم المدني").Width(70);
-                                                        column.ForeignKey(c => c.ConfirmCode, (System.Collections.IEnumerable)ViewData["ConfirmCode"], "ParameterId", "DescArabic").Title("حالة الطلب").Width(100);
-                                                        column.Bound(c => c.Notes).Title("ملاحظات ").Width(150);
+    <div class="d-flex align-items-center gap-2">
+        <span class="badge" style="background:var(--gold);color:#fff;padding:6px 16px;border-radius:20px;font-size:13px;font-weight:700;">
+            موسم الحج <span id="hajjYear">…</span>
+        </span>
+        <button class="btn btn-light btn-sm mr-2" onclick="refreshAll()">
+            <i class="fa fa-refresh"></i> تحديث
+        </button>
+    </div>
+</div>
 
-                                                        column.Command(com =>
-                                                        {
-                                                            com.Edit().UpdateText("حفظ").Text("تعديل").CancelText("إلغاء");
-                                                        }).Width(50);
+<!-- ── STATS CARDS ───────────────────────────────────────────────────── -->
+<div class="stat-grid">
+    <div class="stat-card">
+        <div class="num" id="statTotal" style="color:var(--blue)">—</div>
+        <div class="lbl">إجمالي المسجلين</div>
+        <div class="bar"><div class="bar-fill" id="barTotal" style="background:var(--blue);width:100%"></div></div>
+    </div>
+    <div class="stat-card">
+        <div class="num" id="statPending" style="color:#64748b">—</div>
+        <div class="lbl">في انتظار التأكيد</div>
+        <div class="bar"><div class="bar-fill" id="barPending" style="background:#94a3b8"></div></div>
+    </div>
+    <div class="stat-card">
+        <div class="num" id="statConfirmed" style="color:var(--green)">—</div>
+        <div class="lbl">مؤكدون</div>
+        <div class="bar"><div class="bar-fill" id="barConfirmed" style="background:var(--green)"></div></div>
+    </div>
+    <div class="stat-card">
+        <div class="num" id="statCancelled" style="color:var(--red)">—</div>
+        <div class="lbl">ملغون</div>
+        <div class="bar"><div class="bar-fill" id="barCancelled" style="background:var(--red)"></div></div>
+    </div>
+    <div class="stat-card">
+        <div class="num" id="statPassport" style="color:var(--orange)">—</div>
+        <div class="lbl">جوازات تحتاج تجديد</div>
+        <div class="bar"><div class="bar-fill" id="barPassport" style="background:var(--orange)"></div></div>
+    </div>
+</div>
 
-                                                    })
-                                                    .HtmlAttributes(new { style = "height:500px" })
-                                                    .Editable(editable => editable.Mode(GridEditMode.PopUp).TemplateName("Edit").Window(c => c.Resizable().Title("تعديل")))
-                                                    .Scrollable()
-                                                    .Sortable()
-                                                    .Selectable()
-                                                    .Filterable(f => f.Extra(false)
-                                                    .Operators(opertor => opertor
-                                                    .ForString(str => str.Clear()
-                                                    .Contains("يحتوي على"))))
-                                                    .Pageable
-                                                    (p => p
-                                                    .ButtonCount(5)
-                                                    .Refresh(true)
-                                                    )
-                                                    .Selectable(s => s.Mode(GridSelectionMode.Multiple))
-                                                    .DataSource
-                                                    (dataSourec => dataSourec
-                                                    .Ajax()
-                                                    .Model(m =>
-                                                    {
-                                                        m.Id(id => id.PligrimageId);
-                                                        m.Field(c => c.ServcieNumber);
-                                                        m.Field(c => c.NIC);
-                                                        m.Field(c => c.FullName);
-                                                        m.Field(c => c.ConfirmCode);
-                                                    })
-                                                    .Events(events =>
-                                                    {
-                                                        events.Error("error_handler");
-                                                        events.RequestEnd("request_end");
-                                                    })
+<!-- ── CONFIRM-ALL BANNER ─────────────────────────────────────────────── -->
+<div class="confirm-all-bar" id="confirmAllBar">
+    <i class="fa fa-check-circle fa-lg" style="color:var(--green)"></i>
+    <div>
+        <strong>تأكيد جماعي:</strong>
+        <span id="selectedCountLabel">0</span> سجل محدد
+    </div>
+    <button class="btn btn-success btn-sm mr-auto" onclick="confirmBulk()">
+        <i class="fa fa-check"></i> تأكيد المحددين
+    </button>
+    <button class="btn btn-light btn-sm" onclick="clearSelection()">إلغاء التحديد</button>
+</div>
 
-                                                    .Read(read => read.Action("ConfirmAlhajjRead", "ConfirmAlhajjMaster"))
-                                                    .Update(update => update.Action("Update", "ConfirmAlhajjMaster"))
+<!-- ── FILTER TABS ───────────────────────────────────────────────────── -->
+<div class="filter-tabs">
+    <div class="filter-tab active" data-filter="all"     onclick="applyFilter('all',this)">الكل</div>
+    <div class="filter-tab"        data-filter="pending"   onclick="applyFilter('pending',this)">⏳ في الانتظار</div>
+    <div class="filter-tab"        data-filter="confirmed" onclick="applyFilter('confirmed',this)">✅ مؤكدون</div>
+    <div class="filter-tab"        data-filter="cancelled" onclick="applyFilter('cancelled',this)">🚫 ملغون</div>
+    <div class="filter-tab"        data-filter="passport"  onclick="applyFilter('passport',this)">⚠️ جواز منتهي</div>
+</div>
 
-                                                    )
-                ) *@
+<!-- ── TOOLBAR ───────────────────────────────────────────────────────── -->
+<div class="audit-toolbar">
+    <button class="btn btn-success btn-sm" onclick="confirmBulk()" id="btnBulkConfirm" disabled>
+        <i class="fa fa-check-square"></i> تأكيد المحددين
+    </button>
+    <button class="btn btn-warning btn-sm" onclick="selectAllPending()">
+        <i class="fa fa-list-ul"></i> تحديد كل المنتظرين
+    </button>
+    <span class="selected-count" id="selectedCount">0 محدد</span>
+    <div class="mr-auto d-flex gap-2">
+        <button class="btn btn-outline-secondary btn-sm" onclick="exportExcel()">
+            <i class="fa fa-file-excel-o"></i> تصدير Excel
+        </button>
+        <button class="btn btn-outline-secondary btn-sm" onclick="printList()">
+            <i class="fa fa-print"></i> طباعة
+        </button>
+    </div>
+</div>
+
+<!-- ── MAIN TABLE ────────────────────────────────────────────────────── -->
+<div class="card card-cascade wider">
+    <div class="card-body card-body-cascade p-0">
+        <div class="table-responsive">
+            <table id="auditTable" class="table table-bordered table-hover w-100" style="font-size:13px">
+                <thead>
+                    <tr>
+                        <th style="width:36px"><input type="checkbox" id="chkAll" title="تحديد الكل"></th>
+                        <th>#</th>
+                        <th>الاسم الكامل</th>
+                        <th>الرقم العسكري</th>
+                        <th>رقم الهوية</th>
+                        <th>الرتبة</th>
+                        <th>الوحدة</th>
+                        <th>رقم الجواز</th>
+                        <th>انتهاء الجواز</th>
+                        <th>نوع الحاج</th>
+                        <th>اللياقة</th>
+                        <th>حالة التأكيد</th>
+                        <th>الإجراءات</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- ── CANCEL MODAL ──────────────────────────────────────────────────── -->
+<div class="modal fade" id="cancelModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="fa fa-ban ml-2"></i> إلغاء التسجيل</h5>
+                <button type="button" class="close text-white" data-dismiss="modal"><span>&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="cancelPilgrimId">
+                <div class="alert alert-warning py-2 mb-3">
+                    <i class="fa fa-exclamation-triangle ml-1"></i>
+                    سيتم إلغاء تسجيل <strong id="cancelPilgrimName"></strong>. هذا الإجراء يمكن التراجع عنه.
+                </div>
+                <div class="form-group">
+                    <label class="font-weight-bold">سبب الإلغاء <span class="text-danger">*</span></label>
+                    <textarea class="form-control" id="cancelNoteInput" rows="3"
+                              placeholder="اكتب سبب إلغاء التسجيل…"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-danger" onclick="submitCancel()">
+                    <i class="fa fa-ban"></i> تأكيد الإلغاء
+                </button>
+                <button class="btn btn-secondary" data-dismiss="modal">إغلاق</button>
             </div>
         </div>
     </div>
 </div>
+
+<!-- ── DETAIL MODAL ──────────────────────────────────────────────────── -->
+<div class="modal fade" id="detailModal" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header" style="background:var(--blue);color:#fff">
+                <h5 class="modal-title"><i class="fa fa-user ml-2"></i> تفاصيل الحاج</h5>
+                <button type="button" class="close text-white" data-dismiss="modal"><span>&times;</span></button>
+            </div>
+            <div class="modal-body" id="detailBody"></div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-dismiss="modal">إغلاق</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
 <script>
+(function () {
+    'use strict';
 
-    function error_handler(e) {
-        console.log(e);
-        if (e.errors) {
-            var message = "Errors: \n";
-            $.each(e.errors, function (key, value) {
-                if ('errors' in value) {
-                    $.each(value.errors, function () {
-                        message += this + "\n";
+    // ── Config ────────────────────────────────────────────────
+    var READ_URL    = '@Url.Action("ConfirmAlhajjRead","ConfirmAlhajjMaster")';
+    var CONFIRM_URL = '@Url.Action("Confirm","ConfirmAlhajjMaster")';
+    var BULK_URL    = '@Url.Action("ConfirmBulk","ConfirmAlhajjMaster")';
+    var CANCEL_URL  = '@Url.Action("Cancel","ConfirmAlhajjMaster")';
+    var RESTORE_URL = '@Url.Action("Restore","ConfirmAlhajjMaster")';
+    var STATS_URL   = '@Url.Action("GetSummary","ConfirmAlhajjMaster")';
+    var token       = $('input[name="__RequestVerificationToken"]').val();
 
-                    });
+    var dt;
+    var currentFilter = 'all';
+    var allData = [];
+
+    // ── Passport status helper ────────────────────────────────
+    function passportStatus(dateStr) {
+        if (!dateStr) return { level:'none', days:null };
+        var d    = new Date(dateStr);
+        var now  = new Date();
+        var days = Math.floor((d - now) / 86400000);
+        var months = (d.getFullYear() - now.getFullYear()) * 12 + (d.getMonth() - now.getMonth());
+        if (days < 0)    return { level:'expired',  days:days,   months:months };
+        if (months < 6)  return { level:'critical', days:days,   months:months };
+        if (months < 9)  return { level:'warning',  days:days,   months:months };
+        return             { level:'ok',       days:days,   months:months };
+    }
+
+    function passportHtml(dateStr) {
+        var s = passportStatus(dateStr);
+        if (s.level === 'none') return '<span class="text-muted">—</span>';
+        var icons  = { expired:'🔴', critical:'🟠', warning:'🟡', ok:'🟢' };
+        var colors = { expired:'passport-danger', critical:'passport-danger', warning:'passport-warn', ok:'passport-ok' };
+        var note   = s.level === 'expired'
+                     ? 'منتهي (' + Math.abs(s.days) + ' يوم)'
+                     : s.level === 'critical' ? s.days + ' يوم' : dateStr;
+        return '<span class="' + colors[s.level] + '">' + icons[s.level] + ' ' + note + '</span>';
+    }
+
+    // ── Badge helpers ─────────────────────────────────────────
+    function confirmBadge(code) {
+        if (code === 51)  return '<span class="badge-pill badge-confirmed">✓ مؤكد</span>';
+        if (code === 99)  return '<span class="badge-pill badge-cancelled">✕ ملغي</span>';
+        return '<span class="badge-pill badge-pending">⏳ في الانتظار</span>';
+    }
+    function fitBadge(fit) {
+        if (fit === 9 || fit === 5) return '<span class="badge-pill badge-fit">لائق</span>';
+        if (fit === 6)  return '<span class="badge-pill badge-notfit">غير لائق</span>';
+        return '<span class="badge-pill badge-waiting">في الانتظار</span>';
+    }
+    function typeBadge(paramId) {
+        if (paramId === 1) return '<span class="badge-pill" style="background:#dbeafe;color:#1e40af;border:1px solid #93c5fd">أصلي</span>';
+        if (paramId === 2) return '<span class="badge-pill" style="background:#fef9c3;color:#854d0e;border:1px solid #fde047">احتياط</span>';
+        if (paramId === 3) return '<span class="badge-pill" style="background:#f3e8ff;color:#6b21a8;border:1px solid #c4b5fd">إداري</span>';
+        return '<span class="badge-pill badge-pending">' + paramId + '</span>';
+    }
+
+    // ── Init DataTable ────────────────────────────────────────
+    function initTable() {
+        dt = $('#auditTable').DataTable({
+            ajax: {
+                url: READ_URL,
+                dataSrc: '',
+                error: function () {
+                    toastr.error('فشل تحميل البيانات');
                 }
-            });
-            alert(message);
-        }
+            },
+            columns: [
+                {
+                    data: null, orderable: false, className: 'text-center',
+                    render: function (d, t, r) {
+                        if (r.confirmCode === 99) return ''; // cancelled = no checkbox
+                        return '<input type="checkbox" class="row-chk" data-id="' + r.pligrimageId +
+                               '" data-name="' + (r.fullName || '') + '">';
+                    }
+                },
+                { data: null, render: function (d, t, r, meta) { return meta.row + 1; }, orderable: false },
+                {
+                    data: 'fullName',
+                    render: function (d, t, r) {
+                        return '<a href="#" class="text-dark font-weight-bold detail-link" data-row=\'' +
+                               JSON.stringify(r).replace(/'/g,"&#39;") + '\'>' + (d || '') + '</a>';
+                    }
+                },
+                { data: 'servcieNumber', render: function(d){ return '<code>' + (d||'') + '</code>'; } },
+                { data: 'nic' },
+                { data: 'rankDesc' },
+                { data: 'unitNameAr' },
+                { data: 'passport', render: function(d){ return '<code>' + (d||'—') + '</code>'; } },
+                { data: 'passportExpire', render: function(d){ return passportHtml(d); } },
+                { data: 'parameterTypeId', render: function(d){ return typeBadge(d); } },
+                { data: 'fitResult', render: function(d){ return fitBadge(d); } },
+                { data: 'confirmCode', render: function(d){ return confirmBadge(d); } },
+                {
+                    data: null, orderable: false, className: 'text-center',
+                    render: function (d, t, r) {
+                        var btns = '';
+                        if (r.confirmCode !== 51 && r.confirmCode !== 99) {
+                            btns += '<button class="btn btn-success btn-xs ml-1 btn-confirm" data-id="' + r.pligrimageId + '" data-name="' + (r.fullName||'') + '" title="تأكيد">' +
+                                    '<i class="fa fa-check"></i></button>';
+                        }
+                        if (r.confirmCode !== 99) {
+                            btns += '<button class="btn btn-danger btn-xs ml-1 btn-cancel" data-id="' + r.pligrimageId + '" data-name="' + (r.fullName||'') + '" title="إلغاء">' +
+                                    '<i class="fa fa-ban"></i></button>';
+                        }
+                        if (r.confirmCode === 99) {
+                            btns += '<button class="btn btn-warning btn-xs ml-1 btn-restore" data-id="' + r.pligrimageId + '" data-name="' + (r.fullName||'') + '" title="إعادة للمراجعة">' +
+                                    '<i class="fa fa-undo"></i></button>';
+                        }
+                        return btns || '<span class="text-muted">—</span>';
+                    }
+                }
+            ],
+            rowCallback: function (row, data) {
+                $(row).removeClass('row-confirmed row-cancelled');
+                if (data.confirmCode === 51) $(row).addClass('row-confirmed');
+                if (data.confirmCode === 99) $(row).addClass('row-cancelled');
+            },
+            language: {
+                url: '//cdn.datatables.net/plug-ins/1.13.8/i18n/ar.json',
+                emptyTable: 'لا توجد سجلات للعرض'
+            },
+            order: [[11, 'asc']],
+            pageLength: 25,
+            responsive: true,
+            dom: 'Bfrtip',
+            buttons: [
+                { extend:'excel', text:'<i class="fa fa-file-excel-o"></i>', className:'btn-sm btn-outline-secondary', title:'قائمة الحجاج' },
+                { extend:'print', text:'<i class="fa fa-print"></i>',        className:'btn-sm btn-outline-secondary', title:'قائمة الحجاج' }
+            ]
+        });
 
+        // Cache all data for filter
+        dt.on('xhr', function () {
+            allData = dt.data().toArray();
+        });
+    }
 
+    // ── Load stats ────────────────────────────────────────────
+    function loadStats() {
+        $.getJSON(STATS_URL, function (s) {
+            $('#statTotal').text(s.total);
+            $('#statPending').text(s.pending);
+            $('#statConfirmed').text(s.confirmed);
+            $('#statCancelled').text(s.cancelled);
+            $('#statPassport').text(s.passportIssues);
+            var pct = function(n){ return s.total ? Math.round((n/s.total)*100) : 0; };
+            $('#barPending').css('width',   pct(s.pending)   + '%');
+            $('#barConfirmed').css('width', pct(s.confirmed) + '%');
+            $('#barCancelled').css('width', pct(s.cancelled) + '%');
+            $('#barPassport').css('width',  pct(s.passportIssues) + '%');
+            $('#unitLabel').text('الوحدة: ' + ($('.audit-header .unit-name').text() || 'وحدتك') + ' — السنة ' + new Date().getFullYear());
+            $('#hajjYear').text(new Date().getFullYear());
+        });
+    }
+
+    // ── Filter ────────────────────────────────────────────────
+    window.applyFilter = function (filter, el) {
+        currentFilter = filter;
+        $('.filter-tab').removeClass('active');
+        $(el).addClass('active');
+        dt.draw();
     };
 
-    function request_end(e) {
+    $.fn.dataTable.ext.search.push(function (settings, data, dataIndex) {
+        if (settings.nTable.id !== 'auditTable') return true;
+        var row   = dt.row(dataIndex).data();
+        if (!row) return true;
+        if (currentFilter === 'all')       return true;
+        if (currentFilter === 'pending')   return row.confirmCode === 0;
+        if (currentFilter === 'confirmed') return row.confirmCode === 51;
+        if (currentFilter === 'cancelled') return row.confirmCode === 99;
+        if (currentFilter === 'passport')  return passportStatus(row.passportExpire).level !== 'ok';
+        return true;
+    });
 
-        if (e.type == "update") {
-            alert("تم تحديث البيانات بنجاح");
-            if($.fn.DataTable.isDataTable('#ConfirmAlhajj')){ $('#ConfirmAlhajj').DataTable().ajax.reload(); }
-            
-        }
-        if (e.type == "create") {
-            alert("تم حفظ البيانات بنجاح");
+    // ── Selection ─────────────────────────────────────────────
+    $('#auditTable').on('change', '.row-chk', updateSelection);
+    $('#chkAll').on('change', function () {
+        var checked = this.checked;
+        $('#auditTable tbody .row-chk:visible').prop('checked', checked);
+        updateSelection();
+    });
 
-        }
-        if (e.type == "delete") {
-            alert("تم حذف البيانات بنجاح");
-
-        }
+    function updateSelection() {
+        var n = $('#auditTable tbody .row-chk:checked').length;
+        $('#selectedCount').text(n + ' محدد').toggleClass('show', n > 0);
+        $('#btnBulkConfirm').prop('disabled', n === 0);
+        $('#selectedCountLabel').text(n);
+        $('#confirmAllBar').toggleClass('show', n > 0);
     }
 
+    window.clearSelection = function () {
+        $('#auditTable tbody .row-chk, #chkAll').prop('checked', false);
+        updateSelection();
+    };
+
+    window.selectAllPending = function () {
+        clearSelection();
+        dt.rows().every(function () {
+            var d = this.data();
+            if (d.confirmCode === 0) {
+                $(this.node()).find('.row-chk').prop('checked', true);
+            }
+        });
+        updateSelection();
+    };
+
+    // ── Confirm single ────────────────────────────────────────
+    $('#auditTable').on('click', '.btn-confirm', function () {
+        var id   = $(this).data('id');
+        var name = $(this).data('name');
+        if (!confirm('تأكيد تسجيل: ' + name + '؟')) return;
+        postAction(CONFIRM_URL, { pligrimageId: id }, 'تم تأكيد ' + name);
+    });
+
+    // ── Confirm bulk ──────────────────────────────────────────
+    window.confirmBulk = function () {
+        var ids = $('#auditTable tbody .row-chk:checked').map(function(){ return +$(this).data('id'); }).get();
+        if (!ids.length) return;
+        if (!confirm('تأكيد ' + ids.length + ' حاج؟')) return;
+        $.ajax({
+            url: BULK_URL, method: 'POST', contentType: 'application/json',
+            headers: { 'RequestVerificationToken': token },
+            data: JSON.stringify(ids),
+            success: function (r) {
+                toastr.success(r.message || 'تم التأكيد');
+                clearSelection();
+                refreshAll();
+            },
+            error: function (x) { toastr.error(x.responseText || 'فشل التأكيد'); }
+        });
+    };
+
+    // ── Cancel ────────────────────────────────────────────────
+    $('#auditTable').on('click', '.btn-cancel', function () {
+        $('#cancelPilgrimId').val($(this).data('id'));
+        $('#cancelPilgrimName').text($(this).data('name'));
+        $('#cancelNoteInput').val('');
+        $('#cancelModal').modal('show');
+    });
+
+    window.submitCancel = function () {
+        var note = $('#cancelNoteInput').val().trim();
+        if (!note) { toastr.warning('الرجاء كتابة سبب الإلغاء'); return; }
+        var id = $('#cancelPilgrimId').val();
+        $.post(CANCEL_URL, { pligrimageId: id, cancelNote: note,
+                             __RequestVerificationToken: token },
+            function (r) {
+                toastr.success(r.message || 'تم الإلغاء');
+                $('#cancelModal').modal('hide');
+                refreshAll();
+            }).fail(function (x) { toastr.error(x.responseText || 'فشل الإلغاء'); });
+    };
+
+    // ── Restore ───────────────────────────────────────────────
+    $('#auditTable').on('click', '.btn-restore', function () {
+        var id   = $(this).data('id');
+        var name = $(this).data('name');
+        if (!confirm('إعادة ' + name + ' إلى قائمة الانتظار؟')) return;
+        postAction(RESTORE_URL, { pligrimageId: id }, 'تمت الاستعادة');
+    });
+
+    // ── Detail modal ──────────────────────────────────────────
+    $('#auditTable').on('click', '.detail-link', function (e) {
+        e.preventDefault();
+        var r = $(this).data('row');
+        var ps = passportStatus(r.passportExpire);
+        var passportWarning = ps.level !== 'ok'
+            ? '<div class="alert alert-warning py-2 mt-2"><i class="fa fa-exclamation-triangle ml-1"></i> ' +
+              (ps.level === 'expired' ? 'جواز السفر منتهي الصلاحية — يجب التجديد' :
+               'جواز السفر ينتهي خلال ' + ps.days + ' يوم') + '</div>'
+            : '';
+        var html = '<div class="row">' +
+            field('الاسم الكامل', r.fullName) +
+            field('الرقم العسكري', '<code>' + (r.servcieNumber||'') + '</code>') +
+            field('رقم الهوية', r.nic) +
+            field('الرتبة', r.rankDesc) +
+            field('الوحدة', r.unitNameAr) +
+            field('المنطقة', r.region) +
+            field('رقم الجواز', '<code>' + (r.passport||'—') + '</code>') +
+            field('انتهاء الجواز', passportHtml(r.passportExpire)) +
+            field('انتهاء الهوية', r.nicExpire || '—') +
+            field('نوع الحاج', typeBadge(r.parameterTypeId)) +
+            field('اللياقة الطبية', fitBadge(r.fitResult)) +
+            field('حالة التأكيد', confirmBadge(r.confirmCode)) +
+            '</div>' + passportWarning;
+        if (r.cancelNote) {
+            html += '<div class="alert alert-danger py-2 mt-2"><strong>سبب الإلغاء:</strong> ' + r.cancelNote + '</div>';
+        }
+        $('#detailBody').html(html);
+        $('#detailModal').modal('show');
+    });
+
+    function field(label, val) {
+        return '<div class="col-md-4 mb-3">' +
+               '<div style="font-size:11px;font-weight:700;color:#64748b;margin-bottom:4px">' + label + '</div>' +
+               '<div style="font-size:14px;color:#1e293b;font-weight:500">' + (val||'—') + '</div></div>';
+    }
+
+    // ── Post helper ───────────────────────────────────────────
+    function postAction(url, data, successMsg) {
+        data.__RequestVerificationToken = token;
+        $.post(url, data,
+            function (r) {
+                toastr.success(r.message || successMsg);
+                refreshAll();
+            }).fail(function (x) { toastr.error(x.responseText || 'حدث خطأ'); });
+    }
+
+    // ── Refresh all ───────────────────────────────────────────
+    window.refreshAll = function () {
+        dt.ajax.reload(null, false);
+        loadStats();
+    };
+
+    window.exportExcel = function () { dt.button(0).trigger(); };
+    window.printList   = function () { dt.button(1).trigger(); };
+
+    // ── Init ──────────────────────────────────────────────────
+    $(function () {
+        initTable();
+        loadStats();
+
+        toastr.options = {
+            positionClass: 'toast-top-left',
+            timeOut: 3000,
+            rtl: true
+        };
+    });
+}());
 </script>
-
-
-
-
-<style>
-    .k-grid .k-grid-header {
-        border-color: #dde2e7;
-        color: #212529;
-        background-color: #f8f9fa;
-        font-weight: bold;
-    }
-</style>
-
-
-
-
-
-
-
-
-
+}

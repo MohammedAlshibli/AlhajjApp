@@ -111,37 +111,46 @@ function pct(used, total){ return total>0 ? Math.round(used/total*100) : 0; }
 function fillClass(p){ return p>=100?'qf-red':p>=80?'qf-orange':'qf-green'; }
 
 window.refreshQuota = function(){
-  $.getJSON('@Url.Action("UnitRead","Units")', function(units){
+  $.getJSON('@Url.Action("GetMyQuota","Units")', function(units){
+    if (!units || units.length === 0) {
+      $('#quotaContent').html('<div style="text-align:center;color:#94a3b8;font-size:12px;padding:16px">لا توجد وحدات مرتبطة بحسابك</div>');
+      return;
+    }
     var html = '';
     units.forEach(function(u){
       var rp=pct(u.regularUsed,u.allowNumber), sp=pct(u.standByUsed,u.standBy);
       var isFullR=u.regularFull, isFullS=u.standByFull;
-      var rowCls = isFullR?'q-full':isFullS?'q-warn':'';
+      var rowCls = isFullR?'q-row q-full':isFullS?'q-row q-warn':'q-row';
       html += `
-      <div class="q-row ${rowCls}" data-unit-id="${u.unitId}" data-allow="${u.allowNumber}" data-standby="${u.standBy}" data-used-r="${u.regularUsed}" data-used-s="${u.standByUsed}">
+      <div class="${rowCls}" data-unit-id="${u.unitId}">
         <div class="q-unit-name">
-          🏛️ ${u.unitNameAr}
-          ${isFullR?'<span class="full-tag">مكتمل</span>':'<span class="ok-tag">تبقى '+(u.regularRemain+u.standByRemain)+'</span>'}
+          🏛️ <strong>${u.unitNameAr}</strong>
+          ${isFullR
+            ? '<span class="full-tag">مكتمل</span>'
+            : `<span class="ok-tag">تبقى ${(u.regularRemain||0)+(u.standByRemain||0)}</span>`}
         </div>
         <div class="q-bars">
           <div>
             <div class="q-bar-label">
-              <span style="color:#1a3a5c;font-weight:600">أصلي</span>
+              <span style="color:#1a3a5c;font-weight:700">أصلي</span>
               <span>${u.regularUsed}/${u.allowNumber}</span>
             </div>
             <div class="q-track"><div class="q-fill ${fillClass(rp)}" style="width:${Math.min(rp,100)}%"></div></div>
           </div>
           <div>
             <div class="q-bar-label">
-              <span style="color:#d97706;font-weight:600">احتياط</span>
+              <span style="color:#d97706;font-weight:700">احتياط</span>
               <span>${u.standByUsed}/${u.standBy}</span>
             </div>
             <div class="q-track"><div class="q-fill ${fillClass(sp)}" style="width:${Math.min(sp,100)}%"></div></div>
           </div>
         </div>
+        <div style="margin-top:8px;font-size:10px;color:#94a3b8;display:flex;gap:12px">
+          <span>أصلي متبقٍ: <strong style="color:${isFullR?'#dc2626':'#059669'}">${u.regularRemain}</strong></span>
+          <span>احتياط متبقٍ: <strong style="color:${isFullS?'#d97706':'#059669'}">${u.standByRemain}</strong></span>
+        </div>
       </div>`;
     });
-    if(!html) html='<div style="text-align:center;color:#94a3b8;font-size:12px;padding:16px">لا توجد أسلحة مسجلة</div>';
     $('#quotaContent').html(html);
     var now=new Date(); $('#quotaTime').text(now.getHours()+':'+String(now.getMinutes()).padStart(2,'0'));
   }).fail(function(){ $('#quotaContent').html('<div style="color:#dc2626;font-size:12px;text-align:center">تعذر التحميل</div>'); });

@@ -1,56 +1,329 @@
+@{
+    ViewData["Title"] = "الفحص الطبي";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+:root{--navy:#0f2942;--blue:#1a3a5c;--green:#059669;--red:#dc2626;--orange:#ea580c;--amber:#d97706;}
+.med-header{background:linear-gradient(135deg,#064e3b 0%,#065f46 100%);border-radius:14px;padding:24px 28px;color:#fff;margin-bottom:22px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 4px 20px rgba(6,95,70,.35);}
+.med-header h4{margin:0;font-size:20px;font-weight:800;}
+.stat-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:22px;}
+.stat-card{background:#fff;border-radius:12px;padding:14px;text-align:center;box-shadow:0 1px 8px rgba(0,0,0,.07);border:1px solid #e2e8f0;}
+.stat-card .num{font-size:28px;font-weight:800;line-height:1;}
+.stat-card .lbl{font-size:11px;color:#64748b;margin-top:4px;}
+.filter-row{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;align-items:center;}
+.f-tab{padding:6px 16px;border-radius:20px;font-size:13px;font-weight:600;cursor:pointer;border:1.5px solid #e2e8f0;background:#f8fafc;color:#475569;transition:all .2s;}
+.f-tab.active{background:var(--blue);color:#fff;border-color:var(--blue);}
+.toolbar{background:#fff;border-radius:12px;padding:12px 18px;margin-bottom:14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;border:1px solid #e2e8f0;box-shadow:0 1px 5px rgba(0,0,0,.05);}
+.bulk-bar{background:linear-gradient(135deg,#ecfdf5,#d1fae5);border:1.5px solid #6ee7b7;border-radius:10px;padding:12px 18px;margin-bottom:14px;display:none;align-items:center;gap:12px;}
+.bulk-bar.show{display:flex;}
+.badge-pill{padding:3px 10px;border-radius:20px;font-size:12px;font-weight:600;white-space:nowrap;}
+.b-pending{background:#fef9c3;color:#854d0e;border:1px solid #fde047;}
+.b-fit{background:#d1fae5;color:#065f46;border:1px solid #6ee7b7;}
+.b-condfit{background:#dbeafe;color:#1e40af;border:1px solid #93c5fd;}
+.b-notfit{background:#fee2e2;color:#991b1b;border:1px solid #fca5a5;}
+.b-approved{background:#d1fae5;color:#065f46;border:1px solid #6ee7b7;font-weight:800;}
+.b-vac{background:#f0fdf4;color:#166534;border:1px solid #86efac;}
+.b-novac{background:#f8fafc;color:#64748b;border:1px solid #e2e8f0;}
+/* Edit modal */
+#editModal .modal-header{background:linear-gradient(135deg,#064e3b,#059669);color:#fff;border-radius:8px 8px 0 0;}
+.fit-radio-group{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.fit-radio{border:1.5px solid #e2e8f0;border-radius:8px;padding:12px;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:8px;}
+.fit-radio:hover{border-color:var(--blue);}
+.fit-radio input{accent-color:var(--blue);width:15px;height:15px;}
+.fit-radio.sel-fit{border-color:#059669;background:#f0fdf4;}
+.fit-radio.sel-notfit{border-color:#dc2626;background:#fef2f2;}
+.fit-radio.sel-cond{border-color:#2563eb;background:#eff6ff;}
+.fit-radio.sel-approved{border-color:#059669;background:#ecfdf5;}
+tr.row-fit td{background:#f9fff9!important;}
+tr.row-notfit td{background:#fff5f5!important;}
+</style>
+
+<!-- HEADER -->
+<div class="med-header">
+  <div>
+    <h4>🩺 الفحص الطبي</h4>
+    <div style="font-size:13px;opacity:.75;margin-top:3px;">فحص لياقة الحجاج المعتمدين من الإدارة العليا</div>
+  </div>
+  <div class="d-flex align-items-center" style="gap:10px">
+    <span class="badge" style="background:#c9a227;color:#fff;padding:6px 16px;border-radius:20px;font-size:13px;font-weight:700;">
+      موسم الحج <span id="medYear">…</span>
+    </span>
+    <button class="btn btn-light btn-sm" onclick="refreshAll()"><i class="fa fa-refresh"></i> تحديث</button>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="stat-grid">
+  <div class="stat-card"><div class="num" id="msTotal"   style="color:var(--blue)">—</div><div class="lbl">إجمالي للفحص</div></div>
+  <div class="stat-card"><div class="num" id="msPending"  style="color:var(--amber)">—</div><div class="lbl">في انتظار الفحص</div></div>
+  <div class="stat-card"><div class="num" id="msFit"      style="color:var(--green)">—</div><div class="lbl">لائق</div></div>
+  <div class="stat-card"><div class="num" id="msCond"     style="color:#2563eb">—</div><div class="lbl">لائق بشروط</div></div>
+  <div class="stat-card"><div class="num" id="msNotFit"   style="color:var(--red)">—</div><div class="lbl">غير لائق</div></div>
+  <div class="stat-card"><div class="num" id="msVac"      style="color:var(--green)">—</div><div class="lbl">تم التطعيم</div></div>
+</div>
+
+<!-- BULK BAR -->
+<div class="bulk-bar" id="bulkBar">
+  <span style="font-size:20px">🩺</span>
+  <div><strong><span id="bulkCount">0</span> سجل محدد</strong></div>
+  <button class="btn btn-success btn-sm mr-auto" onclick="bulkMarkFit()">
+    <i class="fa fa-check"></i> تحديد الكل كـ لائق
+  </button>
+  <button class="btn btn-light btn-sm" onclick="clearSel()">إلغاء</button>
+</div>
+
+<!-- FILTER + TOOLBAR -->
+<div class="toolbar">
+  <div class="filter-row" style="margin:0;flex-wrap:wrap">
+    <div class="f-tab active" onclick="setFilter('all',this)">الكل</div>
+    <div class="f-tab" onclick="setFilter('pending',this)">⏳ انتظار</div>
+    <div class="f-tab" onclick="setFilter('fit',this)">✅ لائق</div>
+    <div class="f-tab" onclick="setFilter('cond',this)">🔵 بشروط</div>
+    <div class="f-tab" onclick="setFilter('notfit',this)">🔴 غير لائق</div>
+    <div class="f-tab" onclick="setFilter('novac',this)">💉 لم يتطعم</div>
+  </div>
+  <button class="btn btn-success btn-sm mr-auto" onclick="bulkMarkFit()">
+    <i class="fa fa-check-square"></i> تحديد المحددين كـ لائق
+  </button>
+  <input id="medSearch" class="form-control form-control-sm" style="width:220px" placeholder="🔍 بحث…" oninput="applySearch()">
+  <button class="btn btn-outline-secondary btn-sm" onclick="exportExcel()"><i class="fa fa-file-excel-o"></i></button>
+  <button class="btn btn-outline-secondary btn-sm" onclick="printTable()"><i class="fa fa-print"></i></button>
+</div>
+
+<!-- TABLE -->
 <div class="card card-cascade wider">
-    <div class="view view-cascade gradient-card-header blue-gradient-rgba">
-        <h2 class="card-header-title mb-3">الفحص الطبي</h2>
+  <div class="card-body p-0">
+    <div class="table-responsive">
+      <table id="medTable" class="table table-bordered table-hover w-100" style="font-size:13px">
+        <thead>
+          <tr>
+            <th style="width:36px"><input type="checkbox" id="chkAll"></th>
+            <th>#</th><th>الاسم</th><th>الرقم العسكري</th><th>الهوية</th>
+            <th>الرتبة</th><th>الوحدة</th><th>فصيلة الدم</th>
+            <th>نتيجة الفحص</th><th>تاريخ التطعيم</th><th>ملاحظة الطبيب</th><th>إجراء</th>
+          </tr>
+        </thead>
+      </table>
     </div>
-    <div class="card-body card-body-cascade">
-        <div class="mb-3">
-            <a href="@Url.Action("Index","Injection")" class="btn btn-secondary btn-sm">
-                <i class="fa fa-syringe"></i> سجلات التطعيم
-            </a>
+  </div>
+</div>
+
+<!-- EDIT MODAL -->
+<div class="modal fade" id="editModal" tabindex="-1">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title"><i class="fa fa-stethoscope ml-2"></i> تسجيل نتيجة الفحص الطبي</h5>
+        <button type="button" class="close text-white" data-dismiss="modal"><span>&times;</span></button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="editId">
+        <div id="editInfo" class="alert alert-light py-2 mb-3 border" style="font-size:13px"></div>
+
+        <div class="form-group">
+          <label class="font-weight-bold mb-2">نتيجة الفحص الطبي <span class="text-danger">*</span></label>
+          <div class="fit-radio-group">
+            <label class="fit-radio" id="fr-5">
+              <input type="radio" name="fitResult" value="5"> <span>✅ لائق</span>
+            </label>
+            <label class="fit-radio" id="fr-8">
+              <input type="radio" name="fitResult" value="8"> <span>🔵 لائق بشروط</span>
+            </label>
+            <label class="fit-radio" id="fr-6">
+              <input type="radio" name="fitResult" value="6"> <span>🔴 غير لائق</span>
+            </label>
+            <label class="fit-radio" id="fr-9">
+              <input type="radio" name="fitResult" value="9"> <span>⭐ موافقة طبية نهائية</span>
+            </label>
+          </div>
         </div>
-        <div class="table-responsive">
-            <table id="medicalTable" class="table table-bordered table-hover table-striped w-100">
-                <thead>
-                    <tr>
-                        <th>الاسم</th>
-                        <th>الرقم العسكري</th>
-                        <th>الرقم المدني</th>
-                        <th>الوحدة</th>
-                        <th>فصيلة الدم</th>
-                        <th>حالة الفحص</th>
-                        <th>تاريخ الحقن</th>
-                        <th>ملاحظات الطبيب</th>
-                        <th>الإجراءات</th>
-                    </tr>
-                </thead>
-            </table>
+
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label class="font-weight-bold">تاريخ التطعيم</label>
+              <input type="date" id="editInjection" class="form-control">
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <label class="font-weight-bold">فصيلة الدم</label>
+              <input type="text" id="editBlood" class="form-control" readonly style="background:#f8fafc">
+            </div>
+          </div>
         </div>
+
+        <div class="form-group mb-0">
+          <label class="font-weight-bold">ملاحظة الطبيب</label>
+          <textarea id="editNote" class="form-control" rows="3" placeholder="اكتب ملاحظات الطبيب…"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-success" onclick="submitEdit()"><i class="fa fa-save"></i> حفظ نتيجة الفحص</button>
+        <button class="btn btn-secondary" data-dismiss="modal">إغلاق</button>
+      </div>
     </div>
+  </div>
 </div>
 
 @section Scripts {
 <script>
-    $(function () {
-        $('#medicalTable').DataTable({
-            ajax: { url: '@Url.Action("ReadMedical","Medical")', dataSrc: '' },
-            columns: [
-                { data: 'fullName' },
-                { data: 'servcieNumber' },
-                { data: 'nic' },
-                { data: 'unitNameAr' },
-                { data: 'bloodGroup' },
-                { data: 'fitResult' },
-                { data: 'injectionDate' },
-                { data: 'doctorNote' },
-                {
-                    data: 'pligrimageId', orderable: false,
-                    render: function (id) {
-                        return '<a href="@Url.Action("UpdateDoctorNote","Medical")?id=' + id +
-                               '" class="btn btn-warning btn-xs"><i class="fa fa-pencil"></i> تعديل</a>';
-                    }
-                }
-            ]
-        });
+(function(){
+  'use strict';
+  var READ_URL  = '@Url.Action("ReadMedical","Medical")';
+  var STATS_URL = '@Url.Action("GetMedicalStats","Medical")';
+  var UPD_URL   = '@Url.Action("UpdateMedical","Medical")';
+  var BULK_URL  = '@Url.Action("BulkMarkFit","Medical")';
+  var token     = $('input[name="__RequestVerificationToken"]').val();
+  var dt, currentFilter='all';
+
+  var FIT_LABELS={
+    7:{cls:'b-pending',lbl:'⏳ في الانتظار'},
+    5:{cls:'b-fit',    lbl:'✅ لائق'},
+    8:{cls:'b-condfit',lbl:'🔵 بشروط'},
+    6:{cls:'b-notfit', lbl:'🔴 غير لائق'},
+    9:{cls:'b-approved',lbl:'⭐ موافقة نهائية'}
+  };
+  function fitBadge(v){var f=FIT_LABELS[v]||{cls:'b-pending',lbl:v};return'<span class="badge-pill '+f.cls+'">'+f.lbl+'</span>';}
+  function vacBadge(d){
+    if(!d||d==='01/01/0001') return '<span class="badge-pill b-novac">لم يتطعم</span>';
+    return '<span class="badge-pill b-vac">💉 '+d+'</span>';
+  }
+
+  function initTable(){
+    dt=$('#medTable').DataTable({
+      ajax:{url:READ_URL,dataSrc:'',error:function(){toastr.error('فشل التحميل');}},
+      columns:[
+        {data:null,orderable:false,className:'text-center',render:function(d,t,r){
+          return'<input type="checkbox" class="row-chk" data-id="'+r.pligrimageId+'">';
+        }},
+        {data:null,render:function(d,t,r,m){return m.row+1;},orderable:false},
+        {data:'fullName',render:function(d){return'<span style="font-weight:600">'+d+'</span>';}},
+        {data:'servcieNumber',render:function(d){return'<code>'+d+'</code>';}},
+        {data:'nic'},
+        {data:'rankDesc'},
+        {data:'unitNameAr'},
+        {data:'bloodGroup',render:function(d){return d?'<span class="badge badge-secondary">'+d+'</span>':'—';}},
+        {data:'fitResult',render:function(d){return fitBadge(d);}},
+        {data:'injectionDate',render:function(d){return vacBadge(d);}},
+        {data:'doctorNote',render:function(d){return d?'<small class="text-muted">'+d+'</small>':'—';}},
+        {data:null,orderable:false,className:'text-center',render:function(d,t,r){
+          return'<button class="btn btn-primary btn-xs btn-edit" data-row=\''+JSON.stringify(r).replace(/'/g,"&#39;")+'\' title="تسجيل نتيجة الفحص">'+
+                '<i class="fa fa-stethoscope"></i> فحص</button>';
+        }}
+      ],
+      rowCallback:function(row,data){
+        $(row).removeClass('row-fit row-notfit');
+        if(data.fitResult===5||data.fitResult===9) $(row).addClass('row-fit');
+        if(data.fitResult===6) $(row).addClass('row-notfit');
+      },
+      language:{url:'//cdn.datatables.net/plug-ins/1.13.8/i18n/ar.json',emptyTable:'لا يوجد حجاج للفحص — يجب أن تتم الموافقة النهائية أولاً'},
+      order:[[8,'asc']],pageLength:25,responsive:true,
+      dom:'Bfrtip',
+      buttons:[
+        {extend:'excel',text:'<i class="fa fa-file-excel-o"></i>',className:'btn-sm btn-outline-secondary',title:'نتائج الفحص الطبي'},
+        {extend:'print',text:'<i class="fa fa-print"></i>',className:'btn-sm btn-outline-secondary',title:'نتائج الفحص الطبي'}
+      ]
     });
-</script>
-}
+    dt.on('draw',updateSel);
+
+    // Custom filter
+    $.fn.dataTable.ext.search.push(function(s,d,i){
+      if(s.nTable.id!=='medTable') return true;
+      var r=dt.row(i).data(); if(!r) return true;
+      if(currentFilter==='pending') return r.fitResult===7;
+      if(currentFilter==='fit')     return r.fitResult===5||r.fitResult===9;
+      if(currentFilter==='cond')    return r.fitResult===8;
+      if(currentFilter==='notfit')  return r.fitResult===6;
+      if(currentFilter==='novac')   return !r.injectionDate||r.injectionDate==='01/01/0001';
+      return true;
+    });
+  }
+
+  function loadStats(){
+    $.getJSON(STATS_URL,function(s){
+      $('#msTotal').text(s.total);   $('#msPending').text(s.pending);
+      $('#msFit').text(s.fit);       $('#msCond').text(s.conditionally);
+      $('#msNotFit').text(s.notFit); $('#msVac').text(s.vaccinated);
+      $('#medYear').text(new Date().getFullYear());
+    });
+  }
+
+  // ── Filter tabs ──────────────────────────────────────────────
+  window.setFilter=function(f,el){
+    currentFilter=f; $('.f-tab').removeClass('active'); $(el).addClass('active');
+    dt.draw();
+  };
+  window.applySearch=function(){dt.search($('#medSearch').val()).draw();};
+
+  // ── Selection ────────────────────────────────────────────────
+  $('#medTable').on('change','.row-chk',updateSel);
+  $('#chkAll').on('change',function(){$('#medTable tbody .row-chk:visible').prop('checked',this.checked);updateSel();});
+  function updateSel(){
+    var n=$('#medTable tbody .row-chk:checked').length;
+    $('#bulkCount').text(n); $('#bulkBar').toggleClass('show',n>0);
+  }
+  window.updateSel=updateSel;
+  window.clearSel=function(){$('#medTable tbody .row-chk,#chkAll').prop('checked',false);updateSel();};
+
+  // ── Bulk mark fit ────────────────────────────────────────────
+  window.bulkMarkFit=function(){
+    var ids=$('#medTable tbody .row-chk:checked').map(function(){return+$(this).data('id');}).get();
+    if(!ids.length){toastr.warning('لم يتم تحديد سجلات');return;}
+    if(!confirm('تحديد '+ids.length+' حاج كـ لائق طبياً؟')) return;
+    $.ajax({url:BULK_URL,method:'POST',contentType:'application/json',
+      headers:{'RequestVerificationToken':token},data:JSON.stringify(ids),
+      success:function(r){toastr.success(r.message);clearSel();refreshAll();},
+      error:function(x){toastr.error(x.responseText||'فشلت العملية');}
+    });
+  };
+
+  // ── Edit modal ───────────────────────────────────────────────
+  $('#medTable').on('click','.btn-edit',function(){
+    var r=$(this).data('row');
+    $('#editId').val(r.pligrimageId);
+    $('#editInfo').html('<strong>'+r.fullName+'</strong> | '+r.rankDesc+' | '+r.unitNameAr+' | <span class="badge badge-secondary">'+(r.bloodGroup||'—')+'</span>');
+    $('#editBlood').val(r.bloodGroup||'');
+    $('#editNote').val(r.doctorNote||'');
+    $('#editInjection').val(r.injectionDate&&r.injectionDate!=='0001-01-01'?r.injectionDate:'');
+    $('input[name="fitResult"]').prop('checked',false);
+    if(r.fitResult&&r.fitResult!==7) $('input[name="fitResult"][value="'+r.fitResult+'"]').prop('checked',true);
+    updateRadioStyle();
+    $('#editModal').modal('show');
+  });
+
+  $('input[name="fitResult"]').on('change',updateRadioStyle);
+  function updateRadioStyle(){
+    var map={5:'sel-fit',8:'sel-cond',6:'sel-notfit',9:'sel-approved'};
+    $('.fit-radio').removeClass('sel-fit sel-cond sel-notfit sel-approved');
+    var v=$('input[name="fitResult"]:checked').val();
+    if(v&&map[v]) $('#fr-'+v).addClass(map[v]);
+  }
+
+  window.submitEdit=function(){
+    var fit=$('input[name="fitResult"]:checked').val();
+    if(!fit){toastr.warning('الرجاء اختيار نتيجة الفحص');return;}
+    $.post(UPD_URL,{
+      pligrimageId:$('#editId').val(),
+      fitResult:fit,
+      doctorNote:$('#editNote').val(),
+      injectionDate:$('#editInjection').val(),
+      __RequestVerificationToken:token
+    },function(r){
+      toastr.success(r.message);
+      $('#editModal').modal('hide');
+      refreshAll();
+    }).fail(function(x){toastr.error(x.responseText||'فشل الحفظ');});
+  };
+
+  // ── Refresh ──────────────────────────────────────────────────
+  window.refreshAll=function(){dt.ajax.reload(null,false);loadStats();};
+  window.exportExcel=function(){dt.button(0).trigger();};
+  window.printTable=function(){dt.button(1).trigger();};
+
+  $(function(){
+    initTable(); loadStats();
+    toastr.options={positionClass:'toast-top-left',timeOut:3000,rtl:true};
+  });
+}());
+</script>}

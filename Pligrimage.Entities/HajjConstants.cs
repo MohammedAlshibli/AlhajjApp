@@ -30,7 +30,8 @@ namespace Pligrimage.Entities
         {
             public const int Pending   = 0;   // لم يتم التأكيد
             public const int Confirmed = 51;  // تم التأكيد
-            public const int Cancelled = 99;  // ملغي
+            public const int Cancelled   = 99;  // ملغي
+            public const int HQApproved  = 77;  // موافقة الإدارة العليا (بعد تأكيد السلاح)
         }
 
         // ── Flight direction parameter IDs ──────────────────────────────────

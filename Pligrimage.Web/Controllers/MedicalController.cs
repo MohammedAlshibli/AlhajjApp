@@ -1,192 +1,158 @@
-using Pligrimage.Entities;
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using ITS.Core.Abstractions;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Pligrimage.Data;
+using Microsoft.Extensions.Options;
 using Pligrimage.Entities;
 using Pligrimage.Services.Interface;
-using Pligrimage.Web.Extensions;
-using Pligrimage.Web.Models;
-
-// Magic number constants
-using HC = Pligrimage.Entities.HajjConstants;
+using Pligrimage.Web.Infrastructure;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Pligrimage.Web.Controllers
 {
     public class MedicalController : BaseController
     {
-        public readonly IAlHajjMasterServcie _alHajjRepostory;
-        public readonly IParameterService _parameterRepostory;
-        public readonly IAdminService _adminService;
-        public readonly IUnitOfWork _unitOfWork;
+        private readonly IAlHajjMasterServcie _alhajjService;
+        private readonly IParameterService    _parameterService;
+        private readonly IUnitOfWork          _unitOfWork;
+        private readonly HajjSettings         _settings;
 
-        public MedicalController(IAlHajjMasterServcie alHajjRepostory, IParameterService parameterRepostory, IUnitOfWork unitOfWork,IAdminService adminService)
+        public MedicalController(
+            IAlHajjMasterServcie alhajjService,
+            IParameterService    parameterService,
+            IUnitOfWork          unitOfWork,
+            IOptions<HajjSettings> settings)
         {
-            _alHajjRepostory = alHajjRepostory;
-            _unitOfWork = unitOfWork;
-            _parameterRepostory = parameterRepostory;
-            _adminService = adminService;
+            _alhajjService    = alhajjService;
+            _parameterService = parameterService;
+            _unitOfWork       = unitOfWork;
+            _settings         = settings.Value;
         }
 
+        // ── INDEX ─────────────────────────────────────────────────────────
         [PligrimageFiltter]
         public IActionResult Index()
         {
-            //var FitResultParameter = _parameterRepostory.Queryable().Where(c => c.Code == "FitCode")
-            var FitResultParameter = _parameterRepostory.GetFitCodeTypeList()
-
-            .Select(c => new
-            {
-                c.ParameterId,
-                c.DescArabic
-            }).ToList();
-
-            ViewData["FitResult"] = FitResultParameter;
+            ViewData["FitResult"] = _parameterService.GetFitCodeTypeList()
+                .Select(c => new { c.ParameterId, c.DescArabic }).ToList();
             return View();
         }
 
-        public async Task<IActionResult> ReadMedical()
+        // ── READ: HQ-approved pilgrims awaiting medical exam ─────────────
+        // Shows pilgrims with ConfirmCode == 77 (HQ approved) only
+        public IActionResult ReadMedical()
         {
-            int medYear = DateTime.Now.Year; // TODO: inject HajjSettings
-            var list = _alHajjRepostory.Queryable().Include(c => c.Unit)
+            int year = _settings.ActiveHajjYear;
+
+            var list = _alhajjService.Queryable()
+                .Include(c => c.Unit)
+                .Where(c =>
+                    c.AlhajYear   == year &&
+                    c.ConfirmCode == HajjConstants.ConfirmCode.HQApproved)
                 .Select(c => new
                 {
                     c.PligrimageId,
                     c.FullName,
                     c.ServcieNumber,
                     c.NIC,
-                    UnitNameAr = c.Unit != null ? c.Unit.UnitNameAr : "",
+                    c.RankDesc,
                     c.BloodGroup,
                     c.FitResult,
-                    InjectionDate = c.InjectionDate.ToString("dd/MM/yyyy"),
-                    c.DoctorNote
-                }).ToList();
+                    c.DoctorNote,
+                    c.ParameterId,
+                    InjectionDate   = c.InjectionDate != default
+                                        ? c.InjectionDate.ToString("yyyy-MM-dd") : "",
+                    PassportExpire  = c.PassportExpire.HasValue
+                                        ? c.PassportExpire.Value.ToString("yyyy-MM-dd") : "",
+                    UnitNameAr      = c.Unit != null ? c.Unit.UnitNameAr : ""
+                })
+                .ToList();
+
             return Json(list);
         }
 
-
-        [HttpPost]
-        public async Task<IActionResult> UpdateMedical( AlhajjMaster alhajjMaster)
+        // ── STATS ─────────────────────────────────────────────────────────
+        public IActionResult GetMedicalStats()
         {
-            if (alhajjMaster != null && ModelState.IsValid)
+            int year = _settings.ActiveHajjYear;
+            var all = _alhajjService.Queryable()
+                .Where(c => c.AlhajYear == year && c.ConfirmCode == HajjConstants.ConfirmCode.HQApproved)
+                .Select(c => new { c.FitResult, c.InjectionDate })
+                .ToList();
+
+            return Json(new
             {
-                alhajjMaster.UpdatedBy = LoggedUserName();
-                alhajjMaster.UpdatedOn= DateTime.Now;
-                _alHajjRepostory.Update(alhajjMaster);
-                await _unitOfWork.SaveChangesAsync();
-            }
-            return RedirectToAction("Index", "Medical");
-
+                total         = all.Count,
+                pending       = all.Count(c => c.FitResult == HajjConstants.FitResult.Pending),
+                fit           = all.Count(c => c.FitResult == HajjConstants.FitResult.Fit ||
+                                               c.FitResult == HajjConstants.FitResult.DoctorApproved),
+                conditionally = all.Count(c => c.FitResult == HajjConstants.FitResult.ConditionallyFit),
+                notFit        = all.Count(c => c.FitResult == HajjConstants.FitResult.NotFit),
+                vaccinated    = all.Count(c => c.InjectionDate != default(DateTime))
+            });
         }
 
-
-
-        public IActionResult DoctorNote()
-        {
-            var FitResultParameter = _parameterRepostory.GetFitCodeTypeList()
-
-                .Select(c => new
-                {
-                    c.ParameterId,
-                    c.DescArabic
-                }).ToList();
-
-            ViewData["FitResult"] = FitResultParameter;
-            return View();
-
-        }
-
-        public IActionResult DoctorRead()
-        {
-           
-            var alhajjAdminlist = _alHajjRepostory.Queryable().Where(c => c.FitResult == HajjConstants.FitResult.Pending ).Select(c => new DoctorNoteModel()
-            {
-                Name = c.FullName,
-                ServcieNumber = c.ServcieNumber,
-                NationalID = c.NIC,
-                DoctorNote = c.DoctorNote,
-                UnitNameAr = c.Unit.UnitNameAr,
-                BloodGroup=c.BloodGroup,
-                //parameter=c.FitResult,
-                //Parameter=new ParameterViewModel()
-                //{
-                //    ParameterID=Parameter
-                //}
-                
-
-            }).ToList();
-            return View(alhajjAdminlist);
-
-
-        }
-
-
+        // ── UPDATE FIT RESULT + DOCTOR NOTE ──────────────────────────────
         [HttpPost]
-        public async Task<IActionResult> UpdateDoctorNOte( DoctorNoteModel doctorNoteModel )
+        public async Task<IActionResult> UpdateMedical(
+            int pligrimageId, int fitResult,
+            string doctorNote, string injectionDate)
         {
+            var pilgrim = _alhajjService.Queryable()
+                .FirstOrDefault(c => c.PligrimageId == pligrimageId);
+
+            if (pilgrim == null) return NotFound("السجل غير موجود");
+
+            pilgrim.FitResult  = fitResult;
+            pilgrim.DoctorNote = doctorNote;
+
+            if (DateTime.TryParse(injectionDate, out var injDate))
+                pilgrim.InjectionDate = injDate;
+
+            StampUpdate(pilgrim);
+            _alhajjService.Update(pilgrim);
+            await _unitOfWork.SaveChangesAsync();
+
+            return Ok(new
+            {
+                message = $"تم تحديث نتيجة الفحص الطبي لـ {pilgrim.FullName}",
+                pligrimageId,
+                fitResult
+            });
+        }
+
+        // ── BULK UPDATE FIT: mark many as Fit at once ────────────────────
+        [HttpPost]
+        public async Task<IActionResult> BulkMarkFit([FromBody] System.Collections.Generic.List<int> ids)
+        {
+            if (ids == null || !ids.Any()) return BadRequest("لم يتم تحديد سجلات");
+
+            int year = _settings.ActiveHajjYear;
+            var pilgrims = _alhajjService.Queryable()
+                .Where(c => ids.Contains(c.PligrimageId) && c.AlhajYear == year)
+                .ToList();
+
+            if (!pilgrims.Any()) return BadRequest("لم يتم العثور على السجلات");
+
+            using var tx = await _unitOfWork.BeginTransactionAsync();
             try
             {
-                var alhajjDetails = _alHajjRepostory.Queryable().Where(c => c.ServcieNumber == doctorNoteModel.ServcieNumber).FirstOrDefault();
-                alhajjDetails.ServcieNumber = doctorNoteModel.ServcieNumber;
-                alhajjDetails.DoctorNote = doctorNoteModel.DoctorNote;
-               
-
-
-                if (alhajjDetails != null && ModelState.IsValid)
+                foreach (var p in pilgrims)
                 {
-
-                     alhajjDetails.UpdatedBy = LoggedUserName();
-                     alhajjDetails.UpdatedOn = DateTime.Now;
-                    _alHajjRepostory.Update(alhajjDetails);
-                    await _unitOfWork.SaveChangesAsync();
+                    p.FitResult = HajjConstants.FitResult.DoctorApproved;
+                    StampUpdate(p);
+                    _alhajjService.Update(p);
                 }
-                return View(alhajjDetails);
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
-
-    
-        }
-
-        public async Task<IActionResult> IndexMedical()
-        {
-            var x = _alHajjRepostory.Queryable().Include(c => c.Parameter).ToList();
-            return View(x);
-        }
-
-        public async Task<IActionResult> UpdateDoctorNote(int PligrimageId)
-        {
-            if(PligrimageId == null)
-            {
-                return NotFound();
-            }
-            var alhalist = _alHajjRepostory.FindAsync(PligrimageId);
-            if (alhalist==null)
-            {
-                return NotFound();
-            }
-            return View(alhalist);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> UpdateDoctorNote(AlhajjMaster alhajjMaster)
-        {
-            if (ModelState.IsValid)
-            {
-                _alHajjRepostory.Update(alhajjMaster);
                 await _unitOfWork.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                await tx.CommitAsync();
+                return Ok(new { message = $"تم تحديث {pilgrims.Count} سجل كـ لائق", count = pilgrims.Count });
             }
-            return View(alhajjMaster);
+            catch (Exception ex)
+            {
+                await tx.RollbackAsync();
+                return BadRequest($"فشلت العملية: {ex.Message}");
+            }
         }
-
     }
 }

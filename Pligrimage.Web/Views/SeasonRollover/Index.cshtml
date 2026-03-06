@@ -1,0 +1,313 @@
+@{
+    ViewData["Title"] = "ترحيل الموسم";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+:root{--navy:#0f2942;--blue:#1a3a5c;--gold:#c9a227;--green:#059669;--red:#dc2626;--orange:#d97706;--purple:#6b21a8;}
+.sr-header{background:linear-gradient(135deg,#0f2942,#1e4976);border-radius:13px;padding:20px 26px;color:#fff;margin-bottom:24px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 4px 20px rgba(15,41,66,.35);}
+.stat-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:10px;margin-bottom:20px;}
+.stat-card{background:#fff;border-radius:11px;padding:14px 10px;text-align:center;border:1px solid #e2e8f0;box-shadow:0 1px 5px rgba(0,0,0,.05);}
+.stat-card .num{font-size:28px;font-weight:900;line-height:1;}
+.stat-card .lbl{font-size:10px;color:#64748b;margin-top:4px;font-weight:600;}
+.section{background:#fff;border-radius:12px;border:1px solid #e2e8f0;padding:20px 24px;margin-bottom:18px;box-shadow:0 2px 8px rgba(0,0,0,.04);}
+.section-title{font-weight:800;font-size:15px;color:#0f2942;margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+/* History timeline */
+.timeline{position:relative;padding-right:28px;}
+.timeline::before{content:'';position:absolute;right:8px;top:0;bottom:0;width:2px;background:#e2e8f0;}
+.tl-item{position:relative;margin-bottom:16px;}
+.tl-dot{position:absolute;right:-24px;top:4px;width:14px;height:14px;border-radius:99px;border:3px solid #fff;box-shadow:0 0 0 2px #e2e8f0;}
+.tl-dot.current{background:var(--green);box-shadow:0 0 0 3px rgba(5,150,105,.25);}
+.tl-dot.past{background:#94a3b8;}
+/* Rollover form */
+.rollover-box{background:linear-gradient(135deg,#fffbeb,#fef9c3);border:2px solid #fde047;border-radius:13px;padding:22px 24px;}
+.rollover-box.danger{background:linear-gradient(135deg,#fef2f2,#fee2e2);border-color:#fca5a5;}
+/* Banned list */
+.banned-badge{background:#fee2e2;color:#991b1b;padding:2px 10px;border-radius:20px;font-size:11px;font-weight:700;}
+/* Ban check in registration */
+.ban-check-result{border-radius:9px;padding:10px 14px;font-size:12px;margin-top:8px;}
+.bc-ok{background:#dcfce7;border:1px solid #86efac;color:#166534;}
+.bc-banned{background:#fee2e2;border:1px solid #fca5a5;color:#991b1b;}
+</style>
+
+<div class="sr-header">
+  <div>
+    <h4 style="margin:0;font-size:20px;font-weight:800">🔄 ترحيل الموسم</h4>
+    <div style="font-size:12px;opacity:.75;margin-top:3px">إغلاق الموسم الحالي وتهيئة النظام للسنة القادمة</div>
+  </div>
+  <div id="currentSeasonBadge" style="background:rgba(201,162,39,.25);border:1px solid rgba(201,162,39,.5);border-radius:10px;padding:8px 18px;text-align:center">
+    <div style="font-size:10px;opacity:.8">الموسم الحالي</div>
+    <div style="font-size:22px;font-weight:900;color:#c9a227" id="activeYearDisplay">—</div>
+  </div>
+</div>
+
+<!-- Current season stats -->
+<div id="currentSeasonStats">
+  <div class="stat-grid" id="statGrid">
+    <div class="stat-card"><div class="num" style="color:#64748b">—</div><div class="lbl">جاري التحميل</div></div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-7">
+
+    <!-- Unit breakdown -->
+    <div class="section">
+      <div class="section-title">🏛️ تفاصيل الأسلحة — الموسم الحالي</div>
+      <div class="table-responsive">
+        <table class="table table-hover table-bordered table-sm" id="unitBreakdownTable" style="direction:rtl;text-align:right">
+          <thead style="background:#0f2942;color:#fff">
+            <tr>
+              <th>السلاح</th>
+              <th>المسموح</th>
+              <th>المسجلون</th>
+              <th>موافقة HQ</th>
+              <th>نسبة الإنجاز</th>
+            </tr>
+          </thead>
+          <tbody id="unitBreakdownBody">
+            <tr><td colspan="5" style="text-align:center;color:#94a3b8">جاري التحميل...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Banned pilgrims -->
+    <div class="section">
+      <div class="section-title">
+        🚫 الحجاج الممنوعون من الإعادة
+        <span id="bannedCount" class="banned-badge">—</span>
+      </div>
+      <div style="font-size:12px;color:#64748b;margin-bottom:12px">
+        كل من وصل لمرحلة "موافقة HQ" في أي موسم سابق ممنوع من التسجيل نهائياً.
+      </div>
+      <div class="table-responsive" style="max-height:280px;overflow-y:auto">
+        <table class="table table-sm table-hover" style="direction:rtl;text-align:right">
+          <thead style="position:sticky;top:0;background:#f8fafc;z-index:1">
+            <tr>
+              <th>الاسم</th>
+              <th>الرقم الوطني</th>
+              <th>الرقم العسكري</th>
+              <th>السلاح</th>
+              <th>سنة الحج</th>
+            </tr>
+          </thead>
+          <tbody id="bannedBody">
+            <tr><td colspan="5" style="text-align:center;color:#94a3b8">جاري التحميل...</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div id="bannedPagination" style="margin-top:10px;text-align:center"></div>
+    </div>
+
+  </div>
+  <div class="col-md-5">
+
+    <!-- History -->
+    <div class="section">
+      <div class="section-title">📅 سجل المواسم السابقة</div>
+      <div class="timeline" id="historyTimeline">
+        <div style="color:#94a3b8;font-size:12px">جاري التحميل...</div>
+      </div>
+    </div>
+
+    <!-- Rollover box -->
+    <div class="rollover-box" id="rolloverBox">
+      <div style="font-weight:800;font-size:15px;color:#92400e;margin-bottom:6px">⚙️ ترحيل للموسم القادم</div>
+      <div style="font-size:12px;color:#78350f;margin-bottom:16px;line-height:1.6">
+        سيتم تجميد بيانات الموسم الحالي كمرجع دائم. السنة الجديدة ستبدأ بصفحة بيضاء مع الاحتفاظ بكل إعدادات الأسلحة والحصص.
+      </div>
+
+      <div class="row g-2 mb-3">
+        <div class="col-6">
+          <label style="font-size:11px;font-weight:700;color:#92400e;display:block;margin-bottom:4px">الموسم الحالي</label>
+          <input id="oldYearDisplay" class="form-control form-control-sm" readonly style="background:#fef3c7;font-weight:700;text-align:center">
+        </div>
+        <div class="col-6">
+          <label style="font-size:11px;font-weight:700;color:#0f2942;display:block;margin-bottom:4px">الموسم الجديد <span style="color:red">*</span></label>
+          <input id="newYearInput" type="number" class="form-control form-control-sm" style="font-weight:700;text-align:center" placeholder="2026">
+        </div>
+      </div>
+
+      <div class="form-check mb-3" style="text-align:right;direction:rtl">
+        <input type="checkbox" id="confirmComplete" class="form-check-input" style="margin-left:8px">
+        <label for="confirmComplete" class="form-check-label" style="font-size:12px;font-weight:600;color:#92400e">
+          أؤكد أن موسم الحج الحالي قد اكتمل وجميع البيانات صحيحة
+        </label>
+      </div>
+
+      <div id="rolloverWarning" class="alert alert-warning py-2 px-3" style="font-size:12px;display:none;direction:rtl"></div>
+
+      <button id="btnRollover" onclick="performRollover()" class="btn btn-warning btn-sm w-100" style="font-weight:800;font-size:13px">
+        🔄 تنفيذ الترحيل للموسم الجديد
+      </button>
+      <div style="font-size:10px;color:#92400e;margin-top:8px;text-align:center">
+        ⚠️ هذا الإجراء لا يمكن التراجع عنه — تأكد من النسخ الاحتياطي أولاً
+      </div>
+    </div>
+
+  </div>
+</div>
+
+@section Scripts {
+<script>
+var activeYear = 2025;
+
+$(function(){
+  toastr.options={positionClass:'toast-top-left',timeOut:4000,rtl:true};
+  loadCurrentStats();
+  loadHistory();
+  loadBanned(1);
+});
+
+// ── Load current season stats ──────────────────────────────────────────
+function loadCurrentStats(){
+  $.getJSON('@Url.Action("GetSeasonStats","SeasonRollover")', {year: activeYear}, function(d){
+    activeYear = d.year;
+    $('#activeYearDisplay').text(d.year);
+    $('#oldYearDisplay').val(d.year);
+    $('#newYearInput').val(d.year + 1);
+
+    // Stat cards
+    var cards = [
+      {n:d.total,      l:'إجمالي المسجلين',    c:'#1a3a5c'},
+      {n:d.hqApproved, l:'موافقة HQ ✅',        c:'#059669'},
+      {n:d.pending,    l:'قيد المراجعة ⏳',     c:'#d97706'},
+      {n:d.cancelled,  l:'ملغيون',              c:'#dc2626'},
+      {n:d.regular,    l:'أصليون',              c:'#2563eb'},
+      {n:d.standBy,    l:'احتياط',              c:'#7c3aed'},
+      {n:d.admin,      l:'إداريون',             c:'#0891b2'},
+    ];
+    var html = cards.map(function(c){
+      return `<div class="stat-card">
+        <div class="num" style="color:${c.c}">${c.n}</div>
+        <div class="lbl">${c.l}</div>
+      </div>`;
+    }).join('');
+    $('#statGrid').html(html);
+
+    // Unit breakdown
+    var tbody = d.units.map(function(u){
+      var pct = u.allowNumber>0 ? Math.round(u.hqApproved/u.allowNumber*100) : 0;
+      var barColor = pct>=100?'success':pct>=70?'primary':'warning';
+      return `<tr>
+        <td style="font-weight:700">${u.unitName}</td>
+        <td>${u.allowNumber + u.standBy}</td>
+        <td>${u.registered}</td>
+        <td><span style="color:#059669;font-weight:700">${u.hqApproved}</span></td>
+        <td>
+          <div class="progress" style="height:8px;min-width:80px">
+            <div class="progress-bar bg-${barColor}" style="width:${pct}%"></div>
+          </div>
+          <span style="font-size:10px;color:#64748b">${pct}%</span>
+        </td>
+      </tr>`;
+    }).join('');
+    $('#unitBreakdownBody').html(tbody || '<tr><td colspan="5" style="text-align:center;color:#94a3b8">لا توجد بيانات</td></tr>');
+
+    // If there are pending records, show warning
+    if(d.pending > 0){
+      $('#rolloverWarning').text(`⚠️ تحذير: يوجد ${d.pending} سجل لم تتم الموافقة النهائية عليه — يُنصح بإنهاء الموسم الحالي أولاً`).show();
+    }
+  }).fail(function(){ toastr.error('خطأ في تحميل إحصاءات الموسم'); });
+}
+
+// ── Load history ─────────────────────────────────────────────────────
+function loadHistory(){
+  $.getJSON('@Url.Action("History","SeasonRollover")', function(seasons){
+    if(!seasons.length){
+      $('#historyTimeline').html('<div style="color:#94a3b8;font-size:12px">لا يوجد سجل مواسم سابقة</div>');
+      return;
+    }
+    var html = seasons.map(function(s){
+      var isCurrent = s.isCurrentYear;
+      return `<div class="tl-item">
+        <div class="tl-dot ${isCurrent?'current':'past'}"></div>
+        <div style="background:${isCurrent?'#ecfdf5':'#f8fafc'};border:1px solid ${isCurrent?'#86efac':'#e2e8f0'};border-radius:9px;padding:10px 14px">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+            <span style="font-weight:800;font-size:14px;color:#0f2942">${s.year}</span>
+            ${isCurrent?'<span style="background:#dcfce7;color:#166534;font-size:10px;font-weight:700;padding:1px 8px;border-radius:20px">الحالي</span>':'<span style="background:#f1f5f9;color:#64748b;font-size:10px;padding:1px 8px;border-radius:20px">مؤرشف</span>'}
+          </div>
+          <div style="font-size:11px;color:#64748b;display:flex;gap:14px">
+            <span>إجمالي: <strong>${s.total}</strong></span>
+            <span>موافقة HQ: <strong style="color:#059669">${s.hqApproved}</strong></span>
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+    $('#historyTimeline').html(html);
+  });
+}
+
+// ── Load banned list ─────────────────────────────────────────────────
+function loadBanned(page){
+  $.getJSON('@Url.Action("BannedList","SeasonRollover")', {page:page}, function(r){
+    $('#bannedCount').text(r.total);
+    var rows = r.data.map(function(b){
+      return `<tr>
+        <td style="font-weight:600">${b.fullName||'—'}</td>
+        <td style="font-size:11px;direction:ltr">${b.nic||'—'}</td>
+        <td style="font-size:11px">${b.servcieNumber||'—'}</td>
+        <td>${b.unitName}</td>
+        <td><span class="banned-badge">${b.alhajYear}</span></td>
+      </tr>`;
+    }).join('');
+    $('#bannedBody').html(rows || '<tr><td colspan="5" style="text-align:center;color:#94a3b8">لا يوجد حجاج سابقون</td></tr>');
+
+    // Pagination
+    var totalPages = Math.ceil(r.total / r.pageSize);
+    if(totalPages > 1){
+      var pag = '';
+      for(var i=1;i<=totalPages;i++){
+        pag += `<button onclick="loadBanned(${i})" class="btn btn-xs ${i===r.page?'btn-primary':'btn-outline-secondary'}" style="margin:2px;min-width:30px">${i}</button>`;
+      }
+      $('#bannedPagination').html(pag);
+    }
+  }).fail(function(){ $('#bannedBody').html('<tr><td colspan="5" style="text-align:center;color:#dc2626">خطأ في التحميل</td></tr>'); });
+}
+
+// ── Perform rollover ─────────────────────────────────────────────────
+function performRollover(){
+  var newYear = +$('#newYearInput').val();
+  var confirmed = $('#confirmComplete').is(':checked');
+
+  if(!newYear || newYear < 2020){
+    toastr.warning('أدخل سنة صحيحة'); return;
+  }
+  if(!confirmed){
+    toastr.warning('يجب تأكيد اكتمال الموسم الحالي أولاً'); return;
+  }
+  if(!confirm(`هل أنت متأكد من ترحيل النظام من موسم ${activeYear} إلى موسم ${newYear}؟\n\nهذا الإجراء لا يمكن التراجع عنه.`)){
+    return;
+  }
+
+  $('#btnRollover').prop('disabled',true).html('<i class="fa fa-spinner fa-spin"></i> جاري الترحيل...');
+
+  $.ajax({
+    url: '@Url.Action("PerformRollover","SeasonRollover")',
+    type: 'POST',
+    data: {
+      newYear: newYear,
+      confirmComplete: confirmed,
+      __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
+    },
+    success: function(r){
+      toastr.success(r.message);
+      activeYear = newYear;
+      $('#activeYearDisplay').text(newYear);
+      $('#oldYearDisplay').val(newYear);
+      $('#newYearInput').val(newYear+1);
+      $('#rolloverBox').addClass('danger');
+      loadCurrentStats();
+      loadHistory();
+    },
+    error: function(x){
+      toastr.error(x.responseText || 'فشل الترحيل');
+    },
+    complete: function(){
+      $('#btnRollover').prop('disabled',false).html('🔄 تنفيذ الترحيل للموسم الجديد');
+    }
+  });
+}
+</script>
+@Html.AntiForgeryToken()
+}

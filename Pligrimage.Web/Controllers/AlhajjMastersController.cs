@@ -198,13 +198,22 @@ namespace Pligrimage.Web.Controllers
             if (unit == null)
                 return BadRequest("الوحدة غير موجودة");
 
-            // BUG-FIX #4: duplicate check scoped to active year only
+            // ── PERMANENT BAN: already performed Hajj in any previous year ──
+            var previousHajj = _alhajjService.Queryable()
+                .Where(c => c.NIC == alhajjMaster.NIC &&
+                             c.ConfirmCode == HajjConstants.ConfirmCode.HQApproved &&
+                             !c.IsDeleted)
+                .Select(c => c.AlhajYear)
+                .FirstOrDefault();
+
+            if (previousHajj > 0)
+                return BadRequest($"لا يمكن تسجيل هذا الموظف — لقد أدّى فريضة الحج عام {previousHajj} ولا يُسمح له بالحج مرة ثانية");
+
+            // ── DUPLICATE: already registered this season ──────────────────
             bool alreadyRegistered = _alhajjService.Queryable()
                 .Any(c => c.NIC == alhajjMaster.NIC &&
                            c.AlhajYear == activeYear &&
-                           !c.IsDeleted &&
-                           (c.ParameterId == HajjConstants.PilgrimType.Regular ||
-                            c.ParameterId == HajjConstants.PilgrimType.StandBy));
+                           !c.IsDeleted);
 
             if (alreadyRegistered)
                 return BadRequest("الموظف مسجل مسبقاً في هذه الدورة");

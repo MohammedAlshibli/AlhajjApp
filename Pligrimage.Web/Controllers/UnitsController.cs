@@ -1,237 +1,177 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using ITS.Core.Abstractions;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Pligrimage.Data;
+using Microsoft.Extensions.Options;
 using Pligrimage.Entities;
 using Pligrimage.Services.Interface;
-using Pligrimage.Web.Extensions;
+using Pligrimage.Web.Infrastructure;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Pligrimage.Web.Controllers
 {
     public class UnitsController : BaseController
     {
-      
-        private readonly IUnitServcie _unitService ;
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly IUnitServcie        _unitService;
+        private readonly IAlHajjMasterServcie _alhajjService;
+        private readonly IUnitOfWork         _unitOfWork;
+        private readonly HajjSettings        _settings;
 
-        public UnitsController(IUnitServcie unitService, IUnitOfWork unitOfWork)
+        public UnitsController(
+            IUnitServcie        unitService,
+            IAlHajjMasterServcie alhajjService,
+            IUnitOfWork         unitOfWork,
+            IOptions<HajjSettings> settings)
         {
-            _unitService = unitService;
-            _unitOfWork = unitOfWork;
+            _unitService   = unitService;
+            _alhajjService = alhajjService;
+            _unitOfWork    = unitOfWork;
+            _settings      = settings.Value;
         }
 
-        // GET: Units
+        // ── INDEX ──────────────────────────────────────────────────────────
         [PligrimageFiltter]
-        public async Task<IActionResult> Index()
+        public IActionResult Index() => View();
+
+        // ── READ all units with live quota counts ──────────────────────────
+        public IActionResult UnitRead()
         {
-            return View();
+            int year = _settings.ActiveHajjYear;
+
+            var units = _unitService.Queryable().ToList();
+
+            // Count registered pilgrims per unit per type (non-deleted)
+            var counts = _alhajjService.Queryable()
+                .Where(c => c.AlhajYear == year && !c.IsDeleted)
+                .GroupBy(c => new { c.UnitId, c.ParameterId })
+                .Select(g => new { g.Key.UnitId, g.Key.ParameterId, Count = g.Count() })
+                .ToList();
+
+            var result = units.Select(u =>
+            {
+                int regularUsed  = counts.FirstOrDefault(c => c.UnitId == u.UnitId && c.ParameterId == HajjConstants.PilgrimType.Regular)?.Count  ?? 0;
+                int standbyUsed  = counts.FirstOrDefault(c => c.UnitId == u.UnitId && c.ParameterId == HajjConstants.PilgrimType.StandBy)?.Count  ?? 0;
+                int adminUsed    = counts.FirstOrDefault(c => c.UnitId == u.UnitId && c.ParameterId == HajjConstants.PilgrimType.Admin)?.Count    ?? 0;
+
+                return new
+                {
+                    u.UnitId,
+                    u.UnitNameAr,
+                    u.UnitNameEn,
+                    u.UnitCode,
+                    u.UnitOrder,
+                    u.ModFlag,
+                    u.AllowNumber,
+                    u.StandBy,
+                    RegularUsed     = regularUsed,
+                    StandByUsed     = standbyUsed,
+                    AdminUsed       = adminUsed,
+                    TotalUsed       = regularUsed + standbyUsed + adminUsed,
+                    RegularRemain   = Math.Max(0, u.AllowNumber - regularUsed),
+                    StandByRemain   = Math.Max(0, u.StandBy    - standbyUsed),
+                    RegularPct      = u.AllowNumber > 0 ? (int)((double)regularUsed / u.AllowNumber * 100) : 0,
+                    StandByPct      = u.StandBy     > 0 ? (int)((double)standbyUsed / u.StandBy     * 100) : 0,
+                    RegularFull     = regularUsed >= u.AllowNumber,
+                    StandByFull     = standbyUsed >= u.StandBy,
+                };
+            }).OrderBy(u => u.UnitOrder).ToList();
+
+            return Json(result);
         }
 
-
-        public async Task<IActionResult> UnitRead()
+        // ── QUOTA endpoint — called from registration screen ───────────────
+        public IActionResult GetQuota(int unitId)
         {
+            int year = _settings.ActiveHajjYear;
 
-            return Json(_unitService.Queryable().ToList());
+            var unit = _unitService.Queryable().FirstOrDefault(u => u.UnitId == unitId);
+            if (unit == null) return NotFound();
+
+            int regularUsed = _alhajjService.Queryable()
+                .Count(c => c.UnitId == unitId && c.AlhajYear == year &&
+                             c.ParameterId == HajjConstants.PilgrimType.Regular && !c.IsDeleted);
+
+            int standbyUsed = _alhajjService.Queryable()
+                .Count(c => c.UnitId == unitId && c.AlhajYear == year &&
+                             c.ParameterId == HajjConstants.PilgrimType.StandBy && !c.IsDeleted);
+
+            return Json(new
+            {
+                unitId,
+                unitNameAr    = unit.UnitNameAr,
+                allowNumber   = unit.AllowNumber,
+                standBy       = unit.StandBy,
+                regularUsed,
+                standbyUsed,
+                regularRemain = Math.Max(0, unit.AllowNumber - regularUsed),
+                standbyRemain = Math.Max(0, unit.StandBy     - standbyUsed),
+                regularFull   = regularUsed >= unit.AllowNumber,
+                standbyFull   = standbyUsed >= unit.StandBy,
+                regularPct    = unit.AllowNumber > 0 ? (int)((double)regularUsed / unit.AllowNumber * 100) : 0,
+                standbyPct    = unit.StandBy     > 0 ? (int)((double)standbyUsed / unit.StandBy     * 100) : 0,
+            });
         }
 
-
-
+        // ── CREATE ─────────────────────────────────────────────────────────
         [HttpPost]
         public async Task<IActionResult> CreateUnit(Unit unit)
         {
-            if (unit != null && ModelState.IsValid)
-            {
-                unit.CreateBy = LoggedUserName();
-                unit.CreateOn = DateTime.Now;
-                _unitService.Insert(unit);
-                await _unitOfWork.SaveChangesAsync();
-            }
-            return Json(unit);
+            if (unit == null || !ModelState.IsValid)
+                return BadRequest("البيانات غير مكتملة");
+
+            if (_unitService.Queryable().Any(u => u.UnitCode == unit.UnitCode))
+                return BadRequest("كود الوحدة مستخدم مسبقاً");
+
+            unit.CreateBy  = LoggedUserName();
+            unit.CreateOn  = DateTime.Now;
+            unit.AlhajYear = new DateTime(_settings.ActiveHajjYear, 1, 1);
+            _unitService.Insert(unit);
+            await _unitOfWork.SaveChangesAsync();
+            return Ok(new { message = $"تم إضافة {unit.UnitNameAr} بنجاح", unit });
         }
 
-
+        // ── UPDATE ─────────────────────────────────────────────────────────
         [HttpPost]
         public async Task<IActionResult> UpdateUnit(Unit unit)
         {
-            if (unit != null && ModelState.IsValid)
-            {
-                unit.CreateBy = LoggedUserName();
-                unit.CreateOn = DateTime.Now;
-                _unitService.Update(unit);
-                await _unitOfWork.SaveChangesAsync();
-            }
-            return RedirectToAction("Index", "Units");
+            if (unit == null || !ModelState.IsValid)
+                return BadRequest("البيانات غير صحيحة");
 
+            var existing = _unitService.Queryable().FirstOrDefault(u => u.UnitId == unit.UnitId);
+            if (existing == null) return NotFound("الوحدة غير موجودة");
+
+            existing.UnitNameAr  = unit.UnitNameAr;
+            existing.UnitNameEn  = unit.UnitNameEn;
+            existing.UnitCode    = unit.UnitCode;
+            existing.UnitOrder   = unit.UnitOrder;
+            existing.ModFlag     = unit.ModFlag;
+            existing.AllowNumber = unit.AllowNumber;
+            existing.StandBy     = unit.StandBy;
+            existing.UpdatedBy   = LoggedUserName();
+            existing.UpdatedOn   = DateTime.Now;
+
+            _unitService.Update(existing);
+            await _unitOfWork.SaveChangesAsync();
+            return Ok(new { message = $"تم تحديث {existing.UnitNameAr} بنجاح" });
         }
 
-
+        // ── DELETE ─────────────────────────────────────────────────────────
         [HttpPost]
-        public async Task<IActionResult> DeleteUnit(Unit unit)
+        public async Task<IActionResult> DeleteUnit(int unitId)
         {
-            if (unit != null && ModelState.IsValid)
-            {
-                _unitService.Delete(unit);
-                await _unitOfWork.SaveChangesAsync();
-            }
-            return RedirectToAction("Index", "Units");
+            var unit = _unitService.Queryable().FirstOrDefault(u => u.UnitId == unitId);
+            if (unit == null) return NotFound();
+
+            // Block delete if unit has registered pilgrims
+            int count = _alhajjService.Queryable()
+                .Count(c => c.UnitId == unitId && !c.IsDeleted);
+            if (count > 0)
+                return BadRequest($"لا يمكن حذف الوحدة — لديها {count} حاج مسجل");
+
+            _unitService.Delete(unit);
+            await _unitOfWork.SaveChangesAsync();
+            return Ok(new { message = "تم الحذف بنجاح" });
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        // GET: Units/Details/5
-        //public async Task<IActionResult> Details(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    var unit = await _context.units
-        //        .FirstOrDefaultAsync(m => m.UnitId == id);
-        //    if (unit == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    return View(unit);
-        //}
-
-        //// GET: Units/Create
-        //public IActionResult Create()
-        //{
-        //    return View();
-        //}
-
-        //// POST: Units/Create
-        //// To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        //// more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Create([Bind("UnitId,UnitNameEn,UnitNameAr,ModFlag,AlhajYear,AllowNumber,StandBy")] Unit unit)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        _context.Add(unit);
-        //        await _context.SaveChangesAsync();
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    return View(unit);
-        //}
-
-        //// GET: Units/Edit/5
-        //public async Task<IActionResult> Edit(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    var unit = await _context.units.FindAsync(id);
-        //    if (unit == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    return View(unit);
-        //}
-
-        //// POST: Units/Edit/5
-        //// To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        //// more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Edit(int id, [Bind("UnitId,UnitNameEn,UnitNameAr,ModFlag,AlhajYear,AllowNumber,StandBy")] Unit unit)
-        //{
-        //    if (id != unit.UnitId)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    if (ModelState.IsValid)
-        //    {
-        //        try
-        //        {
-        //            _context.Update(unit);
-        //            await _context.SaveChangesAsync();
-        //        }
-        //        catch (DbUpdateConcurrencyException)
-        //        {
-        //            if (!UnitExists(unit.UnitId))
-        //            {
-        //                return NotFound();
-        //            }
-        //            else
-        //            {
-        //                throw;
-        //            }
-        //        }
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    return View(unit);
-        //}
-
-        //// GET: Units/Delete/5
-        //public async Task<IActionResult> Delete(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    var unit = await _context.units
-        //        .FirstOrDefaultAsync(m => m.UnitId == id);
-        //    if (unit == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    return View(unit);
-        //}
-
-        //// POST: Units/Delete/5
-        //[HttpPost, ActionName("Delete")]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> DeleteConfirmed(int id)
-        //{
-        //    var unit = await _context.units.FindAsync(id);
-        //    _context.units.Remove(unit);
-        //    await _context.SaveChangesAsync();
-        //    return RedirectToAction(nameof(Index));
-        //}
-
-        //private bool UnitExists(int id)
-        //{
-        //    return _context.units.Any(e => e.UnitId == id);
-        //}
     }
 }

@@ -1,63 +1,341 @@
-<div class="card card-cascade wider">
-    <div class="view view-cascade gradient-card-header blue-gradient-rgba">
-        <h2 class="card-header-title mb-3">الوحدة / الادارة / الفئة</h2>
-    </div>
-    <div class="card-body card-body-cascade">
-        <div class="mb-3">
-            <a href="@Url.Action("Create","Units")" class="btn btn-primary btn-sm">
-                <i class="fa fa-plus"></i> إضافة وحدة
-            </a>
+@{
+    ViewData["Title"] = "إدارة الأسلحة والأعداد المسموحة";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+:root{--navy:#0f2942;--blue:#1a3a5c;--gold:#c9a227;--green:#059669;--red:#dc2626;--orange:#d97706;}
+.un-header{background:linear-gradient(135deg,#0f2942,#1e4976);border-radius:13px;padding:20px 24px;color:#fff;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 4px 20px rgba(15,41,66,.35);}
+.summary-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:18px;}
+.sum-card{background:#fff;border-radius:11px;padding:12px 10px;text-align:center;border:1px solid #e2e8f0;box-shadow:0 1px 5px rgba(0,0,0,.05);}
+.sum-card .num{font-size:26px;font-weight:800;line-height:1;}
+.sum-card .lbl{font-size:10px;color:#64748b;margin-top:3px;}
+.unit-card{background:#fff;border-radius:12px;border:1.5px solid #e2e8f0;padding:18px 20px;margin-bottom:14px;box-shadow:0 2px 10px rgba(0,0,0,.05);transition:all .2s;}
+.unit-card:hover{box-shadow:0 4px 18px rgba(0,0,0,.10);border-color:#93c5fd;}
+.unit-card.full-regular{border-color:#fca5a5;background:#fff5f5;}
+.unit-card.full-standby{border-color:#fde68a;}
+.unit-name{font-size:16px;font-weight:800;color:#0f2942;display:flex;align-items:center;gap:8px;}
+.mod-badge{background:#dbeafe;color:#1e40af;border:1px solid #93c5fd;padding:2px 10px;border-radius:20px;font-size:11px;font-weight:700;}
+.quota-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px;}
+.quota-box{background:#f8fafc;border-radius:9px;padding:12px 14px;border:1px solid #e2e8f0;}
+.quota-box .title{font-size:11px;font-weight:700;color:#475569;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;}
+.quota-box .nums{font-size:22px;font-weight:800;display:flex;align-items:baseline;gap:4px;}
+.quota-box .nums .used{color:#1a3a5c;}
+.quota-box .nums .sep{color:#94a3b8;font-size:14px;font-weight:400;}
+.quota-box .nums .total{color:#94a3b8;font-size:14px;}
+.progress-track{background:#e2e8f0;border-radius:99px;height:8px;overflow:hidden;margin-top:6px;}
+.progress-fill{height:100%;border-radius:99px;transition:width .5s;}
+.pf-green{background:linear-gradient(90deg,#059669,#10b981);}
+.pf-orange{background:linear-gradient(90deg,#d97706,#f59e0b);}
+.pf-red{background:linear-gradient(90deg,#dc2626,#ef4444);}
+.remain-tag{font-size:10px;padding:2px 8px;border-radius:20px;font-weight:700;white-space:nowrap;}
+.rt-ok{background:#dcfce7;color:#166534;}
+.rt-warn{background:#fef9c3;color:#854d0e;}
+.rt-full{background:#fee2e2;color:#991b1b;}
+.actions{display:flex;gap:8px;margin-top:14px;padding-top:12px;border-top:1px solid #f1f5f9;}
+/* Modal */
+.modal-hdr{background:linear-gradient(135deg,#0f2942,#1a3a5c);color:#fff;border-radius:8px 8px 0 0;padding:14px 20px;}
+.form-label-ar{font-weight:600;font-size:13px;color:#374151;display:block;margin-bottom:4px;text-align:right;}
+.field-help{font-size:11px;color:#94a3b8;margin-top:3px;text-align:right;}
+</style>
+
+<!-- HEADER -->
+<div class="un-header">
+  <div>
+    <h4 style="margin:0;font-size:19px;font-weight:800">⚙️ إدارة الأسلحة والأعداد المسموحة</h4>
+    <div style="font-size:12px;opacity:.75;margin-top:3px">تحديد الحصة لكل سلاح — الأصلي والاحتياط</div>
+  </div>
+  <div style="display:flex;align-items:center;gap:10px">
+    <span id="hdYear" class="badge" style="background:var(--gold);color:#fff;padding:6px 14px;border-radius:20px;font-size:12px;font-weight:700"></span>
+    <button class="btn btn-light btn-sm" onclick="loadUnits()"><i class="fa fa-refresh"></i> تحديث</button>
+    <button class="btn btn-sm" style="background:var(--gold);color:#fff;font-weight:700"
+      onclick="openAddModal()"><i class="fa fa-plus"></i> إضافة سلاح</button>
+  </div>
+</div>
+
+<!-- SUMMARY CARDS -->
+<div class="summary-grid">
+  <div class="sum-card"><div class="num" id="sTotalUnits" style="color:var(--blue)">—</div><div class="lbl">عدد الأسلحة</div></div>
+  <div class="sum-card"><div class="num" id="sTotalAllowed" style="color:var(--green)">—</div><div class="lbl">إجمالي الأصليين المسموح</div></div>
+  <div class="sum-card"><div class="num" id="sTotalStandby" style="color:var(--orange)">—</div><div class="lbl">إجمالي الاحتياط المسموح</div></div>
+  <div class="sum-card"><div class="num" id="sTotalUsed" style="color:var(--navy)">—</div><div class="lbl">إجمالي المسجلين</div></div>
+  <div class="sum-card"><div class="num" id="sTotalRemain" style="color:var(--red)">—</div><div class="lbl">المقاعد المتبقية</div></div>
+</div>
+
+<!-- UNITS GRID -->
+<div id="unitsGrid"></div>
+<div id="loadingMsg" style="text-align:center;padding:40px;color:#94a3b8;display:none">
+  <i class="fa fa-spinner fa-spin fa-2x"></i><br><span style="font-size:13px;margin-top:10px;display:block">جاري التحميل...</span>
+</div>
+
+<!-- ADD/EDIT MODAL -->
+<div class="modal fade" id="unitModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-hdr"><h5 class="modal-title mb-0" id="modalTitle">إضافة سلاح جديد</h5></div>
+      <div class="modal-body" style="direction:rtl">
+        <input type="hidden" id="fUnitId">
+
+        <div class="row">
+          <div class="col-md-7">
+            <label class="form-label-ar">اسم السلاح (عربي) <span style="color:red">*</span></label>
+            <input id="fNameAr" class="form-control form-control-sm text-right" placeholder="سلاح المدرعات" style="direction:rtl">
+          </div>
+          <div class="col-md-5">
+            <label class="form-label-ar">الترتيب</label>
+            <input id="fOrder" type="number" class="form-control form-control-sm" min="1" value="1">
+          </div>
         </div>
-        <div class="table-responsive">
-            <table id="unitTable" class="table table-bordered table-hover table-striped w-100">
-                <thead>
-                    <tr>
-                        <th>الوحدة</th>
-                        <th>تصنيف الوحدة</th>
-                        <th>العدد المسموح</th>
-                        <th>الاحتياط</th>
-                        <th>الإجراءات</th>
-                    </tr>
-                </thead>
-            </table>
+        <div class="row mt-2">
+          <div class="col-md-7">
+            <label class="form-label-ar">اسم السلاح (إنجليزي)</label>
+            <input id="fNameEn" class="form-control form-control-sm" placeholder="Armoured Corps">
+          </div>
+          <div class="col-md-5">
+            <label class="form-label-ar">كود السلاح <span style="color:red">*</span></label>
+            <input id="fCode" type="number" class="form-control form-control-sm" placeholder="101">
+          </div>
         </div>
+
+        <hr style="margin:14px 0">
+
+        <!-- QUOTA SECTION -->
+        <div style="background:#f0f9ff;border:1px solid #bae6fd;border-radius:10px;padding:14px;margin-bottom:12px">
+          <div style="font-weight:700;font-size:13px;color:#1a3a5c;margin-bottom:10px">📊 الأعداد المسموحة للموسم</div>
+          <div class="row">
+            <div class="col-6">
+              <label class="form-label-ar" style="color:#059669">✅ عدد الحجاج الأصليين</label>
+              <input id="fAllow" type="number" class="form-control form-control-sm" min="0" value="0">
+              <div class="field-help">الحد الأقصى للتسجيل من النوع "أصلي"</div>
+            </div>
+            <div class="col-6">
+              <label class="form-label-ar" style="color:#d97706">⭕ عدد الاحتياط</label>
+              <input id="fStandby" type="number" class="form-control form-control-sm" min="0" value="0">
+              <div class="field-help">الحد الأقصى من النوع "احتياط"</div>
+            </div>
+          </div>
+          <div id="quotaPreview" style="margin-top:10px;font-size:12px;color:#64748b;display:none">
+            المجموع: <strong id="quotaTotal">0</strong> حاج
+          </div>
+        </div>
+
+        <div class="form-check" style="text-align:right">
+          <input class="form-check-input" type="checkbox" id="fModFlag" style="margin-left:8px">
+          <label class="form-check-label" style="font-size:13px;color:#374151">وحدة خارج وزارة الدفاع</label>
+        </div>
+
+        <div id="modalError" class="alert alert-danger mt-2 py-2" style="display:none;font-size:12px;text-align:right"></div>
+      </div>
+      <div class="modal-footer">
+        <button id="btnSaveUnit" class="btn btn-primary btn-sm" onclick="saveUnit()">
+          <i class="fa fa-save"></i> حفظ
+        </button>
+        <button class="btn btn-secondary btn-sm" data-dismiss="modal">إلغاء</button>
+      </div>
     </div>
+  </div>
 </div>
 
 @section Scripts {
 <script>
-    $(function () {
-        $('#unitTable').DataTable({
-            ajax: { url: '@Url.Action("UnitRead","Units")', dataSrc: '' },
-            columns: [
-                { data: 'unitNameAr' },
-                {
-                    data: 'modFlag',
-                    render: function (v) {
-                        return v ? "<span class='badge badge-danger'>وزارة الدفاع</span>"
-                                 : "<span class='badge badge-success'>خارج وزارة الدفاع</span>";
-                    }
-                },
-                { data: 'allowNumber' },
-                { data: 'standBy' },
-                {
-                    data: 'unitId', orderable: false,
-                    render: function (id) {
-                        return '<a href="@Url.Action("Edit","Units")/' + id +
-                               '" class="btn btn-warning btn-xs"><i class="fa fa-pencil"></i> تعديل</a> ' +
-                               '<button onclick="deleteUnit(' + id + ')" class="btn btn-danger btn-xs"><i class="fa fa-trash"></i> حذف</button>';
-                    }
-                }
-            ]
-        });
-    });
+(function(){
+'use strict';
 
-    function deleteUnit(id) {
-        if (!confirm('هل تريد حذف هذه الوحدة؟')) return;
-        $.post('@Url.Action("DeleteUnit","Units")', { unitId: id }, function () {
-            toastr.success('تم الحذف بنجاح');
-            $('#unitTable').DataTable().ajax.reload();
-        }).fail(function () { toastr.error('حدث خطأ'); });
-    }
-</script>
+var units = [];
+
+// Load units with live quota
+function loadUnits(){
+  $('#unitsGrid').hide(); $('#loadingMsg').show();
+  $.getJSON('@Url.Action("UnitRead","Units")', function(data){
+    units = data;
+    renderSummary(); renderCards();
+    $('#loadingMsg').hide(); $('#unitsGrid').show();
+    var y = new Date().getFullYear();
+    $('#hdYear').text('موسم ' + y);
+  }).fail(function(){ toastr.error('خطأ في تحميل البيانات'); $('#loadingMsg').hide(); });
 }
+
+function renderSummary(){
+  var totalAllowed = units.reduce(function(s,u){ return s+u.allowNumber; }, 0);
+  var totalStandby = units.reduce(function(s,u){ return s+u.standBy; }, 0);
+  var totalUsed    = units.reduce(function(s,u){ return s+u.totalUsed; }, 0);
+  var totalRemain  = units.reduce(function(s,u){ return s+u.regularRemain+u.standByRemain; }, 0);
+  $('#sTotalUnits').text(units.length);
+  $('#sTotalAllowed').text(totalAllowed);
+  $('#sTotalStandby').text(totalStandby);
+  $('#sTotalUsed').text(totalUsed);
+  $('#sTotalRemain').text(totalRemain);
+}
+
+function pctColor(pct){
+  return pct>=100?'pf-red':pct>=80?'pf-orange':'pf-green';
+}
+function remainTag(remain, total){
+  if(total===0) return '<span class="remain-tag rt-full">غير محدد</span>';
+  if(remain===0) return '<span class="remain-tag rt-full">ممتلئ ✕</span>';
+  if(remain<=2)  return '<span class="remain-tag rt-warn">تبقى '+remain+'</span>';
+  return '<span class="remain-tag rt-ok">تبقى '+remain+'</span>';
+}
+
+function renderCards(){
+  var html='';
+  if(!units.length){
+    html='<div style="text-align:center;padding:60px;color:#94a3b8;font-size:15px">لا توجد أسلحة — اضغط "إضافة سلاح" لإضافة أول سلاح</div>';
+    $('#unitsGrid').html(html); return;
+  }
+  units.forEach(function(u){
+    var rfull = u.regularFull?'full-regular':'';
+    var sfull = u.standByFull&&!u.regularFull?'full-standby':'';
+    var modBadge = u.modFlag
+      ? '<span class="mod-badge" style="background:#fef9c3;color:#854d0e;border-color:#fde047">خارج وزارة الدفاع</span>'
+      : '<span class="mod-badge">وزارة الدفاع</span>';
+
+    html += `
+    <div class="unit-card ${rfull} ${sfull}">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
+        <div class="unit-name">
+          🏛️ ${u.unitNameAr}
+          ${modBadge}
+          <span style="background:#f1f5f9;color:#475569;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:600">كود: ${u.unitCode}</span>
+        </div>
+        <div style="font-size:13px;font-weight:700;color:#1a3a5c">
+          إجمالي المسجلين: <span style="font-size:18px">${u.totalUsed}</span>
+        </div>
+      </div>
+
+      <div class="quota-row">
+        <!-- Regular quota -->
+        <div class="quota-box" style="${u.regularFull?'border-color:#fca5a5;background:#fff5f5':''}">
+          <div class="title">
+            <span style="color:#1a3a5c;font-weight:700">✅ الحجاج الأصليون</span>
+            ${remainTag(u.regularRemain, u.allowNumber)}
+          </div>
+          <div class="nums">
+            <span class="used">${u.regularUsed}</span>
+            <span class="sep">/</span>
+            <span class="total">${u.allowNumber}</span>
+            <span style="font-size:11px;color:#94a3b8;margin-right:6px">مسجل</span>
+          </div>
+          <div class="progress-track">
+            <div class="progress-fill ${pctColor(u.regularPct)}" style="width:${Math.min(u.regularPct,100)}%"></div>
+          </div>
+          <div style="font-size:10px;color:#94a3b8;margin-top:4px;text-align:left">${u.regularPct}%</div>
+        </div>
+
+        <!-- Standby quota -->
+        <div class="quota-box" style="${u.standByFull?'border-color:#fde68a;background:#fffbeb':''}">
+          <div class="title">
+            <span style="color:#d97706;font-weight:700">⭕ الاحتياط</span>
+            ${remainTag(u.standByRemain, u.standBy)}
+          </div>
+          <div class="nums">
+            <span class="used" style="color:#d97706">${u.standByUsed}</span>
+            <span class="sep">/</span>
+            <span class="total">${u.standBy}</span>
+            <span style="font-size:11px;color:#94a3b8;margin-right:6px">مسجل</span>
+          </div>
+          <div class="progress-track">
+            <div class="progress-fill ${pctColor(u.standByPct)}" style="width:${Math.min(u.standByPct,100)}%"></div>
+          </div>
+          <div style="font-size:10px;color:#94a3b8;margin-top:4px;text-align:left">${u.standByPct}%</div>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn btn-outline-primary btn-sm" onclick="openEditModal(${u.unitId})">
+          <i class="fa fa-pencil"></i> تعديل الأعداد
+        </button>
+        <button class="btn btn-outline-secondary btn-sm" onclick="window.location='@Url.Action("Index","AlhajjMasters")'">
+          <i class="fa fa-users"></i> قائمة الحجاج
+        </button>
+        ${u.totalUsed===0
+          ?`<button class="btn btn-outline-danger btn-sm mr-auto" onclick="deleteUnit(${u.unitId})"><i class="fa fa-trash"></i> حذف</button>`
+          :`<span class="mr-auto" style="font-size:11px;color:#94a3b8;align-self:center">
+              <i class="fa fa-lock"></i> لا يمكن الحذف — لديه ${u.totalUsed} حاج مسجل
+            </span>`}
+      </div>
+    </div>`;
+  });
+  $('#unitsGrid').html(html);
+}
+
+// Modal helpers
+window.openAddModal = function(){
+  $('#fUnitId').val('');
+  $('#fNameAr,#fNameEn,#fCode').val('');
+  $('#fAllow,#fStandby,#fOrder').val(0);
+  $('#fModFlag').prop('checked',false);
+  $('#modalTitle').text('إضافة سلاح جديد');
+  $('#modalError').hide();
+  $('#unitModal').modal('show');
+};
+
+window.openEditModal = function(id){
+  var u=units.find(function(x){return x.unitId===id;});
+  if(!u) return;
+  $('#fUnitId').val(u.unitId);
+  $('#fNameAr').val(u.unitNameAr);
+  $('#fNameEn').val(u.unitNameEn||'');
+  $('#fCode').val(u.unitCode);
+  $('#fOrder').val(u.unitOrder||1);
+  $('#fAllow').val(u.allowNumber);
+  $('#fStandby').val(u.standBy);
+  $('#fModFlag').prop('checked',!!u.modFlag);
+  $('#modalTitle').text('تعديل — ' + u.unitNameAr);
+  $('#modalError').hide();
+  updateQuotaPreview();
+  $('#unitModal').modal('show');
+};
+
+$('#fAllow, #fStandby').on('input', updateQuotaPreview);
+function updateQuotaPreview(){
+  var a=+$('#fAllow').val()||0, s=+$('#fStandby').val()||0;
+  $('#quotaTotal').text(a+s); $('#quotaPreview').show();
+}
+
+window.saveUnit = function(){
+  var id=$('#fUnitId').val();
+  var payload = {
+    unitId:      id ? +id : 0,
+    unitNameAr:  $('#fNameAr').val().trim(),
+    unitNameEn:  $('#fNameEn').val().trim(),
+    unitCode:    +$('#fCode').val(),
+    unitOrder:   +$('#fOrder').val()||1,
+    allowNumber: +$('#fAllow').val()||0,
+    standBy:     +$('#fStandby').val()||0,
+    modFlag:     $('#fModFlag').is(':checked'),
+  };
+  if(!payload.unitNameAr){ showErr('اسم السلاح مطلوب'); return; }
+  if(!payload.unitCode){   showErr('كود السلاح مطلوب'); return; }
+
+  var url = id ? '@Url.Action("UpdateUnit","Units")' : '@Url.Action("CreateUnit","Units")';
+  $('#btnSaveUnit').prop('disabled',true).html('<i class="fa fa-spinner fa-spin"></i> جاري الحفظ...');
+  $.post(url, payload, function(r){
+    toastr.success(r.message||'تم الحفظ');
+    $('#unitModal').modal('hide');
+    loadUnits();
+  }).fail(function(x){
+    showErr(x.responseText||'فشل الحفظ');
+  }).always(function(){
+    $('#btnSaveUnit').prop('disabled',false).html('<i class="fa fa-save"></i> حفظ');
+  });
+};
+
+window.deleteUnit = function(id){
+  var u=units.find(function(x){return x.unitId===id;});
+  if(!confirm('هل تريد حذف '+u.unitNameAr+'؟')) return;
+  $.post('@Url.Action("DeleteUnit","Units")', {unitId:id}, function(r){
+    toastr.success(r.message||'تم الحذف'); loadUnits();
+  }).fail(function(x){ toastr.error(x.responseText||'فشل الحذف'); });
+};
+
+function showErr(msg){ $('#modalError').text(msg).show(); }
+
+$(function(){
+  toastr.options={positionClass:'toast-top-left',timeOut:3000,rtl:true};
+  loadUnits();
+  // Auto-refresh every 60 seconds (live quota update)
+  setInterval(loadUnits, 60000);
+});
+
+}());
+</script>}

@@ -28,6 +28,13 @@ namespace Pligrimage.Entities.IdentityModels
 
         public bool IsSysAdmin { get; set; }
 
+        /// <summary>
+        /// The unit (tenant) this user belongs to.
+        /// Equals Units.UnitId. SysAdmins have TenantId = 0 (see all).
+        /// Matches User.MainUnitId — kept in sync on creation/update.
+        /// </summary>
+        public int TenantId { get; set; }
+
         public int? HrmsPfNo { get; set; }
 
         public DateTime CreatedOn { get; set; }

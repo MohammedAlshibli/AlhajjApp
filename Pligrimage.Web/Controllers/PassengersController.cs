@@ -155,14 +155,13 @@ namespace Pligrimage.Web.Controllers
 
                         var passenger = new Passenger
                         {
-                            CreateBy     = LoggedUserName(),
-                            CreateOn     = DateTime.Now,
                             PligrimageId = pilgrim.PligrimageId,
                             FlightId     = flight.FlightId,
                             BusId        = currentBus.BusId,
-                            ResidencesId = 1, // TODO: replace with real accommodation assignment screen
+                            ResidencesId = 1,
                             AlhajYear    = activeYear
                         };
+                        StampNew(passenger); // sets TenantId + CreateBy + CreateOn
 
                         _passengerRepository.Insert(passenger);
                         pilgrimIndex++;
@@ -254,14 +253,13 @@ namespace Pligrimage.Web.Controllers
 
                         var passenger = new Passenger
                         {
-                            CreateBy     = LoggedUserName(),
-                            CreateOn     = DateTime.Now,
                             PligrimageId = unassigned[pilgrimIndex].PligrimageId,
                             FlightId     = flight.FlightId,
                             BusId        = currentBus.BusId,
                             ResidencesId = 1,
                             AlhajYear    = activeYear
                         };
+                        StampNew(passenger);
 
                         _passengerRepository.Insert(passenger);
                         pilgrimIndex++;

@@ -109,21 +109,18 @@ namespace Pligrimage.Web.Controllers
             return View();
         }
 
-        // BUG-FIX #10: was returning Ok(Task) – now returns real data
+        // TenantId filter + IsDeleted filter now automatic via DbContext Global Query Filter.
+        // No manual .Where(unit filter) needed.
         public IActionResult AlhajjRead()
         {
-            List<int> userServiceList = _adminService.GetUserServiceListByUnitCode(LoggedUserName()).ToList();
             int activeYear = _settings.ActiveHajjYear;
 
-            // BUG-FIX #11: filter by active year
             var result = _alhajjService.Queryable()
                 .Include(c => c.Unit)
                 .Where(c =>
                     c.AlhajYear == activeYear &&
                     c.EmployeeStatus == EmployeeStatus.Employee &&
-                    c.ParameterId != HajjConstants.PilgrimType.Admin &&
-                    !c.IsDeleted &&
-                    userServiceList.Contains(c.Unit.UnitCode))
+                    c.ParameterId != HajjConstants.PilgrimType.Admin)
                 .Select(c => new {
                     c.PligrimageId,
                     c.FullName,
@@ -230,15 +227,12 @@ namespace Pligrimage.Web.Controllers
                 if (consumed >= allowed)
                     return BadRequest($"تجاوزت الحد المسموح به ({allowed}) لهذه الوحدة");
 
-                // BUG-FIX #5: do NOT override passport with fake value
-                // BUG-FIX #6: set ConfirmCode to Pending (not hardcoded 51)
+                // StampNew sets: TenantId, CreateBy, CreateOn, IsDeleted=false
+                StampNew(alhajjMaster);
                 alhajjMaster.AlhajYear        = activeYear;
                 alhajjMaster.RegistrationDate = DateTime.Now;
                 alhajjMaster.FitResult        = HajjConstants.FitResult.Pending;
                 alhajjMaster.ConfirmCode      = HajjConstants.ConfirmCode.Pending;
-                alhajjMaster.IsDeleted        = false;
-                alhajjMaster.CreateBy         = LoggedUserName();
-                alhajjMaster.CreateOn         = DateTime.Now;
 
                 _alhajjService.Insert(alhajjMaster);
 
@@ -264,8 +258,7 @@ namespace Pligrimage.Web.Controllers
             if (alhajjMaster == null || !ModelState.IsValid)
                 return BadRequest("البيانات غير صحيحة");
 
-            alhajjMaster.UpdatedBy = LoggedUserName();
-            alhajjMaster.UpdatedOn = DateTime.Now;
+            StampUpdate(alhajjMaster);
             _alhajjService.Update(alhajjMaster);
             await _unitOfWork.SaveChangesAsync(); // BUG-FIX #1
             return RedirectToAction("Index");
@@ -330,13 +323,11 @@ namespace Pligrimage.Web.Controllers
                     if (exists)
                         return BadRequest($"الموظف برقم الهوية {item.NIC} مسجل مسبقاً في هذه الدورة");
 
+                    StampNew(item);
                     item.AlhajYear        = activeYear;
                     item.RegistrationDate = DateTime.Now;
                     item.FitResult        = HajjConstants.FitResult.Pending;
                     item.ConfirmCode      = HajjConstants.ConfirmCode.Pending;
-                    item.IsDeleted        = false;
-                    item.CreateBy         = LoggedUserName();
-                    item.CreateOn         = DateTime.Now;
                     _alhajjService.Insert(item);
                 }
 

@@ -16,14 +16,28 @@ using System.Globalization;
 var builder = WebApplication.CreateBuilder(args);
 
 // ── Database ─────────────────────────────────────────────────────────────────
-builder.Services.AddDbContext<DbContext, AppDbContext>(options =>
+// ── Tenant isolation services ─────────────────────────────────────────────────
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<ITenantService, HttpContextTenantService>();
+
+builder.Services.AddDbContext<DbContext, AppDbContext>((sp, options) => {
     options.UseSqlServer(
         builder.Configuration.GetConnectionString("AppConnection"),
-        sql => sql.EnableRetryOnFailure()));
+        sql => sql.EnableRetryOnFailure());
+    // Tenant funcs are passed here so Global Query Filters in DbContext can use them.
+    // The DbContext constructor reads these at query time (not at construction time).
+});
 
 // Required so AppServiceLocator can resolve AppDbContext in static extension methods
-builder.Services.AddScoped<AppDbContext>(sp =>
-    (AppDbContext)sp.GetRequiredService<DbContext>());
+// Resolve AppDbContext with tenant-aware funcs injected
+builder.Services.AddScoped<AppDbContext>(sp => {
+    var tenantSvc = sp.GetRequiredService<ITenantService>();
+    var dbOptions = sp.GetRequiredService<DbContextOptions<AppDbContext>>();
+    return new AppDbContext(
+        dbOptions,
+        () => tenantSvc.GetCurrentTenantId(),
+        () => tenantSvc.IsSysAdmin());
+});
 
 // ── AutoMapper ────────────────────────────────────────────────────────────────
 builder.Services.AddAutoMapper(

@@ -1,5 +1,5 @@
-using Microsoft.EntityFrameworkCore;
 using Pligrimage.Entities;
+using Pligrimage.Entities.Enum;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,12 +13,18 @@ namespace Pligrimage.Data
     ///   14 Parameters  (ClassType / FlightDirection / FitCode / ConfirmCode)
     ///    4 Units        (Armoured, Infantry, Engineering, Artillery)
     ///    4 Flights      (WY501 dep, WY503 dep, WY502 ret, WY504 ret)
-    ///    4 Buses
+    ///    4 Buses        (one per flight)
+    ///    1 Residence    (Mecca building — FK placeholder)
+    ///    1 Category     (default)
+    ///    1 Document     (placeholder)
     ///   20 AlhajjMasters (3 admins + 17 regular/standby — all HQ-approved + doctor-approved)
-    ///   40 Passengers  (each pilgrim: 1 departure row + 1 return row)
+    ///   40 Passengers   (each pilgrim: 1 departure row + 1 return row)
     ///
-    /// Linkage rule: Dep F1 → Ret F2  |  Dep F2 → Ret F1
-    /// Admins (ParameterId=3) always placed in Dep F1.
+    /// Linkage rule enforced in seed:
+    ///   Dep F1 (WY501, FlightId=1) -> Ret R2 (WY504, FlightId=4)
+    ///   Dep F2 (WY503, FlightId=2) -> Ret R1 (WY502, FlightId=3)
+    ///
+    /// Admins (ParameterId=3, ids 1-3) always placed in Dep F1.
     /// </summary>
     public static class AppDbContextSeed
     {
@@ -35,13 +41,14 @@ namespace Pligrimage.Data
             SeedPassengers(ctx);
         }
 
+        // Parameters
         private static void SeedParameters(AppDbContext ctx)
         {
             var rows = new[]
             {
-                new Parameter { ParameterId=1,  Code="ClassType",       DescArabic="أصلي",                   DescEnglish="Regular",         Value=1  },
+                new Parameter { ParameterId=1,  Code="ClassType",       DescArabic="اصلي",                   DescEnglish="Regular",         Value=1  },
                 new Parameter { ParameterId=2,  Code="ClassType",       DescArabic="احتياط",                 DescEnglish="StandBy",         Value=2  },
-                new Parameter { ParameterId=3,  Code="ClassType",       DescArabic="إداري",                  DescEnglish="Admin",           Value=3  },
+                new Parameter { ParameterId=3,  Code="ClassType",       DescArabic="اداري",                  DescEnglish="Admin",           Value=3  },
                 new Parameter { ParameterId=5,  Code="FitCode",         DescArabic="لائق",                   DescEnglish="Fit",             Value=5  },
                 new Parameter { ParameterId=6,  Code="FitCode",         DescArabic="غير لائق",               DescEnglish="NotFit",          Value=6  },
                 new Parameter { ParameterId=7,  Code="FitCode",         DescArabic="في الانتظار",            DescEnglish="Pending",         Value=7  },
@@ -49,8 +56,8 @@ namespace Pligrimage.Data
                 new Parameter { ParameterId=9,  Code="FitCode",         DescArabic="موافقة طبية نهائية",     DescEnglish="DoctorApproved",  Value=9  },
                 new Parameter { ParameterId=10, Code="ConfirmCode",     DescArabic="في الانتظار",            DescEnglish="Pending",         Value=0  },
                 new Parameter { ParameterId=11, Code="ConfirmCode",     DescArabic="مؤكد من السلاح",         DescEnglish="Confirmed",       Value=51 },
-                new Parameter { ParameterId=12, Code="ConfirmCode",     DescArabic="موافقة الإدارة العليا",  DescEnglish="HQApproved",      Value=77 },
-                new Parameter { ParameterId=13, Code="ConfirmCode",     DescArabic="مُعاد للمراجعة",         DescEnglish="Returned",        Value=99 },
+                new Parameter { ParameterId=12, Code="ConfirmCode",     DescArabic="موافقة الادارة العليا",  DescEnglish="HQApproved",      Value=77 },
+                new Parameter { ParameterId=13, Code="ConfirmCode",     DescArabic="معاد للمراجعة",          DescEnglish="Returned",        Value=99 },
                 new Parameter { ParameterId=34, Code="FlightDirection", DescArabic="ذهاب",                   DescEnglish="Departure",       Value=34 },
                 new Parameter { ParameterId=35, Code="FlightDirection", DescArabic="عودة",                   DescEnglish="Return",          Value=35 },
             };
@@ -60,6 +67,7 @@ namespace Pligrimage.Data
             ctx.SaveChanges();
         }
 
+        // Units
         private static void SeedUnits(AppDbContext ctx)
         {
             var units = new[]
@@ -75,15 +83,15 @@ namespace Pligrimage.Data
             ctx.SaveChanges();
         }
 
+        // Flights: Dep F1(id=1) <-> Ret R2(id=4), Dep F2(id=2) <-> Ret R1(id=3)
         private static void SeedFlights(AppDbContext ctx)
         {
-            // D1→R2 | D2→R1 linkage
             var flights = new[]
             {
-                new Flight { FlightId=1, FlightNo="WY 501", FlightDate=new DateTime(2025,5,25), ArriveDate=new DateTime(2025,5,25), FlightYear=2025, FlightCapacity=120, Direction="Departure", ParameterId=34 },
-                new Flight { FlightId=2, FlightNo="WY 503", FlightDate=new DateTime(2025,5,27), ArriveDate=new DateTime(2025,5,27), FlightYear=2025, FlightCapacity=120, Direction="Departure", ParameterId=34 },
-                new Flight { FlightId=3, FlightNo="WY 502", FlightDate=new DateTime(2025,6,20), ArriveDate=new DateTime(2025,6,20), FlightYear=2025, FlightCapacity=120, Direction="Return",    ParameterId=35 },
-                new Flight { FlightId=4, FlightNo="WY 504", FlightDate=new DateTime(2025,6,22), ArriveDate=new DateTime(2025,6,22), FlightYear=2025, FlightCapacity=120, Direction="Return",    ParameterId=35 },
+                new Flight { FlightId=1, FlightNo="WY 501", FlightDate=new DateTime(2025,5,25), ArriveDate=new DateTime(2025,5,25,14,0,0), FlightYear=2025, FlightCapacity=120, Direction="Departure", ParameterId=34 },
+                new Flight { FlightId=2, FlightNo="WY 503", FlightDate=new DateTime(2025,5,27), ArriveDate=new DateTime(2025,5,27,16,0,0), FlightYear=2025, FlightCapacity=120, Direction="Departure", ParameterId=34 },
+                new Flight { FlightId=3, FlightNo="WY 502", FlightDate=new DateTime(2025,6,20), ArriveDate=new DateTime(2025,6,20,10,0,0), FlightYear=2025, FlightCapacity=120, Direction="Return",    ParameterId=35 },
+                new Flight { FlightId=4, FlightNo="WY 504", FlightDate=new DateTime(2025,6,22), ArriveDate=new DateTime(2025,6,22,12,0,0), FlightYear=2025, FlightCapacity=120, Direction="Return",    ParameterId=35 },
             };
             foreach (var f in flights)
                 if (!ctx.Flights.Any(x => x.FlightId == f.FlightId))
@@ -91,6 +99,7 @@ namespace Pligrimage.Data
             ctx.SaveChanges();
         }
 
+        // Buses: one per flight
         private static void SeedBuses(AppDbContext ctx)
         {
             var buses = new[]
@@ -106,65 +115,90 @@ namespace Pligrimage.Data
             ctx.SaveChanges();
         }
 
+        // Residence placeholder (FK required by Passenger)
         private static void SeedResidences(AppDbContext ctx)
         {
             if (!ctx.Residences.Any(r => r.ResidencesId == 1))
             {
-                ctx.Residences.Add(new Residences { ResidencesId=1, Building="مبنى مكة", Room=101, RoomCapacity=4, Floor=1, Year=new DateTime(2025,1,1) });
+                ctx.Residences.Add(new Residences
+                {
+                    ResidencesId = 1,
+                    Building     = "مبنى مكة المكرمة",
+                    Room         = 101,
+                    RoomCapacity = 4,
+                    Floor        = 5,
+                    Year         = new DateTime(2025, 1, 1)
+                });
                 ctx.SaveChanges();
             }
         }
 
+        // Category placeholder
         private static void SeedCategories(AppDbContext ctx)
         {
             if (!ctx.categories.Any(c => c.CategoryId == 1))
             {
-                ctx.categories.Add(new Category { CategoryId=1, DescArabic="افتراضي", DescEnglish="Default", AlhajYear=new DateTime(2025,1,1), QTY=999 });
+                ctx.categories.Add(new Category
+                {
+                    CategoryId  = 1,
+                    DescArabic  = "افتراضي",
+                    DescEnglish = "Default",
+                    AlhajYear   = new DateTime(2025, 1, 1),
+                    QTY         = 999
+                });
                 ctx.SaveChanges();
             }
         }
 
+        // Document placeholder
         private static void SeedDocuments(AppDbContext ctx)
         {
             if (!ctx.Documents.Any(d => d.DocumentId == 1))
             {
-                ctx.Documents.Add(new Document { DocumentId=1, FileName="placeholder", ContentType="none", Path="", DocumnetType="default", Year=2025 });
+                ctx.Documents.Add(new Document
+                {
+                    DocumentId   = 1,
+                    FileName     = "placeholder.pdf",
+                    ContentType  = "application/pdf",
+                    Path         = "/uploads/placeholder.pdf",
+                    DocumnetType = "default",
+                    Year         = 2025
+                });
                 ctx.SaveChanges();
             }
         }
 
+        // 20 pilgrims: ids 1-3 = Admin (type=3), rest Regular/StandBy
         private static void SeedPilgrims(AppDbContext ctx)
         {
-            // type 3 = Admin (must stay in Dep F1)
-            // type 1 = Regular
-            // type 2 = StandBy
-            var data = new[]
+            var data = new (int id, string sn, string name, string rank, int unitId, string blood, int pType)[]
             {
-                (1,  "M10000","نواف بن سالم البلوشي",  "رقيب أول",  1,1,"A+", 3),
-                (2,  "M10001","سعيد بن خميس الحارثي",  "ملازم أول", 1,1,"O+", 3),
-                (3,  "M10002","خالد بن محمد المعمري",  "عريف",       2,1,"B-", 3),
-                (4,  "M10003","يوسف بن علي الريامي",   "رائد",       2,1,"AB+",1),
-                (5,  "M10004","حمد بن ناصر البريكي",   "عقيد",       3,1,"A-", 1),
-                (6,  "M10005","سلطان بن عيسى المقبالي","جندي أول",   3,1,"O-", 2),
-                (7,  "M10006","مروان بن حمدان النوفلي", "نقيب",      4,1,"B+", 1),
-                (8,  "M10007","عبدالله بن سيف الشكيلي","رقيب",       4,1,"A+", 1),
-                (9,  "M10008","أحمد بن سالم الرواحي",  "رقيب أول",  1,1,"O+", 1),
-                (10, "M10009","محمد بن حمد الهنائي",   "ملازم أول", 1,1,"B+", 2),
-                (11, "M10010","علي بن محمد الكندي",    "عريف",       2,1,"A-", 1),
-                (12, "M10011","ناصر بن أحمد الجابري",  "جندي",       2,1,"AB-",2),
-                (13, "M10012","سالم بن ناصر العلوي",   "رائد",       3,1,"O-", 1),
-                (14, "M10013","حسن بن عيسى الوهيبي",   "رقيب",       3,1,"B-", 1),
-                (15, "M10014","طارق بن سالم البادي",   "نقيب",       4,1,"A+", 2),
-                (16, "M10015","عمر بن خليل الزدجالي",  "رقيب أول",  4,1,"O+", 1),
-                (17, "M10016","يحيى بن علي المحروقي",  "عقيد",       1,1,"B+", 1),
-                (18, "M10017","إبراهيم بن ناصر الصقري","ملازم أول",  2,1,"A-", 2),
-                (19, "M10018","جاسم بن محمد العامري",  "عريف",       3,1,"AB+",1),
-                (20, "M10019","فيصل بن أحمد الشريقي",  "رقيب",       4,1,"O-", 1),
+                ( 1, "M10000", "نواف بن سالم البلوشي",   "رقيب أول",  1, "A+",  3),
+                ( 2, "M10001", "سعيد بن خميس الحارثي",   "ملازم أول", 1, "O+",  3),
+                ( 3, "M10002", "خالد بن محمد المعمري",   "عريف",       2, "B-",  3),
+                ( 4, "M10003", "يوسف بن علي الريامي",    "رائد",       2, "AB+", 1),
+                ( 5, "M10004", "حمد بن ناصر البريكي",    "عقيد",       3, "A-",  1),
+                ( 6, "M10005", "سلطان بن عيسى المقبالي", "جندي أول",  3, "O-",  2),
+                ( 7, "M10006", "مروان بن حمدان النوفلي",  "نقيب",      4, "B+",  1),
+                ( 8, "M10007", "عبدالله بن سيف الشكيلي", "رقيب",       4, "A+",  1),
+                ( 9, "M10008", "أحمد بن سالم الرواحي",   "رقيب أول",  1, "O+",  1),
+                (10, "M10009", "محمد بن حمد الهنائي",    "ملازم أول", 1, "B+",  2),
+                (11, "M10010", "علي بن محمد الكندي",     "عريف",       2, "A-",  1),
+                (12, "M10011", "ناصر بن أحمد الجابري",   "جندي",       2, "AB-", 2),
+                (13, "M10012", "سالم بن ناصر العلوي",    "رائد",       3, "O-",  1),
+                (14, "M10013", "حسن بن عيسى الوهيبي",    "رقيب",       3, "B-",  1),
+                (15, "M10014", "طارق بن سالم البادي",    "نقيب",       4, "A+",  2),
+                (16, "M10015", "عمر بن خليل الزدجالي",   "رقيب أول",  4, "O+",  1),
+                (17, "M10016", "يحيى بن علي المحروقي",   "عقيد",       1, "B+",  1),
+                (18, "M10017", "إبراهيم بن ناصر الصقري", "ملازم أول", 2, "A-",  2),
+                (19, "M10018", "جاسم بن محمد العامري",   "عريف",       3, "AB+", 1),
+                (20, "M10019", "فيصل بن أحمد الشريقي",   "رقيب",       4, "O-",  1),
             };
 
-            foreach (var (id, sn, name, rank, unitId, docId, blood, pType) in data)
+            foreach (var (id, sn, name, rank, unitId, blood, pType) in data)
             {
                 if (ctx.AlhajjMasters.Any(x => x.PligrimageId == id)) continue;
+
                 ctx.AlhajjMasters.Add(new AlhajjMaster
                 {
                     PligrimageId     = id,
@@ -172,56 +206,88 @@ namespace Pligrimage.Data
                     FullName         = name,
                     RankDesc         = rank,
                     RankCode         = 6,
-                    UnitId           = unitId,
-                    UnitCode         = unitId * 100 + 1,
+                    EmployeeStatus   = EmployeeStatus.Employee,
+
+                    // string identity fields
+                    NIC              = (80000000 + id).ToString(),
+                    NICExpire        = new DateTime(2030, 6, 1),
+                    Passport         = $"OM{1000000 + id}",
+                    PassportExpire   = new DateTime(2028, 6, 1),
+
                     BloodGroup       = blood,
                     AlhajYear        = 2025,
                     ParameterId      = pType,
-                    FitResult        = HajjConstants.FitResult.DoctorApproved,  // 9
-                    ConfirmCode      = HajjConstants.ConfirmCode.HQApproved,     // 77
-                    InjectionDate    = new DateTime(2025, 2, 10).AddDays(id),
-                    RegistrationDate = new DateTime(2025, 1, 15).AddDays(id),
-                    CategoryId       = 1,
-                    DocumentId       = 1,
-                    NIC              = 80000000 + id,
-                    NICExpire        = new DateTime(2030, 1, 1),
-                    Passport         = 1000000 + id,
-                    PassportExpire   = new DateTime(2028, 6, 1),
-                    TenantId         = unitId,
+
+                    // Medical — all doctor-approved + HQ-approved
+                    FitResult        = HajjConstants.FitResult.DoctorApproved,   // 9
+                    ConfirmCode      = HajjConstants.ConfirmCode.HQApproved,      // 77
                     FitFlag          = true,
                     DoctorNote       = "سليم",
-                    Notes            = "",
+                    InjectionDate    = new DateTime(2025, 2, 1).AddDays(id),
+
+                    // Registration
+                    RegistrationDate = new DateTime(2025, 1, 15).AddDays(id),
+
+                    // Location
                     Region           = "مسقط",
                     WilayaCode       = 1,
                     VillageCode      = 1,
-                    ReletiveCode1    = 1,
-                    ReletiveCode2    = 2,
+
+                    // Relative contacts (int fields in entity)
+                    RelativeGsm1     = 96891000000 + id,
+                    RelativeGsm2     = 96892000000 + id,
+
+                    // FKs
+                    UnitId           = unitId,
+                    UnitCode         = unitId * 100 + 1,
+                    CategoryId       = 1,
+                    DocumentId       = 1,
+                    TenantId         = unitId,
+
+                    // Misc
+                    Notes            = "",
+                    HrmsUnitCode     = unitId * 100,
+                    HrmsUnitDesc     = "",
                 });
             }
             ctx.SaveChanges();
         }
 
+        // 40 passenger rows: 20 departure + 20 return
+        //   Pilgrims  1-13 → Dep WY501 (FlightId=1) + Ret WY504 (FlightId=4)
+        //   Pilgrims 14-20 → Dep WY503 (FlightId=2) + Ret WY502 (FlightId=3)
         private static void SeedPassengers(AppDbContext ctx)
         {
-            // Clear existing year-2025 passengers to avoid duplicates on re-run
             var old = ctx.Passengers.Where(p => p.AlhajYear == 2025).ToList();
-            if (old.Any()) { ctx.Passengers.RemoveRange(old); ctx.SaveChanges(); }
+            if (old.Any())
+            {
+                ctx.Passengers.RemoveRange(old);
+                ctx.SaveChanges();
+            }
 
             var rows = new List<Passenger>();
-            void Add(int pid, int flightId, int busId)
-                => rows.Add(new Passenger { PligrimageId=pid, FlightId=flightId, BusId=busId, ResidencesId=1, AlhajYear=2025 });
+            void Add(int pid, int flightId, int busId) =>
+                rows.Add(new Passenger
+                {
+                    PligrimageId = pid,
+                    FlightId     = flightId,
+                    BusId        = busId,
+                    ResidencesId = 1,
+                    AlhajYear    = 2025,
+                });
 
-            // IDs 1-13 → Dep F1 (FlightId=1) + Ret R2 (FlightId=4)
-            foreach (var id in new[]{ 1,2,3,4,5,6,7,8,9,10,11,12,13 })
+            // Group A — Flight 1 (dep WY501) + Flight 4 (ret WY504)
+            foreach (var id in new[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 })
             {
-                Add(id, 1, 1); // departure F1
-                Add(id, 4, 4); // return    R2
+                Add(id, 1, 1);  // departure WY 501
+                Add(id, 4, 4);  // return    WY 504
             }
-            // IDs 14-20 → Dep F2 (FlightId=2) + Ret R1 (FlightId=3)
-            foreach (var id in new[]{ 14,15,16,17,18,19,20 })
+
+            // Group B — Flight 2 (dep WY503) + Flight 3 (ret WY502)
+            foreach (var id in new[] { 14, 15, 16, 17, 18, 19, 20 })
             {
-                Add(id, 2, 2); // departure F2
-                Add(id, 3, 3); // return    R1
+                Add(id, 2, 2);  // departure WY 503
+                Add(id, 3, 3);  // return    WY 502
             }
 
             ctx.Passengers.AddRange(rows);

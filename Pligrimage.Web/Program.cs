@@ -101,6 +101,14 @@ var app = builder.Build();
 // ── Initialise the static service locator ASAP after the app is built ────────
 AppServiceLocator.Initialize(app.Services);
 
+// ── Seed test data (safe: uses MERGE / existence checks — runs every startup) ─
+if (app.Environment.IsDevelopment())
+{
+    using var scope = app.Services.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    Pligrimage.Data.AppDbContextSeed.Seed(db);
+}
+
 // ── Middleware pipeline ───────────────────────────────────────────────────────
 if (app.Environment.IsDevelopment())
 {

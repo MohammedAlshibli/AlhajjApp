@@ -1,0 +1,527 @@
+@{
+    ViewData["Title"] = "توزيع الحجاج على الرحلات";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+:root{--navy:#0f2942;--blue:#1a3a5c;--gold:#c9a227;--green:#059669;--red:#dc2626;--f1:#1a3a5c;--f2:#0891b2;}
+.fd-header{background:linear-gradient(135deg,var(--navy) 0%,#1e4976 100%);border-radius:14px;padding:24px 28px;color:#fff;margin-bottom:22px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 4px 24px rgba(15,41,66,.4);}
+.stat-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:10px;margin-bottom:18px;}
+.stat-card{background:#fff;border-radius:11px;padding:12px 10px;text-align:center;border:1px solid #e2e8f0;box-shadow:0 1px 5px rgba(0,0,0,.05);}
+.stat-card .num{font-size:26px;font-weight:800;line-height:1;}
+.stat-card .lbl{font-size:10px;color:#64748b;margin-top:3px;line-height:1.3;}
+.rule-bar{background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:9px 16px;margin-bottom:14px;display:flex;align-items:center;gap:20px;font-size:12px;color:#475569;}
+.rule-bar .rule{display:flex;align-items:center;gap:6px;font-weight:600;}
+.action-bar{background:#fff;border-radius:12px;padding:12px 16px;margin-bottom:14px;display:flex;align-items:center;gap:10px;border:1px solid #e2e8f0;flex-wrap:wrap;}
+.warn-bar{background:#fef2f2;border:1.5px solid #fca5a5;border-radius:10px;padding:11px 16px;margin-bottom:14px;display:none;align-items:center;gap:10px;color:#991b1b;font-weight:600;font-size:13px;}
+.warn-bar.show{display:flex;}
+.dist-grid{display:grid;grid-template-columns:220px 1fr 1fr;gap:14px;align-items:start;}
+.flight-header{border-radius:12px;padding:14px 16px;color:#fff;margin-bottom:10px;}
+.fh-1{background:linear-gradient(135deg,#1a3a5c,#2563eb);box-shadow:0 4px 16px rgba(26,58,92,.45);}
+.fh-2{background:linear-gradient(135deg,#0891b2,#0ea5e9);box-shadow:0 4px 16px rgba(8,145,178,.4);}
+.cap-bar{margin-top:6px;}
+.cap-bar .track{background:rgba(255,255,255,.3);border-radius:99px;height:6px;overflow:hidden;}
+.cap-bar .fill{height:100%;border-radius:99px;background:#fff;transition:width .4s;}
+.return-badge{background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:7px 12px;margin-bottom:10px;font-size:12px;color:#475569;}
+.drop-zone{background:#f8fafc;border:2px dashed #e2e8f0;border-radius:10px;min-height:320px;padding:8px;transition:all .2s;}
+.drop-zone.drag-over{background:#eff6ff;border-color:var(--blue);}
+.pilgrim-card{background:#fff;border:1.5px solid #e2e8f0;border-radius:8px;padding:9px 12px;margin-bottom:6px;cursor:grab;display:flex;align-items:center;gap:9px;transition:all .15s;user-select:none;}
+.pilgrim-card:hover{border-color:#94a3b8;box-shadow:0 2px 8px rgba(0,0,0,.08);}
+.pilgrim-card.is-admin{border-color:#c4b5fd;background:#faf5ff;}
+.pilgrim-card.dragging{opacity:.4;}
+.pill{padding:2px 9px;border-radius:20px;font-size:11px;font-weight:700;white-space:nowrap;}
+.p-original{background:#dbeafe;color:#1e40af;border:1px solid #93c5fd;}
+.p-standby{background:#fef9c3;color:#854d0e;border:1px solid #fde047;}
+.p-admin{background:#f3e8ff;color:#6b21a8;border:1px solid #c4b5fd;}
+.remove-btn{color:#cbd5e1;font-size:16px;margin-right:auto;cursor:pointer;line-height:1;}
+.remove-btn:hover{color:#dc2626;}
+.pool-header{background:#fff;border-radius:12px;padding:11px 14px;border:1px solid #e2e8f0;margin-bottom:10px;}
+.pool-zone{background:#fff5f5;border:2px dashed #fca5a5;border-radius:10px;min-height:300px;padding:8px;}
+/* List view */
+#listView{display:none;}
+.view-tabs{display:flex;gap:6px;margin-bottom:16px;}
+.view-tab{padding:7px 18px;border-radius:20px;font-size:13px;font-weight:600;cursor:pointer;border:1.5px solid #e2e8f0;background:#f8fafc;color:#475569;transition:all .2s;}
+.view-tab.active{background:var(--blue);color:#fff;border-color:var(--blue);}
+/* modal */
+#moveModal .modal-header{background:linear-gradient(135deg,#0f2942,#1a3a5c);color:#fff;border-radius:8px 8px 0 0;}
+.flight-choice{border:2px solid #e2e8f0;border-radius:10px;padding:12px 16px;cursor:pointer;transition:all .15s;margin-bottom:10px;}
+.flight-choice:hover{border-color:var(--blue);}
+.flight-choice.selected{border-color:var(--blue);background:#eff6ff;}
+.flight-choice.disabled{opacity:.5;cursor:not-allowed;background:#f8fafc;}
+</style>
+
+<!-- HEADER -->
+<div class="fd-header">
+  <div>
+    <h4 style="margin:0;font-size:20px;font-weight:800">✈️ توزيع الحجاج على الرحلات الجوية</h4>
+    <div style="font-size:13px;opacity:.75;margin-top:3px">موسم الحج <span id="fdYear">…</span> — رحلتا ذهاب / رحلتا عودة</div>
+  </div>
+  <div style="display:flex;align-items:center;gap:10px">
+    <span class="badge" style="background:var(--gold);color:#fff;padding:6px 16px;border-radius:20px;font-size:13px;font-weight:700">
+      إجمالي الحجاج: <span id="hdTotal">…</span>
+    </span>
+    <button class="btn btn-light btn-sm" onclick="refreshAll()"><i class="fa fa-refresh"></i> تحديث</button>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="stat-grid">
+  <div class="stat-card"><div class="num" id="sTotal"    style="color:var(--blue)">—</div><div class="lbl">إجمالي الحجاج</div></div>
+  <div class="stat-card"><div class="num" id="sAssigned" style="color:var(--green)">—</div><div class="lbl">تم التعيين</div></div>
+  <div class="stat-card"><div class="num" id="sUnassign" style="color:var(--red)">—</div><div class="lbl">لم يُعيَّنوا</div></div>
+  <div class="stat-card"><div class="num" id="sAdmin"    style="color:#6b21a8">—</div><div class="lbl">إداريون (F1 إلزامي)</div></div>
+  <div class="stat-card"><div class="num" id="sF1"       style="color:var(--f1)">—</div><div class="lbl">في الرحلة الأولى</div></div>
+  <div class="stat-card"><div class="num" id="sF2"       style="color:var(--f2)">—</div><div class="lbl">في الرحلة الثانية</div></div>
+  <div class="stat-card"><div class="num" id="sAdminF2"  style="color:var(--red)">—</div><div class="lbl">⚠ إداري في F2</div></div>
+</div>
+
+<!-- ADMIN WARNING -->
+<div class="warn-bar" id="adminWarn">
+  ⚠️ تحذير: يوجد <span id="adminF2Count">0</span> إداري في الرحلة الثانية — الإداريون يجب أن يكونوا في الرحلة الأولى فقط
+</div>
+
+<!-- RULES -->
+<div class="rule-bar">
+  <span style="font-weight:700;color:#374151">قواعد الربط الإلزامي:</span>
+  <div class="rule"><span style="background:#1a3a5c;color:#fff;border-radius:6px;padding:2px 8px;font-size:12px">✈ ذهاب F1</span> → <span style="background:#0891b2;color:#fff;border-radius:6px;padding:2px 8px;font-size:12px">🔄 عودة F2</span></div>
+  <div class="rule"><span style="background:#0891b2;color:#fff;border-radius:6px;padding:2px 8px;font-size:12px">✈ ذهاب F2</span> -> <span style="background:#1a3a5c;color:#fff;border-radius:6px;padding:2px 8px;font-size:12px">🔄 عودة F1</span></div>
+  <span style="color:#6b21a8;font-weight:700">⭐ الإداريون: ذهاب F1 دائماً</span>
+</div>
+
+<!-- ACTIONS -->
+<div class="action-bar">
+  <button class="btn btn-primary btn-sm" onclick="autoDistribute()"><i class="fa fa-magic"></i> توزيع تلقائي</button>
+  <button class="btn btn-success btn-sm" id="btnSave" onclick="saveDistribution()"><i class="fa fa-save"></i> حفظ التوزيع</button>
+  <button class="btn btn-danger btn-sm" onclick="clearAll()"><i class="fa fa-trash"></i> مسح الكل</button>
+  <div class="mr-auto d-flex" style="gap:8px">
+    <input id="searchBox" class="form-control form-control-sm" style="width:200px" placeholder="🔍 بحث…" oninput="applySearch()">
+    <button class="btn btn-outline-secondary btn-sm" onclick="exportList()"><i class="fa fa-file-excel-o"></i> تصدير</button>
+    <button class="btn btn-outline-secondary btn-sm" onclick="window.print()"><i class="fa fa-print"></i></button>
+  </div>
+</div>
+
+<!-- VIEW TABS -->
+<div class="view-tabs">
+  <div class="view-tab active" onclick="switchView('dist',this)">📋 التوزيع</div>
+  <div class="view-tab" onclick="switchView('list',this)">👥 القائمة الكاملة</div>
+</div>
+
+<!-- DISTRIBUTION VIEW -->
+<div id="distView">
+  <div class="dist-grid" id="distGrid">
+    <!-- Unassigned pool -->
+    <div>
+      <div class="pool-header">
+        <div style="font-weight:700;font-size:14px;color:#475569">⏳ غير مُعيَّنون</div>
+        <div style="font-size:22px;font-weight:800;color:var(--red)" id="poolCount">0</div>
+      </div>
+      <div class="pool-zone" id="poolZone" ondragover="onDragOver(event,'pool')" ondrop="onDrop(event,'pool')" ondragleave="onDragLeave()">
+      </div>
+    </div>
+    <!-- Flight 1 -->
+    <div id="col-F1">
+      <div class="flight-header fh-1" id="fhF1">
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <div><div style="font-weight:800;font-size:15px" id="f1no">—</div><div style="font-size:12px;opacity:.85">رحلة الذهاب الأولى</div><div style="font-size:11px;opacity:.7" id="f1date">—</div></div>
+          <div style="text-align:center;background:rgba(255,255,255,.2);border-radius:10px;padding:8px 14px"><div style="font-size:26px;font-weight:800;line-height:1" id="f1count">0</div><div style="font-size:11px;opacity:.8">حاج</div></div>
+        </div>
+        <div class="cap-bar"><div class="track"><div class="fill" id="f1bar" style="width:0%"></div></div></div>
+        <div style="font-size:11px;opacity:.8;margin-top:4px" id="f1cap">0/0 مقعد</div>
+      </div>
+      <div class="return-badge">🔄 العودة المرتبطة: <strong id="r2no">—</strong> <span style="font-size:11px;color:#94a3b8" id="r2date"></span></div>
+      <div class="drop-zone" id="zone-F1" ondragover="onDragOver(event,'F1')" ondrop="onDrop(event,'F1')" ondragleave="onDragLeave()">
+        <div style="text-align:center;color:#cbd5e1;font-size:13px;padding-top:60px" id="emptyF1">اسحب الحجاج هنا</div>
+      </div>
+    </div>
+    <!-- Flight 2 -->
+    <div id="col-F2">
+      <div class="flight-header fh-2" id="fhF2">
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <div><div style="font-weight:800;font-size:15px" id="f2no">—</div><div style="font-size:12px;opacity:.85">رحلة الذهاب الثانية</div><div style="font-size:11px;opacity:.7" id="f2date">—</div></div>
+          <div style="text-align:center;background:rgba(255,255,255,.2);border-radius:10px;padding:8px 14px"><div style="font-size:26px;font-weight:800;line-height:1" id="f2count">0</div><div style="font-size:11px;opacity:.8">حاج</div></div>
+        </div>
+        <div class="cap-bar"><div class="track"><div class="fill" id="f2bar" style="width:0%"></div></div></div>
+        <div style="font-size:11px;opacity:.8;margin-top:4px" id="f2cap">0/0 مقعد</div>
+      </div>
+      <div class="return-badge">🔄 العودة المرتبطة: <strong id="r1no">—</strong> <span style="font-size:11px;color:#94a3b8" id="r1date"></span></div>
+      <div class="drop-zone" id="zone-F2" ondragover="onDragOver(event,'F2')" ondrop="onDrop(event,'F2')" ondragleave="onDragLeave()">
+        <div style="text-align:center;color:#cbd5e1;font-size:13px;padding-top:60px" id="emptyF2">اسحب الحجاج هنا</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- LIST VIEW -->
+<div id="listView">
+  <div style="background:#fff;border-radius:12px;padding:12px 16px;margin-bottom:12px;border:1px solid #e2e8f0;display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+    <select id="filterFlight" class="form-control form-control-sm" style="width:200px" onchange="renderListView()">
+      <option value="all">كل الرحلات</option>
+      <option value="F1">رحلة ذهاب أولى</option>
+      <option value="F2">رحلة ذهاب ثانية</option>
+      <option value="unassigned">غير مُعيَّنون</option>
+    </select>
+    <select id="filterType" class="form-control form-control-sm" style="width:160px" onchange="renderListView()">
+      <option value="all">كل الأنواع</option>
+      <option value="1">أصلي</option>
+      <option value="2">احتياط</option>
+      <option value="3">إداري</option>
+    </select>
+    <span id="listCount" class="mr-auto" style="font-size:13px;color:#64748b"></span>
+  </div>
+  <div style="background:#fff;border-radius:13px;border:1px solid #e2e8f0;overflow:hidden;box-shadow:0 1px 8px rgba(0,0,0,.06)">
+    <div style="overflow-x:auto">
+      <table id="listTable" class="table table-bordered table-hover w-100 mb-0" style="font-size:13px">
+        <thead>
+          <tr>
+            <th>#</th><th>الاسم</th><th>الرقم العسكري</th><th>الرتبة</th><th>الوحدة</th>
+            <th>النوع</th><th>رحلة الذهاب</th><th>رحلة العودة</th><th>إجراء</th>
+          </tr>
+        </thead>
+        <tbody id="listBody"></tbody>
+      </table>
+    </div>
+    <div style="padding:10px 14px;border-top:1px solid #f1f5f9;font-size:12px;color:#94a3b8;display:flex;justify-content:space-between">
+      <span id="listSummary"></span>
+      <span>✈ F1+R2 | ✈ F2+R1</span>
+    </div>
+  </div>
+</div>
+
+<!-- MOVE MODAL -->
+<div class="modal fade" id="moveModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header"><h5 class="modal-title"><i class="fa fa-plane ml-2"></i> تعديل تعيين الرحلة</h5>
+        <button class="close text-white" data-dismiss="modal"><span>&times;</span></button></div>
+      <div class="modal-body">
+        <div id="moveInfo" class="alert alert-light py-2 mb-3 border" style="font-size:13px"></div>
+        <div id="adminNote" class="alert alert-warning py-2 mb-3" style="display:none;font-size:13px">
+          ⭐ الإداريون ملزمون بالرحلة الأولى — لا يمكن نقلهم للرحلة الثانية
+        </div>
+        <div class="alert alert-info py-2 mb-3" style="font-size:12px">
+          ℹ️ سيتم تغيير رحلة الذهاب والعودة تلقائياً معاً حسب قاعدة الربط
+        </div>
+        <div id="flightChoices"></div>
+        <div id="removeBtn" class="mt-3" style="display:none">
+          <button class="btn btn-outline-danger btn-sm" onclick="removeFromFlight()"><i class="fa fa-times"></i> إزالة من الرحلة</button>
+        </div>
+      </div>
+      <div class="modal-footer"><button class="btn btn-secondary" data-dismiss="modal">إغلاق</button></div>
+    </div>
+  </div>
+</div>
+
+@section Scripts {
+<script>
+(function(){
+'use strict';
+
+// ── State ─────────────────────────────────────────────────────────────────
+var state = {
+  pilgrims: [],          // [{id, name, sn, rank, unit, type, depFlight, retFlight}]
+  flights: {
+    dep: [{id:'F1',no:'',date:'',cap:0},{id:'F2',no:'',date:'',cap:0}],
+    ret: [{id:'R1',no:'',date:'',cap:0},{id:'R2',no:'',date:'',cap:0}]
+  },
+  // D1→R2, D2→R1
+  returnLink: {F1:'R2', F2:'R1'},
+  currentDrag: null,
+  movingId: null
+};
+
+// Mock data (replace with API calls)
+state.pilgrims = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(new[]{""}));
+
+// ── Load from server ──────────────────────────────────────────────────────
+function loadAll(){
+  // 1. Load flight info
+  $.getJSON('@Url.Action("GetStats","FlightDistribution")', function(s){
+    updateStats(s);
+    if(s.flights && s.flights.length>=4){
+      var dep = s.flights.filter(function(f){return f.parameterId===34;}).sort(function(a,b){return a.flightId-b.flightId;});
+      var ret = s.flights.filter(function(f){return f.parameterId===35;}).sort(function(a,b){return a.flightId-b.flightId;});
+      if(dep.length>=2){
+        state.flights.dep[0]={id:'F1',no:dep[0].flightNo,date:'',cap:dep[0].flightCapacity,dbId:dep[0].flightId};
+        state.flights.dep[1]={id:'F2',no:dep[1].flightNo,date:'',cap:dep[1].flightCapacity,dbId:dep[1].flightId};
+      }
+      if(ret.length>=2){
+        state.flights.ret[0]={id:'R1',no:ret[0].flightNo,date:'',cap:ret[0].flightCapacity,dbId:ret[0].flightId};
+        state.flights.ret[1]={id:'R2',no:ret[1].flightNo,date:'',cap:ret[1].flightCapacity,dbId:ret[1].flightId};
+      }
+      renderFlightHeaders();
+    }
+    $('#fdYear').text(new Date().getFullYear());
+  });
+
+  // 2. Load pilgrims
+  $.getJSON('@Url.Action("GetEligible","FlightDistribution")', function(list){
+    state.pilgrims = list.map(function(p){
+      return {
+        id:p.pligrimageId, name:p.fullName, sn:p.servcieNumber,
+        rank:p.rankDesc, unit:p.unitNameAr, type:p.parameterId,
+        blood:p.bloodGroup, depFlight:null, retFlight:null
+      };
+    });
+    // Load existing distribution
+    $.getJSON('@Url.Action("GetDistribution","FlightDistribution")', function(dist){
+      dist.forEach(function(d){
+        var p = state.pilgrims.find(function(x){return x.id===d.pligrimageId;});
+        if(!p) return;
+        if(d.direction===34) p.depFlight = flightDbToLocal(d.flightId, 'dep');
+        if(d.direction===35) p.retFlight = flightDbToLocal(d.flightId, 'ret');
+      });
+      renderAll();
+    });
+  });
+}
+
+function flightDbToLocal(dbId, dir){
+  var arr = dir==='dep' ? state.flights.dep : state.flights.ret;
+  var f = arr.find(function(x){return x.dbId===dbId;});
+  return f ? f.id : null;
+}
+
+// ── Render headers ─────────────────────────────────────────────────────────
+function renderFlightHeaders(){
+  var d=state.flights.dep, r=state.flights.ret;
+  $('#f1no').text(d[0].no||'رحلة 1'); $('#f1date').text(d[0].date||'');
+  $('#f2no').text(d[1].no||'رحلة 2'); $('#f2date').text(d[1].date||'');
+  $('#r1no').text(r[0].no||'عودة 1'); $('#r1date').text(r[0].date||'');
+  $('#r2no').text(r[1].no||'عودة 2'); $('#r2date').text(r[1].date||'');
+}
+
+// ── Render all ─────────────────────────────────────────────────────────────
+function renderAll(){
+  renderDistView();
+  renderStats();
+  renderListView();
+}
+
+function renderStats(){
+  var p=state.pilgrims;
+  var assigned=p.filter(function(x){return x.depFlight;});
+  var f1=p.filter(function(x){return x.depFlight==='F1';});
+  var f2=p.filter(function(x){return x.depFlight==='F2';});
+  var admins=p.filter(function(x){return x.type===3;});
+  var adminF2=p.filter(function(x){return x.type===3&&x.depFlight==='F2';});
+  $('#sTotal').text(p.length); $('#hdTotal').text(p.length);
+  $('#sAssigned').text(assigned.length);
+  $('#sUnassign').text(p.length-assigned.length);
+  $('#sAdmin').text(admins.length);
+  $('#sF1').text(f1.length); $('#sF2').text(f2.length);
+  $('#sAdminF2').text(adminF2.length);
+  $('#adminWarn').toggleClass('show',adminF2.length>0);
+  $('#adminF2Count').text(adminF2.length);
+  // flight headers
+  var c1=f1.length, c2=f2.length, cap1=state.flights.dep[0].cap||120, cap2=state.flights.dep[1].cap||120;
+  $('#f1count').text(c1); $('#f2count').text(c2);
+  $('#f1bar').css('width',Math.min((c1/cap1)*100,100)+'%');
+  $('#f2bar').css('width',Math.min((c2/cap2)*100,100)+'%');
+  $('#f1cap').text(c1+'/'+cap1+' مقعد'); $('#f2cap').text(c2+'/'+cap2+' مقعد');
+  $('#poolCount').text(p.length-assigned.length);
+}
+
+// ── Dist view ──────────────────────────────────────────────────────────────
+function renderDistView(){
+  var search=$('#searchBox').val().toLowerCase();
+  var p=state.pilgrims.filter(function(x){return !search||x.name.includes(search)||x.sn.includes(search);});
+  renderZone('poolZone','emptyF1',p.filter(function(x){return !x.depFlight;}),false,true);
+  renderZone('zone-F1','emptyF1',p.filter(function(x){return x.depFlight==='F1';}),true,false);
+  renderZone('zone-F2','emptyF2',p.filter(function(x){return x.depFlight==='F2';}),true,false);
+}
+
+function renderZone(zoneId, emptyId, list, showRemove, isPool){
+  var $z=$('#'+zoneId).empty();
+  if(!list.length){
+    $z.append('<div style="text-align:center;color:#cbd5e1;font-size:13px;padding-top:50px">'+(isPool?'كل الحجاج في رحلاتهم ✓':'اسحب الحجاج هنا')+'</div>');
+    return;
+  }
+  list.forEach(function(p){
+    var isAdmin=p.type===3;
+    var html='<div class="pilgrim-card'+(isAdmin?' is-admin':'')+(state.currentDrag===p.id?' dragging':'')+'" draggable="true"'+
+      ' data-id="'+p.id+'" ondragstart="onDragStart(event,'+p.id+')" onclick="openMoveModal('+p.id+')">'+
+      (isAdmin?'<span style="font-size:14px">⭐</span>':'')+
+      '<div style="flex:1;min-width:0">'+
+        '<div style="font-weight:600;font-size:12px;color:#1e293b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+p.name+'</div>'+
+        '<div style="font-size:11px;color:#64748b;margin-top:1px">'+p.rank+' · '+p.unit+'</div>'+
+      '</div>'+
+      '<span class="pill '+typePillClass(p.type)+'">'+typeLabel(p.type)+'</span>'+
+      (showRemove?'<span class="remove-btn" onclick="event.stopPropagation();removeFromFlight('+p.id+')" title="إزالة">×</span>':'')+
+    '</div>';
+    $z.append(html);
+  });
+}
+
+// ── List view ─────────────────────────────────────────────────────────────
+window.renderListView = function(){
+  var ff=$('#filterFlight').val(), ft=$('#filterType').val();
+  var p=state.pilgrims.filter(function(x){
+    if(ff==='F1') return x.depFlight==='F1';
+    if(ff==='F2') return x.depFlight==='F2';
+    if(ff==='unassigned') return !x.depFlight;
+    return true;
+  }).filter(function(x){
+    return ft==='all'||x.type===+ft;
+  });
+  $('#listCount').text(p.length+' سجل');
+  var $b=$('#listBody').empty();
+  p.forEach(function(r,i){
+    var depLabel=r.depFlight?flightBadge(r.depFlight,'dep'):'<span style="color:#94a3b8;font-size:12px">—</span>';
+    var retLabel=r.retFlight?flightBadge(r.retFlight,'ret'):'<span style="color:#94a3b8;font-size:12px">—</span>';
+    var rowBg=r.type===3?'background:#faf5ff':r.depFlight==='F1'?'background:#f0f9ff':r.depFlight==='F2'?'background:#f0fdf4':'';
+    $b.append('<tr style="'+rowBg+'">'+
+      '<td style="color:#94a3b8;font-size:12px">'+(i+1)+'</td>'+
+      '<td style="font-weight:600">'+(r.type===3?'⭐ ':'')+r.name+'</td>'+
+      '<td><code>'+r.sn+'</code></td>'+
+      '<td>'+r.rank+'</td>'+
+      '<td><span style="background:#f1f5f9;padding:2px 8px;border-radius:6px;font-size:12px;font-weight:600">'+r.unit+'</span></td>'+
+      '<td><span class="pill '+typePillClass(r.type)+'">'+typeLabel(r.type)+'</span></td>'+
+      '<td>'+depLabel+'</td>'+
+      '<td>'+retLabel+'</td>'+
+      '<td><button class="btn btn-outline-primary btn-xs" onclick="openMoveModal('+r.id+')"><i class="fa fa-pencil"></i> تعديل</button></td>'+
+    '</tr>');
+  });
+  $('#listSummary').text('✈ F1: '+state.pilgrims.filter(function(x){return x.depFlight==='F1';}).length+
+    ' | ✈ F2: '+state.pilgrims.filter(function(x){return x.depFlight==='F2';}).length);
+};
+
+function flightBadge(fid, dir){
+  var arr=dir==='dep'?state.flights.dep:state.flights.ret;
+  var f=arr.find(function(x){return x.id===fid;});
+  if(!f) return fid;
+  var isD=dir==='dep';
+  var col=isD?(fid==='F1'?'background:#dbeafe;color:#1e40af;border:1px solid #93c5fd':'background:#cffafe;color:#0e7490;border:1px solid #67e8f9')
+              :(fid==='R2'?'background:#dbeafe;color:#1e40af;border:1px solid #93c5fd':'background:#cffafe;color:#0e7490;border:1px solid #67e8f9');
+  return '<span style="'+col+';padding:2px 9px;border-radius:20px;font-size:12px;font-weight:600">'+(isD?'✈':'🔄')+' '+(f.no||fid)+'</span>';
+}
+
+// ── Drag & drop ────────────────────────────────────────────────────────────
+window.onDragStart = function(e, id){ state.currentDrag=id; e.dataTransfer.effectAllowed='move'; };
+window.onDragOver  = function(e, zone){ e.preventDefault(); $('#zone-'+zone+',#poolZone').addClass('drag-over'); };
+window.onDragLeave = function(){ $('.drop-zone,.pool-zone').removeClass('drag-over'); };
+window.onDrop = function(e, zone){
+  e.preventDefault(); $('.drop-zone,.pool-zone').removeClass('drag-over');
+  if(!state.currentDrag) return;
+  var id=state.currentDrag; state.currentDrag=null;
+  if(zone==='pool'){ removeFromFlight(id); return; }
+  assignPilgrim(id, zone);
+};
+
+// ── Assignment logic ───────────────────────────────────────────────────────
+function assignPilgrim(id, depFlightId){
+  var p=state.pilgrims.find(function(x){return x.id===id;});
+  if(!p) return;
+  if(p.type===3 && depFlightId==='F2'){
+    toastr.error('الإداريون يجب أن يكونوا في الرحلة الأولى دائماً'); return;
+  }
+  var cap=depFlightId==='F1'?state.flights.dep[0].cap:state.flights.dep[1].cap;
+  var used=state.pilgrims.filter(function(x){return x.depFlight===depFlightId&&x.id!==id;}).length;
+  if(used>=cap){ toastr.error('الرحلة ممتلئة — السعة الكاملة '+cap); return; }
+  p.depFlight=depFlightId;
+  p.retFlight=state.returnLink[depFlightId];
+  renderAll();
+}
+
+window.removeFromFlight = function(id){
+  var p=state.pilgrims.find(function(x){return x.id===id||(state.movingId&&x.id===state.movingId);});
+  if(!p) return;
+  p.depFlight=null; p.retFlight=null;
+  $('#moveModal').modal('hide');
+  toastr.warning('تم إزالة التعيين'); renderAll();
+};
+
+// ── Auto-distribute ─────────────────────────────────────────────────────────
+window.autoDistribute = function(){
+  if(!confirm('سيتم إعادة توزيع جميع الحجاج — هل تريد المتابعة؟')) return;
+  var p=state.pilgrims, cap=state.flights.dep[0].cap||120, half=Math.ceil(cap/2);
+  var f1c=0;
+  p.forEach(function(x){
+    var isAdmin=x.type===3;
+    if(isAdmin||f1c<half){ x.depFlight='F1'; x.retFlight='R2'; if(!isAdmin) f1c++; }
+    else{ x.depFlight='F2'; x.retFlight='R1'; }
+  });
+  renderAll();
+  var f1=p.filter(function(x){return x.depFlight==='F1';}).length;
+  var f2=p.filter(function(x){return x.depFlight==='F2';}).length;
+  toastr.success('تم التوزيع التلقائي: '+f1+' في الأولى، '+f2+' في الثانية');
+};
+
+window.clearAll = function(){
+  if(!confirm('مسح كل التعيينات؟')) return;
+  state.pilgrims.forEach(function(p){p.depFlight=null;p.retFlight=null;});
+  renderAll(); toastr.warning('تم مسح التوزيع');
+};
+
+// ── Save to server ─────────────────────────────────────────────────────────
+window.saveDistribution = function(){
+  var token=$('input[name="__RequestVerificationToken"]').val();
+  $.post('@Url.Action("AutoDistribute","FlightDistribution")',{__RequestVerificationToken:token},
+    function(r){toastr.success(r.message||'تم الحفظ');})
+   .fail(function(x){toastr.error(x.responseText||'فشل الحفظ');});
+};
+
+// ── Move modal ─────────────────────────────────────────────────────────────
+window.openMoveModal = function(id){
+  var p=state.pilgrims.find(function(x){return x.id===id;}); if(!p) return;
+  state.movingId=id;
+  var isAdmin=p.type===3;
+  $('#moveInfo').html('<strong>'+(isAdmin?'⭐ ':'')+p.name+'</strong> | '+p.rank+' | '+p.unit+
+    ' <span class="pill '+typePillClass(p.type)+'" style="font-size:11px">'+typeLabel(p.type)+'</span>');
+  $('#adminNote').toggle(isAdmin);
+  $('#removeBtn').toggle(!!p.depFlight);
+  var html='';
+  state.flights.dep.forEach(function(f,i){
+    var retF=state.flights.ret.find(function(r){return r.id===state.returnLink[f.id];})||{no:'—'};
+    var cur=p.depFlight===f.id, dis=isAdmin&&f.id==='F2';
+    var used=state.pilgrims.filter(function(x){return x.depFlight===f.id;}).length;
+    html+='<div class="flight-choice'+(cur?' selected':'')+(dis?' disabled':'')+'"'+
+          (dis?'':'onclick="pickFlight(\''+f.id+'\')"')+'>'+
+      '<div style="display:flex;align-items:center;justify-content:space-between">'+
+        '<div><div style="font-weight:700;font-size:14px">'+(cur?'✓ ':'')+
+          (i===0?'رحلة ذهاب أولى':'رحلة ذهاب ثانية')+': '+(f.no||f.id)+'</div>'+
+          '<div style="font-size:12px;color:#64748b;margin-top:3px">حجاج: '+used+'/'+(f.cap||120)+'</div>'+
+        '</div>'+
+        '<div style="text-align:center">'+
+          '<div style="font-size:10px;color:#94a3b8;margin-bottom:2px">العودة المرتبطة</div>'+
+          '<div style="font-size:13px;font-weight:700;color:#059669">🔄 '+(retF.no||retF.id)+'</div>'+
+        '</div>'+
+      '</div></div>';
+  });
+  $('#flightChoices').html(html);
+  $('#moveModal').modal('show');
+};
+
+window.pickFlight = function(fid){
+  var id=state.movingId; if(!id) return;
+  assignPilgrim(id, fid);
+  $('#moveModal').modal('hide');
+};
+
+// ── Helpers ────────────────────────────────────────────────────────────────
+function typePillClass(t){ return t===1?'p-original':t===2?'p-standby':'p-admin'; }
+function typeLabel(t)    { return t===1?'أصلي':t===2?'احتياط':'إداري'; }
+window.applySearch = function(){ renderDistView(); };
+window.switchView = function(view,el){
+  $('.view-tab').removeClass('active'); $(el).addClass('active');
+  if(view==='dist'){$('#distView').show();$('#listView').hide();}
+  else{$('#distView').hide();$('#listView').show();renderListView();}
+};
+window.refreshAll = function(){ loadAll(); };
+window.exportList = function(){
+  var rows=[['الاسم','الرقم','الرتبة','الوحدة','النوع','ذهاب','عودة']];
+  state.pilgrims.forEach(function(p){
+    rows.push([p.name,p.sn,p.rank,p.unit,typeLabel(p.type),p.depFlight||'—',p.retFlight||'—']);
+  });
+  var csv=rows.map(function(r){return r.join(',');}).join('\n');
+  var blob=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement('a'); a.href=url; a.download='توزيع_الرحلات.csv'; a.click();
+};
+
+// ── Init ───────────────────────────────────────────────────────────────────
+$(function(){
+  toastr.options={positionClass:'toast-top-left',timeOut:3000,rtl:true};
+  loadAll();
+});
+
+}());
+</script>}
